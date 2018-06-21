@@ -1,36 +1,36 @@
-import uniqBy from 'lodash/uniqBy';
-import { List } from 'immutable';
+import { List } from "immutable";
+import { youtubeAPI } from "../../src/apiKeys";
 
 export const addYoutubeSong = id => {
   return async dispatch => {
     const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyDHFvRkHpCplCIcCLSb2jQOYwZ2TrvxFps&part=snippet&id=${id}`
+      `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&part=snippet&id=${id}`
     );
     const json = await res.json();
     dispatch({
-      type: 'ADD_YOUTUBE_TRACK',
-      id: json.items['0'].id,
-      name: json.items['0'].snippet.title
+      type: "ADD_YOUTUBE_TRACK",
+      id: json.items["0"].id,
+      name: json.items["0"].snippet.title
     });
   };
 };
 
 export const fetchSongsPending = () => {
   return {
-    type: 'FETCH_SONGS_PENDING'
+    type: "FETCH_SONGS_PENDING"
   };
 };
 
 export const fetchSongsSuccess = songs => {
   return {
     songs,
-    type: 'FETCH_SONGS_SUCCESS'
+    type: "FETCH_SONGS_SUCCESS"
   };
 };
 
 export const fetchSongsError = () => {
   return {
-    type: 'FETCH_SONGS_ERROR'
+    type: "FETCH_SONGS_ERROR"
   };
 };
 
@@ -44,7 +44,7 @@ export const fetchSongs = () => {
         `https://api.spotify.com/v1/me/tracks?limit=50&offset=${i * 50}`,
         {
           headers: new Headers({
-            Authorization: 'Bearer ' + accessToken
+            Authorization: "Bearer " + accessToken
           })
         }
       );
@@ -59,20 +59,20 @@ export const fetchSongs = () => {
 
 export const searchSongsPending = () => {
   return {
-    type: 'SEARCH_SONGS_PENDING'
+    type: "SEARCH_SONGS_PENDING"
   };
 };
 
 export const searchSongsSuccess = songs => {
   return {
     songs,
-    type: 'SEARCH_SONGS_SUCCESS'
+    type: "SEARCH_SONGS_SUCCESS"
   };
 };
 
 export const searchSongsError = () => {
   return {
-    type: 'SEARCH_SONGS_ERROR'
+    type: "SEARCH_SONGS_ERROR"
   };
 };
 
@@ -82,8 +82,8 @@ export const searchSongs = (searchTerm, accessToken) => {
       `https://api.spotify.com/v1/search?q=${searchTerm}&type=track`,
       {
         headers: new Headers({
-          Accept: 'application/json',
-          Authorization: 'Bearer ' + accessToken
+          Accept: "application/json",
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -92,8 +92,8 @@ export const searchSongs = (searchTerm, accessToken) => {
 
     fetch(request)
       .then(res => {
-        if (res.statusText === 'Unauthorized') {
-          window.location.href = './';
+        if (res.statusText === "Unauthorized") {
+          window.location.href = "./";
         }
         return res.json();
       })
@@ -113,20 +113,20 @@ export const searchSongs = (searchTerm, accessToken) => {
 
 export const fetchRecentlyPlayedPending = () => {
   return {
-    type: 'FETCH_RECENTLY_PLAYED_PENDING'
+    type: "FETCH_RECENTLY_PLAYED_PENDING"
   };
 };
 
 export const fetchRecentlyPlayedSuccess = songs => {
   return {
     songs,
-    type: 'FETCH_RECENTLY_PLAYED_SUCCESS'
+    type: "FETCH_RECENTLY_PLAYED_SUCCESS"
   };
 };
 
 export const fetchRecentlyPlayedError = () => {
   return {
-    type: 'FETCH_RECENTLY_PLAYED_ERROR'
+    type: "FETCH_RECENTLY_PLAYED_ERROR"
   };
 };
 
@@ -137,7 +137,7 @@ export const fetchRecentlyPlayed = () => {
       `https://api.spotify.com/v1/me/player/recently-played`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -166,10 +166,10 @@ export const play = () => {
       }
     }) => {
       fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ uris: spotify_uri }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         }
       });
@@ -188,7 +188,7 @@ export const play = () => {
     }
 
     dispatch({
-      type: 'PLAY'
+      type: "PLAY"
     });
   };
 };
@@ -203,14 +203,14 @@ export const togglePlay = () => {
       window.player.togglePlay();
     }
     dispatch({
-      type: 'TOGGLE_PLAY'
+      type: "TOGGLE_PLAY"
     });
   };
 };
 export const nextSong = () => {
   return (dispatch, getState) => {
     dispatch({
-      type: 'NEXT_SONG'
+      type: "NEXT_SONG"
     });
 
     const next = getState().player.currentTrack;
@@ -223,10 +223,10 @@ export const nextSong = () => {
       }
     }) => {
       fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ uris: spotify_uri }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         }
       });
@@ -253,7 +253,7 @@ export const nextSong = () => {
 export const prevSong = () => {
   return (dispatch, getState) => {
     dispatch({
-      type: 'PREV_SONG'
+      type: "PREV_SONG"
     });
     const next = getState().player.currentTrack;
     const spotifyPaused = getState().player.player.paused;
@@ -265,10 +265,10 @@ export const prevSong = () => {
       }
     }) => {
       fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify({ uris: spotify_uri }),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         }
       });
@@ -297,7 +297,7 @@ export const prevSong = () => {
 
 export const updateViewType = view => {
   return {
-    type: 'UPDATE_VIEW_TYPE',
+    type: "UPDATE_VIEW_TYPE",
     view
   };
 };
