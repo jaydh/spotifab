@@ -7,11 +7,17 @@ export default (
     activeQueue: List(),
     currentTrack: null,
     volume: 0.5,
-    player: null
+    player: null,
+    repeat: true
   },
   action
 ) => {
   switch (action.type) {
+    case 'TOGGLE_REPEAT':
+      return {
+        ...state,
+        repeat: !state.repeat
+      };
     case 'UPDATE_VOLUME':
       return {
         ...state,
@@ -32,20 +38,30 @@ export default (
       };
 
     case 'PREV_SONG':
-      const x = state.activeQueue.findIndex(
+      const absPos = state.queue.findIndex(
         t => t.track.id === state.currentTrack.id
       );
+
+      const r = absPos === 0;
       return {
         ...state,
-        currentTrack: state.activeQueue.get(x - 1).track
+        currentTrack: r
+          ? state.queue.first().track
+          : state.queue.get(absPos - 1).track,
+        activeQueue: state.queue.slice(absPos - 1)
       };
     case 'NEXT_SONG':
       const y = state.activeQueue.findIndex(
         t => t.track.id === state.currentTrack.id
       );
+      const repeat = state.repeat && y === state.activeQueue.size - 1;
+
       return {
         ...state,
-        currentTrack: state.activeQueue.get(y + 1).track
+        currentTrack: repeat
+          ? state.queue.first().track
+          : state.activeQueue.get(y + 1).track,
+        activeQueue: repeat ? state.queue : state.activeQueue
       };
     case 'ADD_SONG_TO_QUEUE':
       return {
