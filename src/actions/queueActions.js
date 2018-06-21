@@ -1,6 +1,12 @@
 import { List } from 'immutable';
 import { play } from './songActions';
 
+export const toggleRepeat = () => {
+  return {
+    type: 'TOGGLE_REPEAT'
+  };
+};
+
 export const updateCurrentTrack = track => {
   return {
     type: 'UPDATE_CURRENT_TRACK',

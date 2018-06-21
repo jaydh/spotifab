@@ -15,7 +15,7 @@ class SongList extends Component {
         t => t.track.id === nextProps.currentTrack.id
       );
       const offset = (height / nextProps.songs.size) * position;
-      queue.scrollTop = offset;
+      queue.scrollTop = Math.round(offset);
     }
   }
 
@@ -36,7 +36,6 @@ class SongList extends Component {
               : 'user-song-item'
           }
           key={i}
-          id={`queue-${song.track.id}`}
         >
           <div
             onClick={() => this.props.seekForward(song.track.id)}
@@ -58,12 +57,23 @@ class SongList extends Component {
 
   render() {
     return (
-      <div id="queue" className="queue-container">
+      <div className="queue-container">
         <div className="song-header-container song-list-header">
-          <p>Queue</p>
+          <p>
+            Queue{' '}
+            <button className="btn" onClick={this.props.shuffleQueue}>
+              <i class="fa fa-random" aria-hidden={true} />
+            </button>
+            <button
+              onClick={this.props.toggleRepeat}
+              className={'btn' + (this.props.repeat ? 'active' : '')}
+            >
+              <i class="fa fa-repeat" aria-hidden={true} />
+            </button>
+          </p>
         </div>
 
-        <div className="song-list">
+        <div id="queue" className="song-list">
           {this.props.songs && this.renderSongs()}
         </div>
       </div>

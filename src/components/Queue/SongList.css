@@ -19,3 +19,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Style the buttons */
+.btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: white;
+}
+
+/* Style the active class (and buttons on mouse-over) */
+.active,
+.btn:hover {
+  color: blue;
+}
