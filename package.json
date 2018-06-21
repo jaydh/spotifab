@@ -11,6 +11,7 @@
     "react": "^16.4.0",
     "react-burger-menu": "^2.5.1",
     "react-dom": "^16.4.0",
+    "react-draggable": "^3.0.5",
     "react-fa": "^5.0.0",
     "react-redux": "^5.0.7",
     "react-scripts-ts": "2.16.0",

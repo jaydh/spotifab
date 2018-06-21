@@ -19,7 +19,7 @@ const config = {
   projectId: 'spotifab-3379e',
   storageBucket: '',
   messagingSenderId: '1045511818191'
-};
+}
 const app = firebase.initializeApp(config);
 console.log(app);
 declare module 'redux' {
@@ -38,6 +38,7 @@ export const store = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 const persistor = persistStore(store);
+persistor.purge();
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

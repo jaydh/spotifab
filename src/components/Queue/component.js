@@ -31,7 +31,8 @@ class SongList extends Component {
       return (
         <li
           className={
-            song.track.id === this.props.currentTrack.id
+            song.track.id === this.props.currentTrack &&
+            this.props.currentTrack.id
               ? 'active user-song-item'
               : 'user-song-item'
           }
