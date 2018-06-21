@@ -1,5 +1,19 @@
 import uniqBy from 'lodash/uniqBy';
-import { setArtistIds } from './artistActions';
+import { List } from 'immutable';
+
+export const addYoutubeSong = id => {
+  return async dispatch => {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?key=AIzaSyDHFvRkHpCplCIcCLSb2jQOYwZ2TrvxFps&part=snippet&id=${id}`
+    );
+    const json = await res.json();
+    dispatch({
+      type: 'ADD_YOUTUBE_TRACK',
+      id: json.items['0'].id,
+      name: json.items['0'].snippet.title
+    });
+  };
+};
 
 export const fetchSongsPending = () => {
   return {
@@ -21,9 +35,11 @@ export const fetchSongsError = () => {
 };
 
 export const fetchSongs = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const accessToken = getState().player.token;
-    for (let i = 0; i < 10; i++) {
+    const fetches = [];
+    dispatch(fetchSongsPending());
+    for (let i = 0; i < 2; i++) {
       const request = new Request(
         `https://api.spotify.com/v1/me/tracks?limit=50&offset=${i * 50}`,
         {
@@ -32,31 +48,12 @@ export const fetchSongs = () => {
           })
         }
       );
-      dispatch(fetchSongsPending());
-      fetch(request)
-        .then(res => {
-          if (res.statusText === 'Unauthorized') {
-            window.location.href = './';
-          }
-          return res.json();
-        })
-        .then(res => {
-          // get all artist ids and remove duplicates
-          let artistIds = uniqBy(res.items, item => {
-            return item.track.artists[0].name;
-          })
-            .map(item => {
-              return item.track.artists[0].id;
-            })
-            .join(',');
-
-          dispatch(setArtistIds(artistIds));
-          dispatch(fetchSongsSuccess(res.items));
-        })
-        .catch(err => {
-          dispatch(fetchSongsError(err));
-        });
+      fetches.push(request);
     }
+    const data = await Promise.all(fetches.map(t => fetch(t)));
+    const json = await Promise.all(data.map(t => t.json()));
+    const items = List(json.map(re => re.items).reduce((a, b) => [...a, ...b]));
+    dispatch(fetchSongsSuccess(items));
   };
 };
 
@@ -133,8 +130,9 @@ export const fetchRecentlyPlayedError = () => {
   };
 };
 
-export const fetchRecentlyPlayed = accessToken => {
-  return dispatch => {
+export const fetchRecentlyPlayed = () => {
+  return (dispatch, getState) => {
+    const accessToken = getState().player.token;
     const request = new Request(
       `https://api.spotify.com/v1/me/player/recently-played`,
       {
@@ -151,22 +149,16 @@ export const fetchRecentlyPlayed = accessToken => {
         return res.json();
       })
       .then(res => {
-        //remove duplicates from recently played
-        res.items = uniqBy(res.items, item => {
-          return item.track.id;
-        });
-        dispatch(fetchRecentlyPlayedSuccess(res.items));
-      })
-      .catch(err => {
-        dispatch(fetchRecentlyPlayedError(err));
+        dispatch(fetchRecentlyPlayedSuccess(List(res.items)));
       });
   };
 };
 
 export const play = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const token = getState().player.token;
     const songs = getState().player.activeQueue;
+    const youtube = songs.first().youtube;
     const apiPlay = ({
       spotify_uri,
       playerInstance: {
@@ -182,47 +174,124 @@ export const play = () => {
         }
       });
     };
-    apiPlay({
-      playerInstance: window.player,
-      spotify_uri: songs.map(t => t.track.uri).toJS()
-    });
+    if (youtube) {
+      window.player.pause();
+      window.ytPlayer.loadVideoById(songs.first().track.id);
+    } else {
+      apiPlay({
+        playerInstance: window.player,
+        spotify_uri: songs
+          .filter(t => !t.youtube)
+          .map(t => t.track.uri)
+          .toJS()
+      });
+    }
+
     dispatch({
       type: 'PLAY'
     });
   };
 };
 
-export const pauseSong = () => {
-  return dispatch => {
-    window.player.togglePlay();
+export const togglePlay = () => {
+  return (dispatch, getState) => {
+    if (getState().player.currentTrack.youtube) {
+      window.ytPlayer.getPlayerState() === 1
+        ? window.ytPlayer.pauseVideo()
+        : window.ytPlayer.playVideo();
+    } else {
+      window.player.togglePlay();
+    }
     dispatch({
-      type: 'PAUSE_SONG'
-    });
-  };
-};
-
-export const resumeSong = () => {
-  return dispatch => {
-    window.player.togglePlay();
-    dispatch({
-      type: 'RESUME_SONG'
+      type: 'TOGGLE_PLAY'
     });
   };
 };
 export const nextSong = () => {
-  return dispatch => {
-    window.player.nextTrack();
+  return (dispatch, getState) => {
     dispatch({
       type: 'NEXT_SONG'
     });
+
+    const next = getState().player.currentTrack;
+    const token = getState().player.token;
+    const spotifyPaused = getState().player.player.paused;
+    const apiPlay = ({
+      spotify_uri,
+      playerInstance: {
+        _options: { id }
+      }
+    }) => {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ uris: spotify_uri }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+    };
+
+    if (next.uri) {
+      window.ytPlayer.pauseVideo();
+      //If switching from youtube to spotify, use last played track
+      if (spotifyPaused) {
+        window.player.seek(0);
+        window.player.resume();
+      } else {
+        apiPlay({
+          playerInstance: window.player,
+          spotify_uri: [next.uri]
+        });
+      }
+    } else {
+      window.ytPlayer.loadVideoById(next.id);
+      window.player.pause();
+    }
   };
 };
 export const prevSong = () => {
-  return dispatch => {
-    window.player.previousTrack();
+  return (dispatch, getState) => {
     dispatch({
       type: 'PREV_SONG'
     });
+    const next = getState().player.currentTrack;
+    const spotifyPaused = getState().player.player.paused;
+    const token = getState().player.token;
+    const apiPlay = ({
+      spotify_uri,
+      playerInstance: {
+        _options: { id }
+      }
+    }) => {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ uris: spotify_uri }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+    };
+
+    if (next.uri) {
+      window.ytPlayer.pauseVideo();
+      //If switching from youtube to spotify, use last played track
+      if (spotifyPaused) {
+        window.player.seek(0);
+        window.player.resume();
+      } else {
+        apiPlay({
+          playerInstance: window.player,
+          spotify_uri: [next.uri]
+        });
+      }
+    } else {
+      window.ytPlayer.cueVideoById(next.id);
+      window.player.pause().then(() => {
+        window.ytPlayer.playVideo();
+      });
+    }
   };
 };
 

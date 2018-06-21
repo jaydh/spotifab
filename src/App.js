@@ -12,7 +12,6 @@ import ArtWork from './components/ArtWork';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import initSpotify from './initSpotifySDK';
-import MainHeader from './components/MainHeader';
 import MainView from './components/MainView';
 import SideMenu from './components/SideMenu';
 import UserPlaylists from './components/UserPlaylists';
@@ -32,10 +31,15 @@ class App extends React.Component {
     if (!hashParams.access_token) {
       const scopes =
         'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
+      const callback =
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000/callback'
+          : 'https://spotifab-3379e.firebaseapp.com/callback';
       window.location.href =
         'https://accounts.spotify.com/authorize?client_id=6d46aac55bb24239af40209109ca5cb2' +
         (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-        '&response_type=token&redirect_uri=http://localhost:3000/callback';
+        '&response_type=token&redirect_uri=' +
+        callback;
     } else {
       this.props.setToken(hashParams.access_token);
       initSpotify();
@@ -58,7 +62,7 @@ class App extends React.Component {
     return (
       <div id="app-container">
         <Menu
-          width={'40%'}
+          width={'20%'}
           pageWrapId={'page-wrap'}
           outerContainerId={'app-container'}
         >
@@ -69,13 +73,16 @@ class App extends React.Component {
           </div>
         </Menu>
         <main id="page-wrap">
-          <div className="main-section">
-            <Header />
-            <div className="main-section-container">
-              <MainHeader />
-              <MainView />
-            </div>
+          <div
+            style={{
+              position: 'absolute',
+              left: this.props.showYT ? 0 : 100000
+            }}
+          >
+            <div id="ytPlayer" />
           </div>
+          <Header />
+          <MainView />
           <Footer />
         </main>
       </div>

@@ -35,17 +35,9 @@
   font-size: 16px;
 }
 
-.song-player-container .play-btn {
+.song-player-container .play-btn .pause-btn {
   position: relative;
-  top: -7px;
   font-size: 40px;
-}
-
-.song-player-container .pause-btn {
-  position: relative;
-  top: -7px;
-  font-size: 40px;
-  margin: 0 5px;
 }
 
 .play-btn .fa {
@@ -59,7 +51,7 @@
 }
 
 .song-progress {
-  width: 80vw;
+  width: 100%vw;
   height: 4px;
   background: rgb(64, 64, 64);
   border-radius: 4px;

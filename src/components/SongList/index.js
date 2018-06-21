@@ -7,12 +7,15 @@ import {
   addSongToQueue,
   addSongToFront,
   shuffleQueue,
-  clearSongQueue
+  clearSongQueue,
+  updateCurrentTrack
 } from '../../actions/queueActions';
 
 const mapStateToProps = state => {
   return {
-    songs: state.songsReducer.songs,
+    songs: state.songsReducer.spotifyTracks.concat(
+      state.songsReducer.youtubeTracks
+    ),
     fetchSongsError: state.songsReducer.fetchSongsError,
     fetchSongsPending: state.songsReducer.fetchSongsPending,
     fetchPlaylistSongsPending: state.songsReducer.fetchPlaylistSongsPending,
@@ -33,6 +36,7 @@ const mapDispatchToProps = dispatch => {
       addSongToFront,
       shuffleQueue,
       clearSongQueue,
+      updateCurrentTrack,
       play
     },
     dispatch

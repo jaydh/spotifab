@@ -30,6 +30,23 @@ export default (
         queue: state.queue.insert(0, action.song),
         activeQueue: state.activeQueue.insert(0, action.song)
       };
+
+    case 'PREV_SONG':
+      const x = state.activeQueue.findIndex(
+        t => t.track.id === state.currentTrack.id
+      );
+      return {
+        ...state,
+        currentTrack: state.activeQueue.get(x - 1).track
+      };
+    case 'NEXT_SONG':
+      const y = state.activeQueue.findIndex(
+        t => t.track.id === state.currentTrack.id
+      );
+      return {
+        ...state,
+        currentTrack: state.activeQueue.get(y + 1).track
+      };
     case 'ADD_SONG_TO_QUEUE':
       return {
         ...state,

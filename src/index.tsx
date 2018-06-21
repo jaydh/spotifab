@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistReducer, persistStore } from 'redux-persist';
+import immutableTransform from 'redux-persist-transform-immutable';
 import { PersistGate } from 'redux-persist/integration/react';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import thunk from 'redux-thunk';
@@ -27,8 +28,9 @@ declare module 'redux' {
 
 const persistConfig = {
   key: 'root',
+  transforms: [immutableTransform()],
   storage,
-  whitelist: ['player']
+  whitelist: ['player', 'songsReducer']
 };
 const persistedReducer = persistReducer(persistConfig, reducers);
 export const store = createStore(
@@ -36,7 +38,6 @@ export const store = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 const persistor = persistStore(store);
-persistor.purge();
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

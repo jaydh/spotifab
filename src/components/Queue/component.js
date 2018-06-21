@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import './SongList.css';
 
 class SongList extends Component {
   componentWillReceiveProps(nextProps) {
     if (
       this.props.currentTrack &&
+      nextProps.currentTrack &&
       this.props.currentTrack.id !== nextProps.currentTrack.id
     ) {
-      const el = document.getElementById(`queue-${nextProps.currentTrack.id}`);
-      el.scrollIntoView();
+      const queue = document.getElementById('queue');
+      const height = queue.scrollHeight;
+      const position = nextProps.songs.findIndex(
+        t => t.track.id === nextProps.currentTrack.id
+      );
+      const offset = (height / nextProps.songs.size) * position;
+      queue.scrollTop = offset;
     }
   }
+
   renderSongs() {
     const position = this.props.currentTrack
       ? this.props.songs.findKey(t => t.track.id === this.props.currentTrack.id)
@@ -25,32 +31,43 @@ class SongList extends Component {
       return (
         <li
           className={
-            this.props.currentTrack &&
             song.track.id === this.props.currentTrack.id
-              ? 'active'
-              : ''
+              ? 'active user-song-item'
+              : 'user-song-item'
           }
           key={i}
           id={`queue-${song.track.id}`}
         >
           <div
-            onClick={() => {
-              this.props.seekForward(song.track.id);
-            }}
+            onClick={() => this.props.seekForward(song.track.id)}
             className="play-song"
           >
             <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
           </div>
-          <div>
-            <p>{song.track.name}</p>
-          </div>
+          {song.youtube && (
+            <i
+              className="fa fa-youtube-play"
+              onClick={() => this.setState({ showYT: true })}
+            />
+          )}
+          {song.track.name}
         </li>
       );
     });
   }
 
   render() {
-    return <div id="queue">{this.props.songs && this.renderSongs()}</div>;
+    return (
+      <div id="queue" className="queue-container">
+        <div className="song-header-container song-list-header">
+          <p>Queue</p>
+        </div>
+
+        <div className="song-list">
+          {this.props.songs && this.renderSongs()}
+        </div>
+      </div>
+    );
   }
 }
 

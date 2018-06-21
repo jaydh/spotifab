@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+import VolumeControls from '../VolumeControls';
 import './SongControls.css';
 import { Icon } from 'react-fa';
 
@@ -18,16 +17,21 @@ class SongControls extends Component {
   }
   calculateTime() {
     setInterval(async () => {
-      if (window.player) {
-        const state = await window.player.getCurrentState();
-        if (state) {
-          const ratio = state.position / state.duration;
-          const minutes = Math.floor(state.position / 60000);
-          const seconds = ((state.position % 60000) / 1000).toFixed(0);
+      const { currentTrack } = this.props;
+      if (currentTrack && window.player && window.ytPlayer) {
+        if (!currentTrack.uri) {
           this.setState({
-            position: state.position,
-            duration: state.duration
+            position: window.ytPlayer.getCurrentTime(),
+            duration: window.ytPlayer.getDuration()
           });
+        } else {
+          const state = await window.player.getCurrentState();
+          if (state) {
+            this.setState({
+              position: state.position,
+              duration: state.duration
+            });
+          }
         }
       }
     }, 200);
@@ -55,11 +59,7 @@ class SongControls extends Component {
           </div>
           <Icon
             name={this.props.songPaused ? 'play' : 'pause'}
-            onClick={
-              !this.props.songPaused
-                ? this.props.pauseSong
-                : this.props.resumeSong
-            }
+            onClick={this.props.togglePlay}
           />
           <div
             onClick={() => {
@@ -70,36 +70,19 @@ class SongControls extends Component {
             <i className="fa fa-step-forward forward" aria-hidden="true" />
           </div>
         </div>
-        <div className="song-progress">
-          {this.state.position && (
-            <div
-              style={{
-                width:
-                  (this.state.position / this.state.duration) *
-                  0.8 *
-                  window.innerWidth
-              }}
-              className="song-expired"
-            />
-          )}
-        </div>
+        <VolumeControls />
+        {this.state.position && (
+          <div
+            className="song-progress"
+            style={{
+              width:
+                (this.state.position / this.state.duration) * window.innerWidth
+            }}
+            className="song-expired"
+          />
+        )}
       </div>
     );
   }
 }
-
-SongControls.propTypes = {
-  songPlaying: PropTypes.bool,
-  songPaused: PropTypes.bool,
-  songName: PropTypes.string,
-  artistName: PropTypes.string,
-  stopSong: PropTypes.func,
-  resumeSong: PropTypes.func,
-  increaseSongTime: PropTypes.func,
-  pauseSong: PropTypes.func,
-  songs: PropTypes.array,
-  songDetails: PropTypes.object,
-  audioControl: PropTypes.func
-};
-
 export default SongControls;

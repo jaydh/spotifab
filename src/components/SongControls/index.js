@@ -1,13 +1,14 @@
 import SongControls from './component';
 import { connect } from 'react-redux';
-import { nextSong, prevSong } from '../../actions/songActions';
+import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
 import { bindActionCreators } from 'redux';
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       nextSong,
-      prevSong
+      prevSong,
+      togglePlay
     },
     dispatch
   );
@@ -25,7 +26,8 @@ const mapStateToProps = state => {
     timeElapsed: state.songsReducer.timeElapsed,
     songPaused: state.songsReducer.songPaused,
     songDetails: state.songsReducer.songDetails,
-    songs: state.songsReducer.songs
+    songs: state.songsReducer.songs,
+    currentTrack: state.player.currentTrack
   };
 };
 

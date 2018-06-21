@@ -1,16 +1,19 @@
-import { List, fromJS } from 'immutable';
+import { List } from 'immutable';
+import { isBefore } from 'date-fns';
 
 const defaultState = {
   fetchSongsPending: true,
+  youtubeTracks: List(),
   songPlaying: false,
   timeElapsed: 0,
   songId: 0,
   viewType: 'songs',
   songPaused: true,
-  songs: List()
+  spotifyTracks: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {
+  const now = new Date();
   switch (action.type) {
     case 'UPDATE_VIEW_TYPE':
       return {
@@ -21,21 +24,15 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_SONGS_PENDING':
       return {
         ...state,
-        songs: List(),
         fetchSongsPending: true
       };
 
     case 'FETCH_SONGS_SUCCESS':
       return {
         ...state,
-        songs: state.songs.concat(
-          fromJS(action.songs)
-            .map(t => t.toJS())
-            .toList()
-        ),
+        spotifyTracks: action.songs,
         fetchSongsError: false,
-        fetchSongsPending: false,
-        viewType: 'songs'
+        fetchSongsPending: false
       };
 
     case 'FETCH_SONGS_ERROR':
@@ -54,7 +51,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'SEARCH_SONGS_SUCCESS':
       return {
         ...state,
-        songs: action.songs,
+        spotifyTracks: List(action.songs),
         searchSongsError: false,
         searchSongsPending: false,
         viewType: 'search'
@@ -76,7 +73,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_RECENTLY_PLAYED_SUCCESS':
       return {
         ...state,
-        songs: action.songs,
+        spotifyTracks: List(action.songs),
         viewType: 'Recently Played',
         fetchSongsError: false,
         fetchSongsPending: false
@@ -98,7 +95,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_PLAYLIST_SONGS_SUCCESS':
       return {
         ...state,
-        songs: action.songs,
+        spotifyTracks: List(action.songs),
         viewType: 'playlist',
         fetchPlaylistSongsError: false,
         fetchPlaylistSongsPending: false
@@ -120,7 +117,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_ARTIST_SONGS_SUCCESS':
       return {
         ...state,
-        songs: action.songs,
+        spotifyTracks: action.songs,
         viewType: 'Artist',
         fetchArtistSongsError: false,
         fetchArtistSongsPending: false
@@ -132,33 +129,23 @@ export const songsReducer = (state = defaultState, action) => {
         fetchArtistSongsError: true,
         fetchArtistSongsPending: false
       };
+    case 'ADD_YOUTUBE_TRACK': {
+      return {
+        ...state,
+        youtubeTracks: state.youtubeTracks.push({
+          youtube: true,
+          added_at: now,
+          track: {
+            id: action.id,
+            name: action.name
+          }
+        })
+      };
+    }
 
     case 'PLAY':
       return {
-        ...state,
-        songPlaying: true,
-        songPaused: false
-      };
-
-    case 'STOP_SONG':
-      return {
-        ...state,
-        songPlaying: false,
-        songDetails: null,
-        timeElapsed: 0,
-        songPaused: true
-      };
-
-    case 'PAUSE_SONG':
-      return {
-        ...state,
-        songPaused: true
-      };
-
-    case 'RESUME_SONG':
-      return {
-        ...state,
-        songPaused: false
+        ...state
       };
 
     default:

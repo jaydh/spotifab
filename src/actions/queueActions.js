@@ -1,5 +1,12 @@
 import { List } from 'immutable';
 import { play } from './songActions';
+
+export const updateCurrentTrack = track => {
+  return {
+    type: 'UPDATE_CURRENT_TRACK',
+    track
+  };
+};
 export const addSongToQueue = song => {
   return {
     type: 'ADD_SONG_TO_QUEUE',

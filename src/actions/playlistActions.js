@@ -1,6 +1,5 @@
 import uniqBy from 'lodash/uniqBy';
 
-
 export const fetchPlaylistMenuPending = () => {
   return {
     type: 'FETCH_PLAYLIST_MENU_PENDING'
@@ -27,8 +26,9 @@ export const addPlaylistItem = playlist => {
   };
 };
 
-export const fetchPlaylistsMenu = (userId, accessToken) => {
-  return dispatch => {
+export const fetchPlaylistsMenu = userId => {
+  return (dispatch, getState) => {
+    const accessToken = getState().player.token;
     const request = new Request(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
@@ -75,8 +75,9 @@ export const fetchPlaylistSongsError = () => {
   };
 };
 
-export const fetchPlaylistSongs = (userId, playlistId, accessToken) => {
-  return dispatch => {
+export const fetchPlaylistSongs = (userId, playlistId) => {
+  return (dispatch, getState) => {
+    const accessToken = getState().player.token;
     const request = new Request(
       `https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
       {

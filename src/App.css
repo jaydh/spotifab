@@ -8,52 +8,60 @@ h3 {
 }
 
 .github-corner:hover .octo-arm {
-  animation: octocat-wave 560ms ease-in-out
+  animation: octocat-wave 560ms ease-in-out;
 }
 
 @keyframes octocat-wave {
   0%,
   100% {
-    transform: rotate(0)
+    transform: rotate(0);
   }
   20%,
   60% {
-    transform: rotate(-25deg)
+    transform: rotate(-25deg);
   }
   40%,
   80% {
-    transform: rotate(10deg)
+    transform: rotate(10deg);
   }
 }
 
-@media (max-width:500px) {
+@media (max-width: 500px) {
   .github-corner:hover .octo-arm {
-    animation: none
+    animation: none;
   }
   .github-corner .octo-arm {
-    animation: octocat-wave 560ms ease-in-out
+    animation: octocat-wave 560ms ease-in-out;
   }
 }
 
 body {
-    font-family: 'Proxima Nova', Georgia, sans-serif;
-    background: rgb(24, 24, 24);
-    color: #fff;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0;
+  font-family: 'Proxima Nova', Georgia, sans-serif;
+  background: rgb(24, 24, 24);
+  color: #fff;
+  margin: 0 auto;
+  padding: 0;
 }
 
-.app-container {
-  display: flex;
+#page-wrap {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-template-rows: 10% 80% 10%;
   position: relative;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.main-view {
+  grid-column: 1/5;
+  grid-row: 2;
 }
 
 /* Position and sizing of burger button */
 .bm-burger-button {
   position: fixed;
-  width: 36px;
-  height: 30px;
+  width: 16px;
+  height: 10px;
   left: 36px;
   top: 36px;
 }
@@ -100,4 +108,8 @@ body {
 /* Styling of overlay */
 .bm-overlay {
   background: rgba(0, 0, 0, 0.3);
+}
+
+.hidden {
+  visibility: hidden;
 }
