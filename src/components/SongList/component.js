@@ -17,7 +17,6 @@ class SongList extends Component {
 
   makeNewQueue(i, j) {
     let end = i < j ? j : this.props.songs.size - 1;
-    console.log(i, end);
     this.props.clearSongQueue();
     this.props.updateCurrentTrack(this.props.songs.get(i));
     this.props.songs.slice(i, end).map(t => {
@@ -86,11 +85,7 @@ class SongList extends Component {
 
             return !song.youtube ? (
               <li
-                className={
-                  song.track.id === this.props.songId
-                    ? 'active user-song-item'
-                    : 'user-song-item'
-                }
+                className="user-song-item"
                 key={`songListItem${song.track.id}`}
               >
                 <button
