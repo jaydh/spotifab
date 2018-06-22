@@ -4,10 +4,10 @@ import shuffle from 'immutable-shuffle';
 export default (
   state = {
     queue: List(),
-    activeQueue: List(),
     currentTrack: null,
     volume: 0.5,
-    player: null,
+    spotifyPlayer: null,
+    ytPlayer: null,
     repeat: true,
     position: 0
   },
@@ -28,65 +28,60 @@ export default (
       return {
         ...state,
         queue: List(),
-        activeQueue: List(),
+        position: 0,
         currentTrack: null
       };
     case 'ADD_SONG_TO_FRONT_QUEUE':
       return {
         ...state,
-        queue: state.queue.insert(0, action.song),
-        activeQueue: state.activeQueue.insert(0, action.song)
+        queue: state.queue.insert(0, action.song)
       };
 
-    case 'PREV_SONG':
-      const absPos = state.queue.findIndex(
-        t => t.track.id === state.currentTrack.id
-      );
-
-      const r = absPos === 0;
+    case 'PREV_SONG': {
+      const nextPos =
+        state.position - 1 < 0 && state.repeat
+          ? state.queue.size - 1
+          : state.position - 1;
       return {
         ...state,
-        position: state.position - 1,
-        currentTrack: r
-          ? state.queue.first().track
-          : state.queue.get(absPos - 1).track,
-        activeQueue: state.queue.slice(absPos - 1)
+        position: nextPos,
+        currentTrack: state.queue.get(nextPos).track
       };
-    case 'NEXT_SONG':
-      const y = state.activeQueue.findIndex(
-        t => t.track.id === state.currentTrack.id
-      );
-      const repeat = state.repeat && y === state.activeQueue.size - 1;
-
+    }
+    case 'NEXT_SONG': {
+      const nextPos = state.position + 1;
       return {
         ...state,
-        position: state.position + 1,
-        currentTrack: repeat
-          ? state.queue.first().track
-          : state.activeQueue.get(y + 1).track,
-        activeQueue: repeat ? state.queue : state.activeQueue
+        position: nextPos,
+        currentTrack: state.queue.get(nextPos).track
       };
+    }
     case 'ADD_SONG_TO_QUEUE':
       return {
         ...state,
-        queue: state.queue.push(action.song),
-        activeQueue: state.activeQueue.push(action.song)
+        queue: state.queue.push(action.song)
       };
     case 'SHUFFLE_QUEUE':
       const shuffled = shuffle(state.queue);
-      return { ...state, queue: shuffled, activeQueue: shuffled };
+      return { ...state, queue: shuffled };
     case 'UPDATE_CURRENT_TRACK':
-      return { ...state, currentTrack: action.track };
+      return {
+        ...state,
+        position: state.queue.findIndex(t => t.id === action.track.id),
+        currentTrack: action.track
+      };
     case 'SET_TOKEN':
       return {
         ...state,
         token: action.token
       };
-    case 'UPDATE_PLAYER_STATE':
-      return { ...state, player: action.state };
-    case 'UPDATE_ACTIVE_QUEUE':
-      const position = state.queue.findIndex(t => t.track.id === action.id);
-      return { ...state, activeQueue: state.queue.slice(position) };
+    case 'UPDATE_SPOTIFY_PLAYER_STATE':
+      return { ...state, spotifyPlayer: action.state };
+    case 'UPDATE_YOUTUBE_PLAYER_STATE':
+      return { ...state, ytPlayer: action.state };
+
+    case 'UPDATE_POSITION':
+      return { ...state, position: action.position };
 
     default:
       return state;

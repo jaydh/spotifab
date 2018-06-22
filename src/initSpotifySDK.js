@@ -33,6 +33,10 @@ const initYoutube = () => {
     if (event.data === 0) {
       store.dispatch(nextSong());
     }
+    store.dispatch({
+      type: 'UPDATE_YOUTUBE_PLAYER_STATE',
+      state: event.data
+    });
   }
 };
 
@@ -67,16 +71,19 @@ const initSpotify = () => {
     });
 
     // Playback status updates
+    let nexted = false;
     player.addListener('player_state_changed', state => {
       store.dispatch({
-        type: 'UPDATE_PLAYER_STATE',
+        type: 'UPDATE_SPOTIFY_PLAYER_STATE',
         state
       });
-      if (!state.paused) {
-        store.dispatch({
-          type: 'UPDATE_CURRENT_TRACK',
-          track: state.track_window.current_track
-        });
+      console.log(nexted);
+      if (!nexted && state.paused && state.position === 0) {
+        nexted = true;
+        store.dispatch(nextSong());
+      }
+      if (state.position !== 0) {
+        nexted = false;
       }
     });
 
