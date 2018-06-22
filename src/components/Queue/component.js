@@ -4,16 +4,10 @@ import './SongList.css';
 
 class SongList extends Component {
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.currentTrack &&
-      nextProps.currentTrack &&
-      this.props.currentTrack.id !== nextProps.currentTrack.id
-    ) {
+    if (this.props.position !== nextProps.position) {
       const queue = document.getElementById('queue');
       const height = queue.scrollHeight;
-      const position = nextProps.songs.findIndex(
-        t => t.track.id === nextProps.currentTrack.id
-      );
+      const position = nextProps.position;
       const offset = (height / nextProps.songs.size) * position;
       queue.scrollTop = Math.round(offset);
     }
@@ -31,15 +25,14 @@ class SongList extends Component {
       return (
         <li
           className={
-            song.track.id === this.props.currentTrack &&
-            this.props.currentTrack.id
+            i === this.props.position
               ? 'active user-song-item'
               : 'user-song-item'
           }
           key={i}
         >
           <div
-            onClick={() => this.props.seekForward(song.track.id)}
+            onClick={() => this.props.updatePosition(i)}
             className="play-song"
           >
             <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />

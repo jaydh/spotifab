@@ -157,7 +157,7 @@ export const fetchRecentlyPlayed = () => {
 export const play = () => {
   return async (dispatch, getState) => {
     const token = getState().player.token;
-    const songs = getState().player.activeQueue;
+    const songs = getState().player.queue;
     const youtube = songs.first().youtube;
     const apiPlay = ({
       spotify_uri,

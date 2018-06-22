@@ -37,16 +37,42 @@ export const addSongToFront = song => {
   };
 };
 
-export const seekForward = id => {
+export const updatePosition = position => {
   return async (dispatch, getState) => {
-    window.player
-      .pause()
-      .then(() =>
-        dispatch({
-          type: 'UPDATE_ACTIVE_QUEUE',
-          id
-        })
-      )
-      .then(() => dispatch(play()));
+    dispatch({ type: 'UPDATE_POSITION', position });
+    const next = getState().player.queue.get(position).track;
+    const token = getState().player.token;
+    const spotifyPaused = getState().player.player.paused;
+    const apiPlay = ({
+      spotify_uri,
+      playerInstance: {
+        _options: { id }
+      }
+    }) => {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ uris: spotify_uri }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+    };
+
+    if (next.uri) {
+      window.ytPlayer.pauseVideo();
+      //If switching from youtube to spotify, use last played track
+      if (spotifyPaused) {
+        window.player.nextTrack();
+      } else {
+        apiPlay({
+          playerInstance: window.player,
+          spotify_uri: [next.uri]
+        });
+      }
+    } else {
+      window.ytPlayer.loadVideoById(next.id);
+      window.player.pause();
+    }
   };
 };
