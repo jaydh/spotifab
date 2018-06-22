@@ -136,7 +136,7 @@
 .song-list {
   height: 90%;
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
 }
 .song-list-container {

@@ -8,7 +8,8 @@ export default (
     currentTrack: null,
     volume: 0.5,
     player: null,
-    repeat: true
+    repeat: true,
+    position: 0
   },
   action
 ) => {
@@ -45,6 +46,7 @@ export default (
       const r = absPos === 0;
       return {
         ...state,
+        position: state.position - 1,
         currentTrack: r
           ? state.queue.first().track
           : state.queue.get(absPos - 1).track,
@@ -58,6 +60,7 @@ export default (
 
       return {
         ...state,
+        position: state.position + 1,
         currentTrack: repeat
           ? state.queue.first().track
           : state.activeQueue.get(y + 1).track,

@@ -213,8 +213,8 @@ export const nextSong = () => {
     dispatch({
       type: 'NEXT_SONG'
     });
-
-    const next = getState().player.currentTrack;
+    const position = getState().player.position;
+    const next = getState().player.queue.get(position).track;
     const token = getState().player.token;
     const spotifyPaused = getState().player.player.paused;
     const apiPlay = ({
@@ -255,7 +255,8 @@ export const prevSong = () => {
     dispatch({
       type: 'PREV_SONG'
     });
-    const next = getState().player.currentTrack;
+    const position = getState().player.position;
+    const next = getState().player.queue.get(position).track;
     const spotifyPaused = getState().player.player.paused;
     const token = getState().player.token;
     const apiPlay = ({
