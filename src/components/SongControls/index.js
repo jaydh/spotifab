@@ -22,12 +22,10 @@ const mapStateToProps = state => {
     artistName: state.songsReducer.songDetails
       ? state.songsReducer.songDetails.artists[0].name
       : '',
-    songPlaying: state.songsReducer.songPlaying,
-    timeElapsed: state.songsReducer.timeElapsed,
-    songPaused: state.songsReducer.songPaused,
+    playing: state.player.playing,
     songDetails: state.songsReducer.songDetails,
     songs: state.songsReducer.songs,
-    currentTrack: state.player.currentTrack
+    currentTrack: state.queue.queue.get(state.queue.position).track
   };
 };
 

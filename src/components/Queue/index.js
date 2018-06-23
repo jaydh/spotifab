@@ -10,8 +10,8 @@ import { addSongToLibrary } from '../../actions/userActions';
 
 const mapStateToProps = state => {
   return {
-    songs: state.player.queue,
-    position: state.player.position,
+    songs: state.queue.queue,
+    position: state.queue.position,
     viewType: state.songsReducer.viewType,
     repeat: state.player.repeat
   };

@@ -7,8 +7,7 @@ import {
   addSongToQueue,
   addSongToFront,
   shuffleQueue,
-  clearSongQueue,
-  updateCurrentTrack
+  clearSongQueue
 } from '../../actions/queueActions';
 
 const mapStateToProps = state => {
@@ -36,7 +35,6 @@ const mapDispatchToProps = dispatch => {
       addSongToFront,
       shuffleQueue,
       clearSongQueue,
-      updateCurrentTrack,
       play
     },
     dispatch

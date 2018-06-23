@@ -40,9 +40,10 @@ export const addSongToFront = song => {
 export const updatePosition = position => {
   return async (dispatch, getState) => {
     dispatch({ type: 'UPDATE_POSITION', position });
-    const next = getState().player.queue.get(position).track;
+    const next = getState().queue.queue.get(position).track;
     const token = getState().player.token;
-    const spotifyPaused = getState().player.player.paused;
+    const spotifyPaused =
+      getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
     const apiPlay = ({
       spotify_uri,
       playerInstance: {

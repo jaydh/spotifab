@@ -24,6 +24,13 @@ const initYoutube = () => {
   function onPlayerReady(event) {
     window.ytPlayer.setPlaybackQuality('small');
     window.ytPlayer.setVolume(store.getState().player.volume * 100);
+    const current = store
+      .getState()
+      .queue.queue.get(store.getState().queue.position);
+    if (current && current.youtube) {
+      console.log(current);
+      window.ytPlayer.loadVideoById(current.track.id);
+    }
   }
 
   // 5. The API calls this function when the player's state changes.
@@ -77,7 +84,6 @@ const initSpotify = () => {
         type: 'UPDATE_SPOTIFY_PLAYER_STATE',
         state
       });
-      console.log(nexted);
       if (!nexted && state.paused && state.position === 0) {
         nexted = true;
         store.dispatch(nextSong());

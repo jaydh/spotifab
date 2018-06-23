@@ -3,13 +3,13 @@ import { isBefore } from 'date-fns';
 
 const defaultState = {
   fetchSongsPending: true,
-  youtubeTracks: List(),
   songPlaying: false,
   timeElapsed: 0,
   songId: 0,
   viewType: 'songs',
   songPaused: true,
-  spotifyTracks: List()
+  spotifyTracks: List(),
+  youtubeTracks: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {

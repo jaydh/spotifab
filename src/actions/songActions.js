@@ -157,8 +157,8 @@ export const fetchRecentlyPlayed = () => {
 export const play = () => {
   return async (dispatch, getState) => {
     const token = getState().player.token;
-    const songs = getState().player.queue;
-    const youtube = songs.first().youtube;
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position).track;
     const apiPlay = ({
       spotify_uri,
       playerInstance: {
@@ -174,17 +174,14 @@ export const play = () => {
         }
       });
     };
-    if (youtube) {
+    if (next.youtube) {
       window.player.pause();
-      window.ytPlayer.loadVideoById(songs.first().track.id);
+      window.ytPlayer.loadVideoById(next.track.id);
     } else {
       window.ytPlayer.pauseVideo();
       apiPlay({
         playerInstance: window.player,
-        spotify_uri: songs
-          .filter(t => !t.youtube)
-          .map(t => t.track.uri)
-          .toJS()
+        spotify_uri: [next.uri]
       });
     }
 
@@ -195,13 +192,16 @@ export const play = () => {
 };
 
 export const togglePlay = () => {
-  return (dispatch, getState) => {
-    if (!getState().player.currentTrack.uri) {
+  return async (dispatch, getState) => {
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position).track;
+    if (!next.uri) {
       window.ytPlayer.getPlayerState() === 1
         ? window.ytPlayer.pauseVideo()
         : window.ytPlayer.playVideo();
     } else {
-      window.player.togglePlay();
+      const state = await window.player.getCurrentState();
+      state ? window.player.togglePlay() : dispatch(play());
     }
     dispatch({
       type: 'TOGGLE_PLAY'
@@ -213,10 +213,10 @@ export const nextSong = () => {
     dispatch({
       type: 'NEXT_SONG'
     });
-    const position = getState().player.position;
-    const next = getState().player.queue.get(position).track;
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position).track;
+    const spotifyPaused = getState().player.spotifyPlayer.paused;
     const token = getState().player.token;
-    const spotifyPaused = getState().player.player.paused;
     const apiPlay = ({
       spotify_uri,
       playerInstance: {
@@ -255,9 +255,9 @@ export const prevSong = () => {
     dispatch({
       type: 'PREV_SONG'
     });
-    const position = getState().player.position;
-    const next = getState().player.queue.get(position).track;
-    const spotifyPaused = getState().player.player.paused;
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position).track;
+    const spotifyPaused = getState().player.spotifyPlayer.paused;
     const token = getState().player.token;
     const apiPlay = ({
       spotify_uri,

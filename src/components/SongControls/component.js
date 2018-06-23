@@ -58,7 +58,7 @@ class SongControls extends Component {
             <i className="fa fa-step-backward reverse" aria-hidden="true" />
           </div>
           <Icon
-            name={this.props.songPaused ? 'play' : 'pause'}
+            name={this.props.playing ? 'pause' : 'play'}
             onClick={this.props.togglePlay}
           />
           <div

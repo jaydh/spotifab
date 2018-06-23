@@ -18,7 +18,6 @@ class SongList extends Component {
   makeNewQueue(i, j) {
     let end = i < j ? j : this.props.songs.size - 1;
     this.props.clearSongQueue();
-    this.props.updateCurrentTrack(this.props.songs.get(i));
     this.props.songs.slice(i, end).map(t => {
       this.props.addSongToQueue(t);
     });

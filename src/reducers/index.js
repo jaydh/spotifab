@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import userReducer from './userReducer';
+import queue from './queue';
 import playlistReducer from './playlistReducer';
 import songsReducer from './songsReducer';
 import albumsReducer from './albumsReducer';
@@ -14,5 +15,6 @@ export default combineReducers({
   albumsReducer,
   uiReducer,
   browseReducer,
-  player
+  player,
+  queue
 });
