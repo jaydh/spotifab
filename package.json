@@ -8,6 +8,7 @@
     "firebase": "^5.0.4",
     "immutable": "^3.8.2",
     "immutable-shuffle": "^1.0.3",
+    "rc-progress": "^2.2.5",
     "react": "^16.4.0",
     "react-burger-menu": "^2.5.1",
     "react-dom": "^16.4.0",

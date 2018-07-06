@@ -4,12 +4,14 @@ import TrackSearch from '../TrackSearch';
 import './Header.css';
 
 const Header = () => {
-  return(
-    <div className='header'>
-      <TrackSearch />
-      <UserDetails />
+  return (
+    <div id="header">
+      <div className="header">
+        <TrackSearch />
+        <UserDetails />
+      </div>
     </div>
   );
 };
 
-export default Header ;
+export default Header;

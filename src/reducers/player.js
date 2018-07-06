@@ -3,11 +3,16 @@ export default (
     volume: 0.5,
     spotifyPlayer: null,
     ytPlayer: null,
-    playing: false
+    playing: false,
+    muted: false
   },
   action
 ) => {
   switch (action.type) {
+    case 'PLAY':
+      return { ...state, playing: true };
+    case 'TOGGLE_MUTE':
+      return { ...state, muted: !state.muted };
     case 'TOGGLE_PLAY':
       return { ...state, playing: !state.playing };
     case 'UPDATE_VOLUME':

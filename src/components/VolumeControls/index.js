@@ -1,18 +1,20 @@
 import SongControls from './component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { updateVolume } from '../../actions/soundActions';
+import { updateVolume, toggleMute } from '../../actions/soundActions';
 
 const mapStateToProps = state => {
   return {
-    volume: state.player.volume
+    volume: state.player.volume,
+    muted: state.player.muted
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      updateVolume
+      updateVolume,
+      toggleMute
     },
     dispatch
   );

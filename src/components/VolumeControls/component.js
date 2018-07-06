@@ -21,7 +21,16 @@ class VolumeControls extends Component {
   render() {
     return (
       <div className="volume-container">
-        <i className="fa fa-volume-up" aria-hidden="true" />
+        <button onClick={this.props.toggleMute}>
+          <i
+            className={
+              this.props.muted
+                ? 'fa fa-lg fa-volume-off'
+                : 'fa fa-lg fa-volume-up'
+            }
+            aria-hidden="true"
+          />
+        </button>
         <input
           className="volume"
           type="range"
@@ -35,10 +44,5 @@ class VolumeControls extends Component {
     );
   }
 }
-
-VolumeControls.propTypes = {
-  volume: PropTypes.number,
-  updateVolume: PropTypes.func
-};
 
 export default VolumeControls;

@@ -33,3 +33,30 @@
 .btn:hover {
   color: blue;
 }
+
+.queue {
+  grid-row: 2/2;
+  overflow-y: auto;
+  border-bottom: 1px solid #666;
+}
+.album-art {
+  grid-row: 3/3;
+  display: block;
+  width: auto;
+  height: 100%;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.song-player-container {
+  grid-row: 4/4;
+}
+.current-playing-art {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}

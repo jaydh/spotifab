@@ -10,6 +10,11 @@ export default (
   action
 ) => {
   switch (action.type) {
+    case 'PLAY':
+      return {
+        ...state,
+        currentTrack: state.queue.get(state.position).track
+      };
     case 'TOGGLE_REPEAT':
       return {
         ...state,
@@ -40,7 +45,10 @@ export default (
       };
     }
     case 'NEXT_SONG': {
-      const nextPos = state.position + 1;
+      const nextPos =
+        state.position + 1 >= state.queue.size && state.repeat
+          ? 0
+          : state.position + 1;
       return {
         ...state,
         position: nextPos,
@@ -53,8 +61,11 @@ export default (
         queue: state.queue.push(action.song)
       };
     case 'SHUFFLE_QUEUE':
-      const shuffled = shuffle(state.queue);
-      return { ...state, queue: shuffled };
+      const shuffled = shuffle(state.queue.delete(state.position)).insert(
+        0,
+        state.queue.find(t => t.track.id === state.currentTrack.id)
+      );
+      return { ...state, queue: shuffled, position: 0 };
     case 'UPDATE_CURRENT_TRACK':
       return {
         ...state,
@@ -62,7 +73,11 @@ export default (
         currentTrack: action.track
       };
     case 'UPDATE_POSITION':
-      return { ...state, position: action.position };
+      return {
+        ...state,
+        position: action.position,
+        currentTrack: state.queue.get(action.position).track
+      };
     default:
       return state;
   }

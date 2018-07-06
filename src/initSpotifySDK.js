@@ -10,9 +10,14 @@ const initYoutube = () => {
   //    after the API code downloads.
   window.onYouTubeIframeAPIReady = () => {
     window.ytPlayer = new YT.Player('ytPlayer', {
-      height: '100',
-      width: '500',
+      height: '500',
+      width: '800',
       suggestedQuality: 'small',
+      playerVars: {
+        controls: 0,
+        disablekd: 1,
+        modestbranding: 1
+      },
       events: {
         onReady: onPlayerReady,
         onStateChange: onPlayerStateChange
@@ -28,8 +33,8 @@ const initYoutube = () => {
       .getState()
       .queue.queue.get(store.getState().queue.position);
     if (current && current.youtube) {
-      console.log(current);
       window.ytPlayer.loadVideoById(current.track.id);
+      window.ytPlayer.pauseVideo();
     }
   }
 

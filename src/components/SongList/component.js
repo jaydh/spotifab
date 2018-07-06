@@ -2,48 +2,58 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './SongList.css';
 import Draggable from 'react-draggable';
+import SongProgress from '../SongProgress';
+import { List } from 'immutable';
 class SongList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showYT: false,
       downSelectorPos: 0,
-      upSelectorPos: 0
+      upSelectorPos: 0,
+      selected: List(),
+      itemHeight: 0
     };
   }
   componentDidMount() {
     this.props.fetchSongs();
+    const list = document.getElementById('song-list');
+    const height = list.scrollHeight;
+    const itemHeight = height / this.props.songs.size;
+    this.setState({ itemHeight });
   }
 
   makeNewQueue(i, j) {
     let end = i < j ? j : this.props.songs.size - 1;
     this.props.clearSongQueue();
-    this.props.songs.slice(i, end).map(t => {
+    this.props.songs.slice(i, end + 1).map(t => {
       this.props.addSongToQueue(t);
     });
   }
-
   updateDownPos = (e: MouseEvent, data: Object) => {
-    const list = document.getElementById('songList');
-    const height = list.scrollHeight;
-    const itemHeight = height / this.props.songs.size;
-    const position = Math.round(data.lastY / itemHeight);
-    this.setState({ downSelectorPos: position });
-    this.makeNewQueue(this.state.downSelectorPos, this.state.upSelectorPos);
+    const { songs } = this.props;
+    const position = Math.round(data.lastY / this.state.itemHeight);
+    this.setState({
+      downSelectorPos: position,
+      selected: this.props.songs.slice(position, this.state.upSelectorPos)
+    });
   };
   updateUpPos = (e: MouseEvent, data: Object) => {
-    const list = document.getElementById('songList');
-    const height = list.scrollHeight;
-    const itemHeight = height / this.props.songs.size;
-    const position = Math.round(data.lastY / itemHeight);
-    this.setState({ upSelectorPos: position });
-    this.makeNewQueue(this.state.downSelectorPos, this.state.upSelectorPos);
+    const { songs } = this.props;
+    const position = Math.round(data.lastY / this.state.itemHeight);
+    this.setState({
+      upSelectorPos: position,
+      selected: this.props.songs.slice(this.state.downSelectorPos, position)
+    });
   };
+
+  addSelectedToQueue() {
+    this.state.selected.map(t => this.props.addSongToQueue(t));
+  }
 
   render() {
     return (
-      <div className="song-list-container">
-        <div className="song-header-container">
+      <div id="song-list-container">
+        <div className="song-header-container song-list-header">
           <div className="song-title-header">
             <p>Title</p>
           </div>
@@ -53,13 +63,33 @@ class SongList extends Component {
           <div className="song-album-header">
             <p>Album</p>
           </div>
+          {!this.state.selected.isEmpty() && (
+            <div className="selectes-buttons">
+              <button onClick={() => this.addSelectedToQueue()}>
+                <i className={'fa fa-plus'} aria-hidden="true" />
+              </button>
+              <button
+                onClick={() =>
+                  this.makeNewQueue(
+                    this.state.downSelectorPos,
+                    this.state.upSelectorPos
+                  )
+                }
+              >
+                <i className={'fa fa-file'} aria-hidden="true" />
+              </button>
+            </div>
+          )}
         </div>
-        <div id="songList" className="song-list">
+        <div id="song-list">
           <Draggable
             axis="y"
-            defaultPosition={{ x: 900, y: 0 }}
+            position={{
+              x: 0,
+              y: this.state.downSelectorPos * this.state.itemHeight + 2
+            }}
             grid={[30, 30]}
-            onStop={this.updateDownPos}
+            onDrag={this.updateDownPos}
           >
             <button className="btn">
               <i className="fa fa-angle-down" />
@@ -67,9 +97,12 @@ class SongList extends Component {
           </Draggable>
           <Draggable
             axis="y"
-            defaultPosition={{ x: 900, y: 5 }}
+            position={{
+              x: 0,
+              y: this.state.upSelectorPos * this.state.itemHeight + 2
+            }}
             grid={[30, 30]}
-            onStop={this.updateUpPos}
+            onDrag={this.updateUpPos}
           >
             <button className="btn">
               <i className="fa fa-angle-up" />
@@ -82,24 +115,40 @@ class SongList extends Component {
                 ? 'fa-pause-circle-o'
                 : 'fa-play-circle-o';
 
+            const selected =
+              i <= this.state.upSelectorPos && i >= this.state.downSelectorPos;
             return !song.youtube ? (
               <li
-                className="user-song-item"
+                className={
+                  !selected
+                    ? 'user-song-item'
+                    : 'user-song-item selected-user-song-item'
+                }
                 key={`songListItem${song.track.id}`}
               >
-                <button
-                  onClick={() => {
-                    this.makeNewQueue(i, this.state.upSelectorPos);
-                    this.props.play();
-                  }}
-                  className="play-song"
-                >
-                  <i
-                    className={`fa ${buttonClass} play-btn`}
-                    aria-hidden="true"
-                  />
-                </button>
-
+                <div className="song-buttons">
+                  <button
+                    onClick={() => {
+                      this.makeNewQueue(
+                        i,
+                        this.state.upSelectorPos === 0
+                          ? this.props.songs.size
+                          : this.state.upSelectorPos
+                      );
+                      this.setState({ downSelectorPos: i });
+                      this.setState({
+                        upSelectorPos: this.props.songs.size - 1
+                      });
+                      this.props.play();
+                    }}
+                    className="play-song"
+                  >
+                    <i
+                      className={`fa ${buttonClass} play-btn`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
                 <div className="song-title">
                   <p>{song.track.name}</p>
                 </div>
@@ -111,12 +160,37 @@ class SongList extends Component {
                 <div className="song-album">
                   <p>{song.track.album.name}</p>
                 </div>
-                <button
-                  onClick={() => this.props.addSongToQueue(song)}
-                  className="play-song"
-                >
-                  <i className={'fa fa-plus'} aria-hidden="true" />
-                </button>
+                <div className="song-buttons" style={{ float: 'right' }}>
+                  <button onClick={() => this.props.addSongToQueue(song)}>
+                    <i className={'fa fa-plus'} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        downSelectorPos: i,
+                        selected: this.props.songs.slice(
+                          i,
+                          this.state.upSelectorPos
+                        )
+                      });
+                    }}
+                  >
+                    <i className={'fa fa-angle-down'} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        upSelectorPos: i,
+                        selected: this.props.songs.slice(
+                          this.state.downSelectorPos,
+                          i
+                        )
+                      });
+                    }}
+                  >
+                    <i className={'fa fa-angle-up'} aria-hidden="true" />
+                  </button>
+                </div>
               </li>
             ) : (
               <li
@@ -128,29 +202,67 @@ class SongList extends Component {
                 key={i}
               >
                 <div
-                  onClick={() => this.makeNewQueue(i, song)}
                   className="play-song"
+                  onClick={() => {
+                    this.makeNewQueue(
+                      i,
+                      this.state.upSelectorPos === 0
+                        ? this.props.songs.size
+                        : this.state.upSelectorPos
+                    );
+                    this.setState({ downSelectorPos: i });
+                    this.setState({
+                      upSelectorPos: this.props.songs.size - 1
+                    });
+                    this.props.play();
+                  }}
                 >
                   <i
                     className={`fa ${buttonClass} play-btn`}
                     aria-hidden="true"
                   />
                 </div>
-                <i
-                  className="fa fa-youtube-play"
-                  onClick={() => this.setState({ showYT: true })}
-                />
+                <i className="fa fa-youtube-play" />
                 {song.track.name}
-                <button
-                  onClick={() => this.props.addSongToQueue(song)}
-                  className="play-song"
-                >
-                  <i className={'fa fa-plus'} aria-hidden="true" />
-                </button>
+                <div className="song-buttons">
+                  <button onClick={() => this.props.addSongToQueue(song)}>
+                    <i className={'fa fa-plus'} aria-hidden="true" />
+                  </button>
+                  <button onClick={() => this.props.addSongToQueue(song)}>
+                    <i className={'fa fa-plus'} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        downSelectorPos: i,
+                        selected: this.props.songs.slice(
+                          i,
+                          this.state.upSelectorPos
+                        )
+                      });
+                    }}
+                  >
+                    <i className={'fa fa-angle-down'} aria-hidden="true" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        upSelectorPos: i,
+                        selected: this.props.songs.slice(
+                          this.state.downSelectorPos,
+                          i
+                        )
+                      });
+                    }}
+                  >
+                    <i className={'fa fa-angle-up'} aria-hidden="true" />
+                  </button>
+                </div>
               </li>
             );
           })}
         </div>
+        <SongProgress />
       </div>
     );
   }

@@ -13,7 +13,8 @@ const mapStateToProps = state => {
     songs: state.queue.queue,
     position: state.queue.position,
     viewType: state.songsReducer.viewType,
-    repeat: state.player.repeat
+    repeat: state.player.repeat,
+    currentTrack: state.queue.currentTrack
   };
 };
 

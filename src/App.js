@@ -9,8 +9,6 @@ import { push as Menu } from 'react-burger-menu';
 import './App.css';
 
 import ArtWork from './components/ArtWork';
-import Footer from './components/Footer';
-import Header from './components/Header';
 import initSpotify from './initSpotifySDK';
 import MainView from './components/MainView';
 import SideMenu from './components/SideMenu';
@@ -18,6 +16,7 @@ import UserPlaylists from './components/UserPlaylists';
 
 class App extends React.Component {
   constructor(props) {
+    window.controller = new AbortController();
     super(props);
     const hashParams: any = {};
     const r = /([^&;=]+)=?([^&;]*)/g;
@@ -73,17 +72,7 @@ class App extends React.Component {
           </div>
         </Menu>
         <main id="page-wrap">
-          <div
-            style={{
-              position: 'absolute',
-              left: this.props.showYT ? 0 : 100000
-            }}
-          >
-            <div id="ytPlayer" />
-          </div>
-          <Header />
           <MainView />
-          <Footer />
         </main>
       </div>
     );

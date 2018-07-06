@@ -156,43 +156,56 @@ export const fetchRecentlyPlayed = () => {
 
 export const play = () => {
   return async (dispatch, getState) => {
+    dispatch({
+      type: 'PLAY'
+    });
+
     const token = getState().player.token;
     const position = getState().queue.position;
-    const next = getState().queue.queue.get(position).track;
-    const apiPlay = ({
+    const next = getState().queue.queue.get(position);
+    const controller = new AbortController();
+    window.controller.abort();
+    window.controller = controller;
+
+    console.log(window.controller);
+    const apiPlay = async ({
       spotify_uri,
       playerInstance: {
         _options: { id }
       }
-    }) => {
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-    };
+    }) =>
+      await fetch(
+        `https://api.spotify.com/v1/me/player/play?device_id=${id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ uris: spotify_uri }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        },
+        controller.signal
+      );
     if (next.youtube) {
       window.player.pause();
       window.ytPlayer.loadVideoById(next.track.id);
     } else {
       window.ytPlayer.pauseVideo();
-      apiPlay({
+      console.log(getState().queue.position);
+      return apiPlay({
         playerInstance: window.player,
-        spotify_uri: [next.uri]
+        spotify_uri: [next.track.uri]
       });
     }
-
-    dispatch({
-      type: 'PLAY'
-    });
   };
 };
 
 export const togglePlay = () => {
   return async (dispatch, getState) => {
+    dispatch({
+      type: 'TOGGLE_PLAY'
+    });
+
     const position = getState().queue.position;
     const next = getState().queue.queue.get(position).track;
     if (!next.uri) {
@@ -203,9 +216,6 @@ export const togglePlay = () => {
       const state = await window.player.getCurrentState();
       state ? window.player.togglePlay() : dispatch(play());
     }
-    dispatch({
-      type: 'TOGGLE_PLAY'
-    });
   };
 };
 export const nextSong = () => {
@@ -213,41 +223,7 @@ export const nextSong = () => {
     dispatch({
       type: 'NEXT_SONG'
     });
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position).track;
-    const spotifyPaused = getState().player.spotifyPlayer.paused;
-    const token = getState().player.token;
-    const apiPlay = ({
-      spotify_uri,
-      playerInstance: {
-        _options: { id }
-      }
-    }) => {
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-    };
-
-    if (next.uri) {
-      window.ytPlayer.pauseVideo();
-      //If switching from youtube to spotify, use last played track
-      if (spotifyPaused) {
-        window.player.nextTrack();
-      } else {
-        apiPlay({
-          playerInstance: window.player,
-          spotify_uri: [next.uri]
-        });
-      }
-    } else {
-      window.ytPlayer.loadVideoById(next.id);
-      window.player.pause();
-    }
+    dispatch(play());
   };
 };
 export const prevSong = () => {
@@ -255,44 +231,7 @@ export const prevSong = () => {
     dispatch({
       type: 'PREV_SONG'
     });
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position).track;
-    const spotifyPaused = getState().player.spotifyPlayer.paused;
-    const token = getState().player.token;
-    const apiPlay = ({
-      spotify_uri,
-      playerInstance: {
-        _options: { id }
-      }
-    }) => {
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-    };
-
-    if (next.uri) {
-      window.ytPlayer.pauseVideo();
-      //If switching from youtube to spotify, use last played track
-      if (spotifyPaused) {
-        window.player.seek(0);
-        window.player.resume();
-      } else {
-        apiPlay({
-          playerInstance: window.player,
-          spotify_uri: [next.uri]
-        });
-      }
-    } else {
-      window.ytPlayer.cueVideoById(next.id);
-      window.player.pause().then(() => {
-        window.ytPlayer.playVideo();
-      });
-    }
+    dispatch(play());
   };
 };
 

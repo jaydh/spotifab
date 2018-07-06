@@ -75,5 +75,6 @@ export const updatePosition = position => {
       window.ytPlayer.loadVideoById(next.id);
       window.player.pause();
     }
+    dispatch({ type: 'PLAY' });
   };
 };

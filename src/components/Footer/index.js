@@ -1,13 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SongControls from '../SongControls';
+import SongProgress from '../SongProgress';
 import './Footer.css';
 
 const Footer = () => {
-  return (
-    <div className="footer">
-      <SongControls />
-    </div>
-  );
+  return <SongProgress />;
 };
 export default Footer;
