@@ -163,29 +163,20 @@ export const play = () => {
     const token = getState().player.token;
     const position = getState().queue.position;
     const next = getState().queue.queue.get(position);
-    const controller = new AbortController();
-    window.controller.abort();
-    window.controller = controller;
-
-    console.log(window.controller);
     const apiPlay = async ({
       spotify_uri,
       playerInstance: {
         _options: { id }
       }
     }) =>
-      await fetch(
-        `https://api.spotify.com/v1/me/player/play?device_id=${id}`,
-        {
-          method: 'PUT',
-          body: JSON.stringify({ uris: spotify_uri }),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        },
-        controller.signal
-      );
+      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ uris: spotify_uri }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
     if (next.youtube) {
       window.player.pause();
       window.ytPlayer.loadVideoById(next.track.id);

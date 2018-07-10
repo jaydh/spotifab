@@ -16,7 +16,6 @@ import UserPlaylists from './components/UserPlaylists';
 
 class App extends React.Component {
   constructor(props) {
-    window.controller = new AbortController();
     super(props);
     const hashParams: any = {};
     const r = /([^&;=]+)=?([^&;]*)/g;
@@ -30,10 +29,8 @@ class App extends React.Component {
     if (!hashParams.access_token) {
       const scopes =
         'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
-      const callback =
-        process.env.NODE_ENV === 'development'
-          ? 'http://localhost:3000/callback'
-          : 'https://spotifab-3379e.firebaseapp.com/callback';
+      const callback = `${window.location.href}callback`;
+      console.log(callback);
       window.location.href =
         'https://accounts.spotify.com/authorize?client_id=6d46aac55bb24239af40209109ca5cb2' +
         (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
