@@ -32,7 +32,7 @@
     "eject": "react-scripts-ts eject",
     "electron": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --linux",
+    "dist": "electron-builder --win --linux"
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",
@@ -41,6 +41,7 @@
     "@types/redux": "^3.6.0",
     "electron": "^2.0.2",
     "electron-builder": "^20.19.2",
+    "electron-rebuild": "^1.8.1",
     "typescript": "^2.9.1"
   },
   "main": "src/electron-starter.js",
@@ -53,6 +54,9 @@
       "target": [
         "AppImage"
       ]
+    },
+    "directories": {
+      "buildResources": "public"
     }
   }
 }
