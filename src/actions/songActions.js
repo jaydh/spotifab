@@ -36,7 +36,8 @@ export const fetchSongsError = () => {
 
 export const fetchSongs = () => {
   return async (dispatch, getState) => {
-    const accessToken = getState().player.token;
+    const accessToken = getState().token;
+    console.log(accessToken);
     const fetches = [];
     dispatch(fetchSongsPending());
     for (let i = 0; i < 2; i++) {
@@ -132,7 +133,7 @@ export const fetchRecentlyPlayedError = () => {
 
 export const fetchRecentlyPlayed = () => {
   return (dispatch, getState) => {
-    const accessToken = getState().player.token;
+    const accessToken = getState().token;
     const request = new Request(
       `https://api.spotify.com/v1/me/player/recently-played`,
       {
@@ -160,7 +161,7 @@ export const play = () => {
       type: 'PLAY'
     });
 
-    const token = getState().player.token;
+    const token = getState().token;
     const position = getState().queue.position;
     const next = getState().queue.queue.get(position);
     const apiPlay = async ({

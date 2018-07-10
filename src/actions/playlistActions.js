@@ -28,7 +28,7 @@ export const addPlaylistItem = playlist => {
 
 export const fetchPlaylistsMenu = userId => {
   return (dispatch, getState) => {
-    const accessToken = getState().player.token;
+    const accessToken = getState().token;
     const request = new Request(
       `https://api.spotify.com/v1/users/${userId}/playlists`,
       {
@@ -77,7 +77,7 @@ export const fetchPlaylistSongsError = () => {
 
 export const fetchPlaylistSongs = (userId, playlistId) => {
   return (dispatch, getState) => {
-    const accessToken = getState().player.token;
+    const accessToken = getState().token;
     const request = new Request(
       `https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
       {

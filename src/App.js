@@ -26,34 +26,21 @@ class App extends React.Component {
       e = r.exec(q);
     }
 
-    if (!hashParams.access_token) {
+    if (this.props.token || hashParams.access_token) {
+      this.props.setToken(hashParams.access_token);
+      this.props.fetchUser(hashParams.access_token);
+      initSpotify();
+    } else {
       const scopes =
         'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
-      const callback = `${window.location.href}callback`;
-      console.log(callback);
+      const callback = `https://spotifab-3379e.firebaseapp.com/callback`;
       window.location.href =
         'https://accounts.spotify.com/authorize?client_id=6d46aac55bb24239af40209109ca5cb2' +
         (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
         '&response_type=token&redirect_uri=' +
         callback;
-    } else {
-      this.props.setToken(hashParams.access_token);
-      initSpotify();
-      this.props.fetchUser(hashParams.access_token);
     }
   }
-  pauseSong = () => {
-    this.props.pauseSong();
-  };
-
-  resumeSong = () => {
-    this.props.resumeSong();
-  };
-
-  audioControl = song => {
-    this.props.playSong(song.track);
-  };
-
   render() {
     return (
       <div id="app-container">

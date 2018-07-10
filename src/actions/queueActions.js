@@ -41,7 +41,7 @@ export const updatePosition = position => {
   return async (dispatch, getState) => {
     dispatch({ type: 'UPDATE_POSITION', position });
     const next = getState().queue.queue.get(position).track;
-    const token = getState().player.token;
+    const token = getState().token;
     const spotifyPaused =
       getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
     const apiPlay = ({
