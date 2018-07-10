@@ -2,6 +2,7 @@ const { app, BrowserWindow, globalShortcut, remote } = require('electron');
 const url = require('url');
 const path = require('path');
 const widevine = require('electron-widevinecdm');
+const isDev = require('electron-is-dev');
 widevine.load(app);
 let win;
 
@@ -14,14 +15,12 @@ function createWindow() {
       plugins: true
     }
   });
-  const startUrl =
-    process.env.ELECTRON_START_URL ||
-    url.format({
-      pathname: path.join(__dirname, '/../build/index.html'),
-      protocol: 'file:',
-      slashes: true
-    });
-  win.loadURL(startUrl); // Open the DevTools.
+
+  win.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../build/index.html')}`
+  );
   win.webContents.openDevTools();
   globalShortcut.register('CommandOrControl+j', () => {
     win.webContents.executeJavaScript(`window.player.nextTrack()`);

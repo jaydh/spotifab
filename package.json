@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "date-fns": "^1.29.0",
+    "electron-is-dev": "^0.3.0",
     "electron-widevinecdm": "^7.0.0",
     "firebase": "^5.0.4",
     "immutable": "^3.8.2",
@@ -30,9 +31,8 @@
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
     "electron": "electron .",
-    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder --win --linux",
   },
   "devDependencies": {
     "@types/jest": "^23.0.0",
@@ -40,22 +40,18 @@
     "@types/react-dom": "^16.0.5",
     "@types/redux": "^3.6.0",
     "electron": "^2.0.2",
-    "electron-builder": "^20.15.1",
-    "electron-rebuild": "^1.7.3",
+    "electron-builder": "^20.19.2",
     "typescript": "^2.9.1"
   },
   "main": "src/electron-starter.js",
   "build": {
     "appId": "spotifab",
     "win": {
+      "target": "portable"
+    },
+    "linux": {
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
+        "AppImage"
       ]
     }
   }
