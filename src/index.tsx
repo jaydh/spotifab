@@ -9,9 +9,9 @@ import immutableTransform from 'redux-persist-transform-immutable';
 import { PersistGate } from 'redux-persist/integration/react';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import thunk from 'redux-thunk';
+import { nextSong, prevSong, togglePlay } from './actions/songActions';
 import App from './App';
 import reducers from './reducers';
-
 const config = {
   apiKey: 'AIzaSyBiqbvG93Vd0tqHkNGZNg6VBHUC4onS3jE',
   authDomain: 'spotifab-3379e.firebaseapp.com',
@@ -30,13 +30,17 @@ const persistConfig = {
   key: 'root',
   transforms: [immutableTransform()],
   storage,
-  whitelist: ['queue', 'songsReducer']
+  whitelist: ['queue', 'songsReducer', 'token']
 };
 const persistedReducer = persistReducer(persistConfig, reducers);
 export const store = createStore(
   persistedReducer,
   composeWithDevTools(applyMiddleware(thunk))
 );
+(window as any).nextTrack = () => store.dispatch<any>(nextSong());
+(window as any).previousTrack = () => store.dispatch<any>(prevSong());
+(window as any).togglePlay = () => store.dispatch<any>(togglePlay());
+
 const persistor = persistStore(store);
 ReactDOM.render(
   <Provider store={store}>
