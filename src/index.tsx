@@ -4,12 +4,11 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { persistReducer, persistStore } from 'redux-persist';
-import immutableTransform from 'redux-persist-transform-immutable';
+import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import thunk from 'redux-thunk';
 import { nextSong, prevSong, togglePlay } from './actions/songActions';
+import { toggleMute } from './actions/soundActions';
 import App from './App';
 import reducers from './reducers';
 const config = {
@@ -26,20 +25,14 @@ declare module 'redux' {
   export type GenericStoreEnhancer = any;
 }
 
-const persistConfig = {
-  key: 'root',
-  transforms: [immutableTransform()],
-  storage,
-  whitelist: ['queue', 'songsReducer', 'token']
-};
-const persistedReducer = persistReducer(persistConfig, reducers);
 export const store = createStore(
-  persistedReducer,
+  reducers,
   composeWithDevTools(applyMiddleware(thunk))
 );
 (window as any).nextTrack = () => store.dispatch<any>(nextSong());
 (window as any).previousTrack = () => store.dispatch<any>(prevSong());
 (window as any).togglePlay = () => store.dispatch<any>(togglePlay());
+(window as any).volumeMute = () => store.dispatch<any>(toggleMute());
 
 const persistor = persistStore(store);
 ReactDOM.render(

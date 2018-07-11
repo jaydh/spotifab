@@ -8,15 +8,33 @@ import uiReducer from './uiReducer';
 import browseReducer from './browseReducer';
 import player from './player';
 import token from './token';
+import { persistReducer } from 'redux-persist';
+import immutableTransform from 'redux-persist-transform-immutable';
+import storage from 'redux-persist/lib/storage';
 
-export default combineReducers({
+const persistConfig = {
+  key: 'root',
+  transforms: [immutableTransform()],
+  storage,
+  whitelist: ['queue', 'songsReducer', 'token', 'userReducer']
+};
+
+const playerConfig = {
+  key: 'player',
+  transforms: [immutableTransform()],
+  storage,
+  blacklist: ['playing']
+};
+const rootReducer = combineReducers({
   userReducer,
   playlistReducer,
   songsReducer,
   albumsReducer,
   uiReducer,
   browseReducer,
-  player,
+  player: persistReducer(playerConfig, player),
   queue,
   token
 });
+
+export default persistReducer(persistConfig, rootReducer);
