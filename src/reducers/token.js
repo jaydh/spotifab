@@ -6,7 +6,7 @@ export default (
 ) => {
   switch (action.type) {
     case 'SET_TOKEN':
-      return action.token;
+      return { ...state, token: action.token };
 
     default:
       return state;

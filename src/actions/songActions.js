@@ -36,8 +36,7 @@ export const fetchSongsError = () => {
 
 export const fetchSongs = () => {
   return async (dispatch, getState) => {
-    const accessToken = getState().token;
-    console.log(accessToken);
+    const accessToken = getState().token.token;
     const fetches = [];
     dispatch(fetchSongsPending());
     for (let i = 0; i < 2; i++) {
@@ -133,7 +132,7 @@ export const fetchRecentlyPlayedError = () => {
 
 export const fetchRecentlyPlayed = () => {
   return (dispatch, getState) => {
-    const accessToken = getState().token;
+    const accessToken = getState().token.token;
     const request = new Request(
       `https://api.spotify.com/v1/me/player/recently-played`,
       {
@@ -161,7 +160,7 @@ export const play = () => {
       type: 'PLAY'
     });
 
-    const token = getState().token;
+    const token = getState().token.token;
     const position = getState().queue.position;
     const next = getState().queue.queue.get(position);
     const apiPlay = async ({
@@ -183,7 +182,6 @@ export const play = () => {
       window.ytPlayer.loadVideoById(next.track.id);
     } else {
       window.ytPlayer.pauseVideo();
-      console.log(getState().queue.position);
       return apiPlay({
         playerInstance: window.player,
         spotify_uri: [next.track.uri]
