@@ -53,16 +53,8 @@
   width: 40px;
   text-align: center;
 }
-
 .song-buttons {
   opacity: 0;
-  margin: 0 auto;
-  z-index: 2;
-}
-
-.selected-buttons {
-  margin: 0 auto;
-  float: right;
 }
 
 .user-song-item .play-song {
@@ -76,6 +68,7 @@
 
 .play-song .fa:hover {
   color: #fff;
+  opacity: 100;
 }
 
 .song-length,
