@@ -1,6 +1,5 @@
 import { Line } from 'rc-progress';
 import * as React from 'react';
-import VolumeControls from '../VolumeControls';
 
 interface IState {
   position: number;
@@ -36,7 +35,6 @@ class SongControls extends React.Component<IProps, IState> {
               {this.props.currentTrack.artists &&
                 this.props.currentTrack.artists[0].name}
             </p>
-            <VolumeControls />
             <Line
               percent={(this.state.position / this.state.duration) * 100}
               strokeWidth="0.5"

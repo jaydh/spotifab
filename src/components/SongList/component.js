@@ -128,6 +128,7 @@ class SongList extends Component {
               >
                 <div className="song-buttons">
                   <button
+                    className="play-song"
                     onClick={() => {
                       this.makeNewQueue(
                         i,
@@ -160,7 +161,7 @@ class SongList extends Component {
                 <div className="song-album">
                   <p>{song.track.album.name}</p>
                 </div>
-                <div className="song-buttons" style={{ float: 'right' }}>
+                <div className="song-buttons">
                   <button onClick={() => this.props.addSongToQueue(song)}>
                     <i className={'fa fa-plus'} aria-hidden="true" />
                   </button>

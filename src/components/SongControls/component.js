@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Icon } from 'react-fa';
 import { Line } from 'rc-progress';
 import './SongControls.css';
+import VolumeControls from '../VolumeControls';
 
 interface IProps {
   nextSong: () => void;
@@ -43,6 +44,7 @@ class SongControls extends React.Component<IProps> {
               aria-hidden="true"
             />
           </div>
+          <VolumeControls />
         </div>
       </div>
     );
