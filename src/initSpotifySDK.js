@@ -59,7 +59,7 @@ const initSpotify = () => {
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  const token = store.getState().player.token;
+  const token = store.getState().token.token;
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
       name: 'player',
