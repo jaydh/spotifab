@@ -36,6 +36,16 @@ function createWindow() {
   globalShortcut.register('MediaPlayPause', () =>
     win.webContents.executeJavaScript(`window.togglePlay()`)
   );
+  globalShortcut.register('control+j', () =>
+    win.webContents.executeJavaScript(`window.nextTrack()`)
+  );
+  globalShortcut.register('control+k', () =>
+    win.webContents.executeJavaScript(`window.previousTrack()`)
+  );
+  globalShortcut.register('control+p', () =>
+    win.webContents.executeJavaScript(`window.togglePlay()`)
+  );
+
   globalShortcut.register('VolumeMute', () =>
     win.webContents.executeJavaScript(`window.toggleMute()`)
   );
