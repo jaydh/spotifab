@@ -65,13 +65,13 @@ class SongList extends Component {
             <p>
               Queue{' '}
               <button className="btn" onClick={this.props.shuffleQueue}>
-                <i class="fa fa-random" aria-hidden={true} />
+                <i className="fa fa-random" aria-hidden={true} />
               </button>
               <button
                 onClick={this.props.toggleRepeat}
                 className={'btn' + (this.props.repeat ? 'active' : '')}
               >
-                <i class="fa fa-repeat" aria-hidden={true} />
+                <i className="fa fa-repeat" aria-hidden={true} />
               </button>
             </p>
           </div>
