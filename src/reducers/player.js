@@ -20,11 +20,6 @@ export default (
         ...state,
         volume: action.volume
       };
-    case 'SET_TOKEN':
-      return {
-        ...state,
-        token: action.token
-      };
     case 'UPDATE_SPOTIFY_PLAYER_STATE':
       return { ...state, spotifyPlayer: action.state };
     case 'UPDATE_YOUTUBE_PLAYER_STATE':
