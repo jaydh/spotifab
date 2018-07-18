@@ -1,13 +1,11 @@
 import { store } from './index';
 import { nextSong } from './actions/songActions';
-const initYoutube = () => {
-  const tag = document.createElement('script');
 
+export const initYoutube = () => {
+  const tag = document.createElement('script');
   tag.src = 'https://www.youtube.com/iframe_api';
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-  // 3. This function creates an <iframe> (and YouTube player)
-  //    after the API code downloads.
   window.onYouTubeIframeAPIReady = () => {
     window.ytPlayer = new YT.Player('ytPlayer', {
       height: '500',
@@ -27,7 +25,6 @@ const initYoutube = () => {
 
   // 4. The API will call this function when the video player is ready.
   function onPlayerReady(event) {
-    window.ytPlayer.setPlaybackQuality('small');
     window.ytPlayer.setVolume(store.getState().player.volume * 100);
     const current = store
       .getState()
@@ -36,11 +33,9 @@ const initYoutube = () => {
       window.ytPlayer.loadVideoById(current.track.id);
       window.ytPlayer.pauseVideo();
     }
+    store.dispatch({ type: 'YOUTUBE_READY' });
   }
 
-  // 5. The API calls this function when the player's state changes.
-  //    The function indicates that when playing a video (state=1),
-  //    the player should play for six seconds and then stop.
   function onPlayerStateChange(event) {
     if (event.data === 0) {
       store.dispatch(nextSong());
@@ -52,18 +47,18 @@ const initYoutube = () => {
   }
 };
 
-const initSpotify = () => {
+export const initSpotify = () => {
   const tag = document.createElement('script');
 
   tag.src = 'https://sdk.scdn.co/spotify-player.js';
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  const token = store.getState().token.token;
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
       name: 'player',
       getOAuthToken: cb => {
+        const token = store.getState().token.token;
         cb(token);
       }
     });
@@ -103,6 +98,7 @@ const initSpotify = () => {
       console.log('Ready with Device ID', device_id);
       window.player = player;
       player.setVolume(store.getState().player.volume);
+      store.dispatch({ type: 'SPOTIFY_READY' });
     });
 
     // Not Ready
@@ -115,6 +111,6 @@ const initSpotify = () => {
   };
 };
 export default () => {
-  initYoutube();
   initSpotify();
+  initYoutube();
 };

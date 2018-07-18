@@ -4,7 +4,9 @@ export default (
     spotifyPlayer: null,
     ytPlayer: null,
     playing: false,
-    muted: false
+    muted: false,
+    spotifyReady: false,
+    youtubeReady: false
   },
   action
 ) => {
@@ -24,6 +26,10 @@ export default (
       return { ...state, spotifyPlayer: action.state };
     case 'UPDATE_YOUTUBE_PLAYER_STATE':
       return { ...state, ytPlayer: action.state };
+    case 'SPOTIFY_READY':
+      return { ...state, spotifyReady: true };
+    case 'YOUTUBE_READY':
+      return { ...state, youtubeReady: true };
     default:
       return state;
   }
