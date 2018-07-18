@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './SongList.css';
 import Draggable from 'react-draggable';
-import SongProgress from '../SongProgress';
 import { List } from 'immutable';
+import { List as VirtualList, AutoSizer } from 'react-virtualized';
 class SongList extends Component {
   constructor(props) {
     super(props);
@@ -11,15 +11,13 @@ class SongList extends Component {
       downSelectorPos: 0,
       upSelectorPos: 0,
       selected: List(),
-      itemHeight: 0
+      itemHeight: 30
     };
+    this.rowRenderer = this.rowRenderer.bind(this);
   }
   componentDidMount() {
     this.props.fetchSongs();
     const list = document.getElementById('song-list');
-    const height = list.scrollHeight;
-    const itemHeight = height / this.props.songs.size;
-    this.setState({ itemHeight });
   }
 
   makeNewQueue(i, j) {
@@ -108,162 +106,169 @@ class SongList extends Component {
               <i className="fa fa-angle-up" />
             </button>
           </Draggable>
-
-          {this.props.songs.map((song, i) => {
-            const buttonClass =
-              song.track.id === this.props.songId && !this.props.songPaused
-                ? 'fa-pause-circle-o'
-                : 'fa-play-circle-o';
-
-            const selected =
-              i <= this.state.upSelectorPos && i >= this.state.downSelectorPos;
-            return !song.youtube ? (
-              <li
-                className={
-                  !selected
-                    ? 'user-song-item'
-                    : 'user-song-item selected-user-song-item'
-                }
-                key={`songListItem${song.track.id}`}
-              >
-                <div className="song-buttons">
-                  <button
-                    className="play-song"
-                    onClick={() => {
-                      this.makeNewQueue(
-                        i,
-                        this.state.upSelectorPos === 0
-                          ? this.props.songs.size
-                          : this.state.upSelectorPos
-                      );
-                      this.setState({ downSelectorPos: i });
-                      this.setState({
-                        upSelectorPos: this.props.songs.size - 1
-                      });
-                      this.props.play();
-                    }}
-                    className="play-song"
-                  >
-                    <i
-                      className={`fa ${buttonClass} play-btn`}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </div>
-                <div className="song-title">
-                  <p>{song.track.name}</p>
-                </div>
-
-                <div className="song-artist">
-                  <p>{song.track.artists[0].name}</p>
-                </div>
-
-                <div className="song-album">
-                  <p>{song.track.album.name}</p>
-                </div>
-                <div className="song-buttons">
-                  <button onClick={() => this.props.addSongToQueue(song)}>
-                    <i className={'fa fa-plus'} aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.setState({
-                        downSelectorPos: i,
-                        selected: this.props.songs.slice(
-                          i,
-                          this.state.upSelectorPos
-                        )
-                      });
-                    }}
-                  >
-                    <i className={'fa fa-angle-down'} aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.setState({
-                        upSelectorPos: i,
-                        selected: this.props.songs.slice(
-                          this.state.downSelectorPos,
-                          i
-                        )
-                      });
-                    }}
-                  >
-                    <i className={'fa fa-angle-up'} aria-hidden="true" />
-                  </button>
-                </div>
-              </li>
-            ) : (
-              <li
-                className={
-                  song.track.id === this.props.songId
-                    ? 'active user-song-item'
-                    : 'user-song-item'
-                }
-                key={i}
-              >
-                <div
-                  className="play-song"
-                  onClick={() => {
-                    this.makeNewQueue(
-                      i,
-                      this.state.upSelectorPos === 0
-                        ? this.props.songs.size
-                        : this.state.upSelectorPos
-                    );
-                    this.setState({ downSelectorPos: i });
-                    this.setState({
-                      upSelectorPos: this.props.songs.size - 1
-                    });
-                    this.props.play();
-                  }}
-                >
-                  <i
-                    className={`fa ${buttonClass} play-btn`}
-                    aria-hidden="true"
-                  />
-                </div>
-                <i className="fa fa-youtube-play" />
-                {song.track.name}
-                <div className="song-buttons">
-                  <button onClick={() => this.props.addSongToQueue(song)}>
-                    <i className={'fa fa-plus'} aria-hidden="true" />
-                  </button>
-                  <button onClick={() => this.props.addSongToQueue(song)}>
-                    <i className={'fa fa-plus'} aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.setState({
-                        downSelectorPos: i,
-                        selected: this.props.songs.slice(
-                          i,
-                          this.state.upSelectorPos
-                        )
-                      });
-                    }}
-                  >
-                    <i className={'fa fa-angle-down'} aria-hidden="true" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      this.setState({
-                        upSelectorPos: i,
-                        selected: this.props.songs.slice(
-                          this.state.downSelectorPos,
-                          i
-                        )
-                      });
-                    }}
-                  >
-                    <i className={'fa fa-angle-up'} aria-hidden="true" />
-                  </button>
-                </div>
-              </li>
-            );
-          })}
+          <AutoSizer>
+            {({ height, width }) => (
+              <VirtualList
+                rowCount={this.props.songs.size}
+                rowRenderer={this.rowRenderer}
+                rowHeight={this.state.itemHeight}
+                width={width}
+                height={height}
+              />
+            )}
+          </AutoSizer>
         </div>
-        <SongProgress />
+      </div>
+    );
+  }
+  rowRenderer(options) {
+    const { index, key, style } = options;
+    const song = this.props.songs.get(index);
+    const buttonClass =
+      song.track.id === this.props.songId && !this.props.songPaused
+        ? 'fa-pause-circle-o'
+        : 'fa-play-circle-o';
+
+    const selected =
+      index <= this.state.upSelectorPos && index >= this.state.downSelectorPos;
+    return !song.youtube ? (
+      <div
+        className={
+          !selected
+            ? 'user-song-item'
+            : 'user-song-item selected-user-song-item'
+        }
+        key={key}
+        style={style}
+      >
+        <div className="song-buttons">
+          <button
+            className="play-song"
+            onClick={() => {
+              this.makeNewQueue(
+                index,
+                this.state.upSelectorPos === 0
+                  ? this.props.songs.size
+                  : this.state.upSelectorPos
+              );
+              this.setState({ downSelectorPos: index });
+              this.setState({
+                upSelectorPos: this.props.songs.size - 1
+              });
+              this.props.play();
+            }}
+            className="play-song"
+          >
+            <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="song-title">
+          <p>{song.track.name}</p>
+        </div>
+
+        <div className="song-artist">
+          <p>{song.track.artists[0].name}</p>
+        </div>
+
+        <div className="song-album">
+          <p>{song.track.album.name}</p>
+        </div>
+        <div className="song-buttons">
+          <button onClick={() => this.props.addSongToQueue(song)}>
+            <i className={'fa fa-plus'} aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => {
+              this.setState({
+                downSelectorPos: index,
+                selected: this.props.songs.slice(
+                  index,
+                  this.state.upSelectorPos
+                )
+              });
+            }}
+          >
+            <i className={'fa fa-angle-down'} aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => {
+              this.setState({
+                upSelectorPos: index,
+                selected: this.props.songs.slice(
+                  this.state.downSelectorPos,
+                  index
+                )
+              });
+            }}
+          >
+            <i className={'fa fa-angle-up'} aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    ) : (
+      <div
+        className={
+          song.track.id === this.props.songId
+            ? 'active user-song-item'
+            : 'user-song-item'
+        }
+        key={key}
+        style={style}
+      >
+        <div
+          className="play-song"
+          onClick={() => {
+            this.makeNewQueue(
+              index,
+              this.state.upSelectorPos === 0
+                ? this.props.songs.size
+                : this.state.upSelectorPos
+            );
+            this.setState({ downSelectorPos: index });
+            this.setState({
+              upSelectorPos: this.props.songs.size - 1
+            });
+            this.props.play();
+          }}
+        >
+          <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
+        </div>
+        <i className="fa fa-youtube-play" />
+        {song.track.name}
+        <div className="song-buttons">
+          <button onClick={() => this.props.addSongToQueue(song)}>
+            <i className={'fa fa-plus'} aria-hidden="true" />
+          </button>
+          <button onClick={() => this.props.addSongToQueue(song)}>
+            <i className={'fa fa-plus'} aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => {
+              this.setState({
+                downSelectorPos: index,
+                selected: this.props.songs.slice(
+                  index,
+                  this.state.upSelectorPos
+                )
+              });
+            }}
+          >
+            <i className={'fa fa-angle-down'} aria-hidden="true" />
+          </button>
+          <button
+            onClick={() => {
+              this.setState({
+                upSelectorPos: index,
+                selected: this.props.songs.slice(
+                  this.state.downSelectorPos,
+                  index
+                )
+              });
+            }}
+          >
+            <i className={'fa fa-angle-up'} aria-hidden="true" />
+          </button>
+        </div>
       </div>
     );
   }
