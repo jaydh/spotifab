@@ -29,7 +29,9 @@ class SongControls extends React.Component<IProps> {
             />
           </button>
           <button
-            onClick={this.props.togglePlay}
+            onClick={() => {
+              this.props.togglePlay();
+            }}
             className={
               !(this.props.spotifyReady && this.props.youtubeReady)
                 ? 'fa-disabled play'

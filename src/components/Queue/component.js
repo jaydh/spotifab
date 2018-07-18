@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './SongList.css';
 import SongControls from '../SongControls';
+import { List, AutoSizer } from 'react-virtualized';
 
-class SongList extends Component {
+export default class SongList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showYT: false
+      showYT: false,
+      itemHeight: 30
     };
+    this.rowRenderer = this.rowRenderer.bind(this);
   }
-  componentWillReceiveProps(nextProps) {
+/*  componentWillReceiveProps(nextProps) {
     if (this.props.position !== nextProps.position) {
       const queue = document.getElementById('queue');
       const height = queue.scrollHeight;
@@ -18,44 +21,7 @@ class SongList extends Component {
       const offset = (height / nextProps.songs.size) * position;
       queue.scrollTop = Math.round(offset);
     }
-  }
-
-  renderSongs() {
-    const position = this.props.currentTrack
-      ? this.props.songs.findKey(t => t.track.id === this.props.currentTrack.id)
-      : 0;
-    return this.props.songs.map((song, i) => {
-      const buttonClass =
-        song.track.id === this.props.songId && !this.props.songPaused
-          ? 'fa-pause-circle-o'
-          : 'fa-play-circle-o';
-      return (
-        <li
-          className={
-            i === this.props.position
-              ? 'active user-song-item'
-              : 'user-song-item'
-          }
-          key={i}
-        >
-          <div className="song-buttons">
-            <button
-              onClick={() => this.props.updatePosition(i)}
-              className="play-song"
-            >
-              <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
-            </button>
-          </div>
-          <div className="song-title">
-            <p>
-              {song.youtube && <i className="fa fa-youtube-play" />}
-              {song.track.name}
-            </p>
-          </div>
-        </li>
-      );
-    });
-  }
+  }*/
 
   render() {
     return (
@@ -77,7 +43,18 @@ class SongList extends Component {
           </div>
         </div>
         <div id="queue" className="queue song-list">
-          {this.props.songs && this.renderSongs()}
+          <AutoSizer>
+            {({ height, width }) => (
+              <List
+                rowCount={this.props.songs.size}
+                rowRenderer={this.rowRenderer}
+                rowHeight={this.state.itemHeight}
+                width={width}
+                height={height}
+                scrollToIndex={this.props.position}
+              />
+            )}
+          </AutoSizer>
         </div>
         {this.props.currentTrack && (
           <div className="album-art">
@@ -120,6 +97,38 @@ class SongList extends Component {
       </div>
     );
   }
+  rowRenderer(options) {
+    const { index, key, style } = options;
+    const song = this.props.songs.get(index);
+    const buttonClass =
+      song.track.id === this.props.songId && !this.props.songPaused
+        ? 'fa-pause-circle-o'
+        : 'fa-play-circle-o';
+    return (
+      <div
+        className={
+          index === this.props.position
+            ? 'user-song-item active'
+            : 'user-song-item'
+        }
+        key={key}
+        style={style}
+      >
+        <div className="song-buttons">
+          <button
+            onClick={() => this.props.updatePosition(index)}
+            className="play-song"
+          >
+            <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="song-title">
+          <p>
+            {song.youtube && <i className="fa fa-youtube-play" />}
+            {song.track.name}
+          </p>
+        </div>
+      </div>
+    );
+  }
 }
-
-export default SongList;
