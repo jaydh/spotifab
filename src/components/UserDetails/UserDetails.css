@@ -1,18 +1,17 @@
 .user-details-container {
-  display: inline-block;
-  padding: 10px 0;
+  display: grid;
+  grid-template-columns: 40% auto;
   background: rgb(24, 24, 24);
 }
 
 .user-image {
   border-radius: 50%;
-  height: 30px;
+  height: 50px;
+  grid-column: 1;
 }
 
 .user-name {
   color: #fff;
   font-size: 14px;
-  position: relative;
-  top: 5px;
-  margin-left: 10px;
+  grid-column: 2;
 }

@@ -43,26 +43,17 @@ body {
   padding: 0;
 }
 
-#page-wrap {
-  margin: 0 auto;
-  max-height: 100vh;
-  max-width: 100vw;
-  height: 100vh;
-  width: 100vw;
-  overflow-y: hidden;
-}
 #app-container {
 }
 .main-view {
-  margin: 0 auto;
-  max-height: 100vh;
+  max-height: 98vh;
   max-width: 100vw;
   height: 100vh;
   width: 100vw;
 
   display: grid;
   grid-template-columns: 75% 25%;
-  grid-template-rows: 10% 90%;
+  grid-template-rows: 5% 90% 5%;
 }
 
 #header {
@@ -72,7 +63,7 @@ body {
 
 #song-list-container {
   display: grid;
-  grid-template-rows: 5% 85% auto;
+  grid-template-rows: 5% auto;
   grid-row: 2/2;
   scroll-behavior: smooth;
 }
@@ -142,4 +133,9 @@ body {
 
 .hidden {
   visibility: hidden;
+}
+
+.fa-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

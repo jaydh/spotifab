@@ -143,9 +143,5 @@
   scroll-behavior: smooth;
   grid-row: 2/2;
   overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.song-progress-container {
-  grid-row: 3/3;
+  overflow-y: hidden;
 }

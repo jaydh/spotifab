@@ -1,5 +1,6 @@
 import { Line } from 'rc-progress';
 import * as React from 'react';
+import './songProcess.css';
 
 interface IState {
   position: number;
@@ -27,7 +28,7 @@ class SongControls extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div className="song-progress-container">
+      <div id="song-progress-container">
         {this.props.currentTrack && (
           <div className="song-details">
             <p className="song-name">{this.props.currentTrack.name}</p>
@@ -35,13 +36,15 @@ class SongControls extends React.Component<IProps, IState> {
               {this.props.currentTrack.artists &&
                 this.props.currentTrack.artists[0].name}
             </p>
-            <Line
-              percent={(this.state.position / this.state.duration) * 100}
-              strokeWidth="0.5"
-              strokeColor="#1db954"
-            />
           </div>
         )}
+        <div className="line-container">
+          <Line
+            percent={(this.state.position / this.state.duration) * 100}
+            strokeWidth="0.5"
+            strokeColor="#1db954"
+          />
+        </div>
       </div>
     );
   }

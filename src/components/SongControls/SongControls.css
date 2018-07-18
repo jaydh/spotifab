@@ -12,12 +12,13 @@
 
 .song-controls {
   justify-content: center;
-  display: flex;
+  margin: 0 auto;
+  grid-column: 2;
 }
 
 .forward,
 .reverse,
-.play-btn {
+.play {
   padding: 0 5px;
   color: rgb(179, 179, 179);
   cursor: pointer;
@@ -25,4 +26,13 @@
 
 .play-btn .fa {
   -webkit-text-stroke: 4px rgb(40, 40, 40);
+}
+
+.song-player-container {
+  display: grid;
+  grid-template-columns: 50% auto;
+}
+
+.volume-container {
+  grid-column: 1;
 }
