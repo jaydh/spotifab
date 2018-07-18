@@ -16,11 +16,7 @@ class TrackSearch extends Component {
   render() {
     return (
       <div className="track-search-container">
-        <form
-          onSubmit={() => {
-            this.props.searchSongs(this.state.searchTerm, this.props.token);
-          }}
-        >
+        <form>
           <input
             onChange={this.updateSearchTerm}
             type="text"
@@ -30,6 +26,7 @@ class TrackSearch extends Component {
             onClick={e => {
               e.preventDefault();
               this.props.addYoutubeSong(this.state.searchTerm);
+              this.setState({ searchTerm: '' });
             }}
           >
             <i className="fa fa-search search" aria-hidden="true" />
