@@ -1,5 +1,15 @@
 import UserDetails from './component';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchUser } from '../../actions/userActions';
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      fetchUser
+    },
+    dispatch
+  );
 
 const mapStateToProps = state => {
   return {
@@ -15,4 +25,7 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(UserDetails);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserDetails);

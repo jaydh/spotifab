@@ -1,14 +1,16 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './UserDetails.css';
 
-const UserDetails = ({ userImage, displayName }) => {
-  return (
-    <div className="user-details-container">
-      <img alt="user" className="user-image" src={userImage} />
-      <p className="user-name">{displayName}</p>
-    </div>
-  );
-};
-
-export default UserDetails;
+export default class UserDetails extends React.Component {
+  componentDidMount() {
+    this.props.fetchUser();
+  }
+  render() {
+    return (
+      <div className="user-details-container">
+        <img alt="user" className="user-image" src={this.props.userImage} />
+        <p className="user-name">{this.props.displayName}</p>
+      </div>
+    );
+  }
+}
