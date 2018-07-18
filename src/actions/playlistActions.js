@@ -1,5 +1,3 @@
-import uniqBy from 'lodash/uniqBy';
-
 export const fetchPlaylistMenuPending = () => {
   return {
     type: 'FETCH_PLAYLIST_MENU_PENDING'
@@ -26,21 +24,16 @@ export const addPlaylistItem = playlist => {
   };
 };
 
-export const fetchPlaylistsMenu = userId => {
+export const fetchPlaylistsMenu = () => {
   return (dispatch, getState) => {
-    const accessToken = getState().token;
-    const request = new Request(
-      `https://api.spotify.com/v1/users/${userId}/playlists`,
-      {
-        headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
-        })
-      }
-    );
-
+    const accessToken = getState().token.token;
     dispatch(fetchPlaylistMenuPending());
 
-    fetch(request)
+    fetch(`https://api.spotify.com/v1/me/playlists`, {
+      headers: new Headers({
+        Authorization: 'Bearer ' + accessToken
+      })
+    })
       .then(res => {
         if (res.statusText === 'Unauthorized') {
           window.location.href = './';
@@ -77,27 +70,21 @@ export const fetchPlaylistSongsError = () => {
 
 export const fetchPlaylistSongs = (userId, playlistId) => {
   return (dispatch, getState) => {
-    const accessToken = getState().token;
-    const request = new Request(
+    const accessToken = getState().token.token;
+    dispatch(fetchPlaylistSongsPending());
+
+    fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
       {
         headers: new Headers({
           Authorization: 'Bearer ' + accessToken
         })
       }
-    );
-
-    dispatch(fetchPlaylistSongsPending());
-
-    fetch(request)
+    )
       .then(res => {
         return res.json();
       })
       .then(res => {
-        //remove duplicate tracks
-        res.items = uniqBy(res.items, item => {
-          return item.track.id;
-        });
         dispatch(fetchPlaylistSongsSuccess(res.items));
       })
       .catch(err => {
