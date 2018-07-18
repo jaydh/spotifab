@@ -16,14 +16,14 @@ const persistConfig = {
   key: 'root',
   transforms: [immutableTransform()],
   storage,
-  whitelist: ['queue', 'songsReducer', 'token', 'userReducer']
+  whitelist: ['queue', 'songsReducer', 'userReducer']
 };
 
 const playerConfig = {
   key: 'player',
   transforms: [immutableTransform()],
   storage,
-  blacklist: ['playing']
+  blacklist: ['playing', 'spotifyReady', 'youtubeReady']
 };
 const rootReducer = combineReducers({
   userReducer,
