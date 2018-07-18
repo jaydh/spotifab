@@ -69,7 +69,9 @@ exports.refreshToken = functions.firestore
     })).json();
     return newFetch && newFetch !== oldFetch
         ? change.after.ref.set({
-            access_token: json.access_token,
+            access_token: json.access_token
+                ? json.access_token
+                : change.after.data().access_token,
             refresh_token: json.refresh_token
                 ? json.refresh_token
                 : refresh_token,
