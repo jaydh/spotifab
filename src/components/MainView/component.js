@@ -6,8 +6,13 @@ import ArtistList from '../ArtistList';
 import BrowseView from '../BrowseView';
 import Queue from '../Queue';
 import Header from '../Header';
+import SongProgress from '../SongProgress';
+import initAPIs from '../../initSpotifySDK';
 
 class MainView extends React.Component {
+  componentDidMount() {
+    initAPIs();
+  }
   render() {
     const { headerTitle } = this.props;
     return (
@@ -20,6 +25,7 @@ class MainView extends React.Component {
           headerTitle !== 'Articles' ||
           headerTitle !== 'Browse') && <SongList />}
         <Queue />
+        <SongProgress />
       </div>
     );
   }
