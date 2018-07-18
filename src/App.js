@@ -6,26 +6,26 @@ import { push as Menu } from 'react-burger-menu';
 
 import './App.css';
 import { listenForToken, requestTokenRefresh } from './actions/tokenActions';
-import ArtWork from './components/ArtWork';
 import Authenticate from './components/Authenticate';
 import MainView from './components/MainView';
 import SideMenu from './components/SideMenu';
 import UserPlaylists from './components/UserPlaylists';
-import initSpotify from './initSpotifySDK';
-
 import { connect } from 'react-redux';
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
-    this.props.listenForToken();
-    setInterval(this.props.requestTokenRefresh, 1800000);
-    initSpotify();
+    if (this.props.signedIn) {
+      this.props.listenForToken();
+    }
   }
   render() {
-    const tok = this.props.token;
+    const { token, signedIn } = this.props;
     return (
       <div id="app-container">
-        {tok ? (
+        {token && signedIn ? (
           <div>
             <Menu
               width={'20%'}
@@ -33,10 +33,12 @@ class App extends React.Component {
               outerContainerId={'app-container'}
             >
               <div className="left-side-section">
-                <Authenticate />
                 <SideMenu />
                 <UserPlaylists />
-                <ArtWork />
+                <Authenticate />
+                <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/spotilyrics%200.1.0.exe?alt=media&token=6db41137-2479-4eec-9a0f-fd3766c56545">
+                  Download Windows Desktop App
+                </a>
               </div>
             </Menu>
             <main id="page-wrap">
@@ -53,7 +55,8 @@ class App extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    token: state.token.token
+    token: state.token.token,
+    signedIn: state.userReducer.signedIn
   };
 };
 const mapDispatchToProps = dispatch => {

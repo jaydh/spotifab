@@ -1,6 +1,9 @@
 import { firebaseConf } from './apiKeys';
 
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import * as firebaseui from 'firebaseui';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -17,8 +20,10 @@ declare module 'redux' {
   export type GenericStoreEnhancer = any;
 }
 
-const app = firebase.initializeApp(firebaseConf);
+export const app = firebase.initializeApp(firebaseConf);
 export const database = app.firestore();
+const settings = { timestampsInSnapshots: true };
+database.settings(settings);
 export const store = createStore(
   reducers,
   composeWithDevTools(applyMiddleware(thunk))
@@ -29,6 +34,29 @@ const persistor = persistStore(store);
 (window as any).previousTrack = () => store.dispatch<any>(prevSong());
 (window as any).togglePlay = () => store.dispatch<any>(togglePlay());
 (window as any).volumeMute = () => store.dispatch<any>(toggleMute());
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    store.dispatch({ type: 'SIGN_IN', user });
+  } else {
+    store.dispatch({ type: 'SIGN_OUT' });
+  }
+});
+const ui = new firebaseui.auth.AuthUI(app.auth());
+const uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+      return false;
+    },
+    uiShown: () => {
+      document.getElementById('loader')!.style.display = 'none';
+    },
+
+    signInSuccessUrl: 'https://spotifab-3379e.firebaseapp.com/'
+  },
+  signInFlow: 'redirect',
+  signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+};
+ui.start('#firebaseui-auth-container', uiConfig);
 
 ReactDOM.render(
   <Provider store={store}>

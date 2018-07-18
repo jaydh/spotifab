@@ -1,5 +1,6 @@
 import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
+import { requestTokenRefresh } from './tokenActions';
 
 export const addYoutubeSong = id => {
   return async dispatch => {
@@ -39,7 +40,7 @@ export const fetchSongs = () => {
     const accessToken = getState().token.token;
     const fetches = [];
     dispatch(fetchSongsPending());
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 8; i++) {
       const request = new Request(
         `https://api.spotify.com/v1/me/tracks?limit=50&offset=${i * 50}`,
         {
@@ -160,23 +161,24 @@ export const play = () => {
       type: 'PLAY'
     });
 
-    const token = getState().token.token;
     const position = getState().queue.position;
     const next = getState().queue.queue.get(position);
     const apiPlay = async ({
       spotify_uri,
       playerInstance: {
-        _options: { id }
+        _options: { getOAuthToken, id }
       }
     }) =>
-      await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
+      getOAuthToken(accessToken =>
+        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ uris: spotify_uri }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
+      );
     if (next.youtube) {
       window.player.pause();
       window.ytPlayer.loadVideoById(next.track.id);

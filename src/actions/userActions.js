@@ -11,20 +11,16 @@ export const fetchUserError = () => {
   };
 };
 
-export const fetchUser = accessToken => {
-  return dispatch => {
+export const fetchUser = () => {
+  return (dispatch, getState) => {
     const request = new Request('https://api.spotify.com/v1/me', {
       headers: new Headers({
-        Authorization: 'Bearer ' + accessToken
+        Authorization: 'Bearer ' + getState().token.token
       })
     });
 
     fetch(request)
       .then(res => {
-        // send user back to homepage if no token
-        if (res.statusText === 'Unauthorized') {
-          window.location.href = './';
-        }
         return res.json();
       })
       .then(res => {
