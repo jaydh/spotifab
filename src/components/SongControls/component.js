@@ -15,36 +15,45 @@ class SongControls extends React.Component<IProps> {
   render() {
     return (
       <div className="song-player-container">
+        <VolumeControls />
         <div className="song-controls">
-          <div
+          <button
             onClick={() => {
               this.props.prevSong();
             }}
-            className="reverse-song"
+            className="reverse"
           >
             <i
               className="fa fa-2x fa-step-backward reverse"
               aria-hidden="true"
             />
-          </div>
-          <i
-            className={
-              this.props.playing ? 'fa fa-2x fa-pause' : 'fa fa-2x fa-play'
-            }
+          </button>
+          <button
             onClick={this.props.togglePlay}
-          />
-          <div
+            className={
+              !(this.props.spotifyReady && this.props.youtubeReady)
+                ? 'fa-disabled play'
+                : 'play'
+            }
+          >
+            <i
+              className={
+                this.props.playing ? 'fa fa-2x fa-pause' : 'fa fa-2x fa-play'
+              }
+              aria-hidden="true"
+            />
+          </button>
+          <button
             onClick={() => {
               this.props.nextSong();
             }}
-            className="next-song"
+            className="forward"
           >
             <i
               className="fa fa-2x fa-step-forward forward"
               aria-hidden="true"
             />
-          </div>
-          <VolumeControls />
+          </button>
         </div>
       </div>
     );
