@@ -1,3 +1,4 @@
+import * as firebase from 'firebase';
 import * as querystring from 'querystring';
 import * as React from 'react';
 
@@ -25,11 +26,26 @@ export default class Authenticat extends React.Component<IProps> {
   }
   public render() {
     return (
-      <div>
-        <button onClick={this.redirect}>redirecttoken</button>
-        <button onClick={this.props.requestTokenRefresh}>refresh</button>
+      <div style={{ color: 'blue' }}>
+        <button onClick={this.redirect}>Authorize with Spotify</button>
+        <button onClick={this.signInAnonymously}>Sign in anonymously</button>
+        <div id="firebaseui-auth-container" />
+        <div id="loader">Loading...</div>
+        <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/spotilyrics%200.1.0.exe?alt=media&token=6db41137-2479-4eec-9a0f-fd3766c56545">
+          Download Windows Desktop App
+        </a>
       </div>
     );
+  }
+
+  private signInAnonymously() {
+    firebase
+      .auth()
+      .signInAnonymously()
+      .catch(error => {
+        // Handle Errors here.
+        // ...
+      });
   }
 
   private redirect() {
