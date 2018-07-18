@@ -15,7 +15,9 @@ const mapDispatchToProps = dispatch =>
 
 const mapStateToProps = state => {
   return {
-    playing: state.player.playing
+    playing: state.player.playing,
+    spotifyReady: state.player.spotifyReady,
+    youtubeReady: state.player.youtubeReady
   };
 };
 
