@@ -84,12 +84,14 @@ export const initSpotify = () => {
         type: 'UPDATE_SPOTIFY_PLAYER_STATE',
         state
       });
-      if (!nexted && state.paused && state.position === 0) {
-        nexted = true;
-        store.dispatch(nextSong());
-      }
-      if (state.position !== 0) {
-        nexted = false;
+      if (state) {
+        if (!nexted && state.paused && state.position === 0) {
+          nexted = true;
+          store.dispatch(nextSong());
+        }
+        if (state.position !== 0) {
+          nexted = false;
+        }
       }
     });
 
