@@ -25,8 +25,8 @@ export const listenForToken = () => {
           time,
           type: 'SET_TOKEN'
         });
-        setInterval(() => dispatch(requestTokenRefresh()), 1800000);
       });
+    setInterval(() => dispatch(requestTokenRefresh()), 1800000);
   };
 };
 
