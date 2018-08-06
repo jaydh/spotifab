@@ -23,8 +23,10 @@ admin.initializeApp(config);
 exports.getToken = functions.firestore
     .document('tokens/{uid}')
     .onWrite((change, context) => __awaiter(this, void 0, void 0, function* () {
-    const redirect_uri = 'https://spotifab-3379e.firebaseapp.com/callback';
-    const oldCode = change.before.data().auth_code;
+    const redirect_uri = 'https://spotifab-3379e.firebaseapp.com/authenticate';
+    const oldCode = change.before.data()
+        ? change.before.data().auth_code
+        : null;
     const newCode = change.after.data().auth_code;
     const { id, secret } = yield (yield admin
         .firestore()
@@ -38,6 +40,7 @@ exports.getToken = functions.firestore
         },
         method: 'POST'
     })).json();
+    console.log(json);
     return oldCode !== newCode
         ? change.after.ref.set({
             access_token: json.access_token
@@ -45,9 +48,11 @@ exports.getToken = functions.firestore
                 : change.after.data().access_token,
             refresh_token: json.refresh_token
                 ? json.refresh_token
-                : change.after.data().refresh_token
-        }, { merge: true })
-        : Promise.resolve();
+                : change.after.data().refresh_token,
+            auth_code: newCode,
+            time: Date.now()
+        })
+        : null;
 }));
 exports.refreshToken = functions.firestore
     .document('tokens/{uid}')
@@ -75,8 +80,9 @@ exports.refreshToken = functions.firestore
             refresh_token: json.refresh_token
                 ? json.refresh_token
                 : refresh_token,
-            refetch: false
+            refetch: false,
+            time: Date.now()
         }, { merge: true })
-        : Promise.resolve();
+        : null;
 }));
 //# sourceMappingURL=index.js.map

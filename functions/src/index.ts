@@ -15,8 +15,10 @@ admin.initializeApp(config);
 export const getToken = functions.firestore
   .document('tokens/{uid}')
   .onWrite(async (change, context) => {
-    const redirect_uri = 'https://spotifab-3379e.firebaseapp.com/callback';
-    const oldCode = change.before.data().auth_code;
+    const redirect_uri = 'https://spotifab-3379e.firebaseapp.com/authenticate';
+    const oldCode = change.before.data()
+      ? change.before.data().auth_code
+      : null;
     const newCode = change.after.data().auth_code;
     const { id, secret } = await (await admin
       .firestore()
@@ -30,19 +32,19 @@ export const getToken = functions.firestore
       },
       method: 'POST'
     })).json();
+    console.log(json);
     return oldCode !== newCode
-      ? change.after.ref.set(
-          {
-            access_token: json.access_token
-              ? json.access_token
-              : change.after.data().access_token,
-            refresh_token: json.refresh_token
-              ? json.refresh_token
-              : change.after.data().refresh_token
-          },
-          { merge: true }
-        )
-      : Promise.resolve();
+      ? change.after.ref.set({
+          access_token: json.access_token
+            ? json.access_token
+            : change.after.data().access_token,
+          refresh_token: json.refresh_token
+            ? json.refresh_token
+            : change.after.data().refresh_token,
+          auth_code: newCode,
+          time: Date.now()
+        })
+      : null;
   });
 
 export const refreshToken = functions.firestore
@@ -73,9 +75,10 @@ export const refreshToken = functions.firestore
             refresh_token: json.refresh_token
               ? json.refresh_token
               : refresh_token,
-            refetch: false
+            refetch: false,
+            time: Date.now()
           },
           { merge: true }
         )
-      : Promise.resolve();
+      : null;
   });
