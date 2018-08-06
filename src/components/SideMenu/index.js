@@ -1,19 +1,13 @@
 import SideMenu from './component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {
-  fetchSongs,
-  fetchRecentlyPlayed,
-  updateViewType
-} from '../../actions/songActions';
+import { fetchSongs, fetchRecentlyPlayed } from '../../actions/songActions';
 import { fetchAlbums } from '../../actions/albumActions';
 import { fetchFeatured } from '../../actions/browseActions';
-import { updateHeaderTitle } from '../../actions/uiActions';
 
 const mapStateToProps = state => {
   return {
     userId: state.userReducer.user ? state.userReducer.user.id : '',
-    title: state.uiReducer.title
   };
 };
 
@@ -24,8 +18,6 @@ const mapDispatchToProps = dispatch => {
       fetchSongs,
       fetchAlbums,
       fetchFeatured,
-      updateViewType,
-      updateHeaderTitle
     },
     dispatch
   );
