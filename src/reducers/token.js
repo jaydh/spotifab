@@ -17,7 +17,6 @@ export default (
     case 'REFETCH_TOKEN':
       return {
         ...state,
-        token: undefined,
         refetch: true
       };
     default:
