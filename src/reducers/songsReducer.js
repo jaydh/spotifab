@@ -8,7 +8,8 @@ const defaultState = {
   songId: 0,
   viewType: 'songs',
   songPaused: true,
-  songs: List()
+  songs: List(),
+  youtubeTracks: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {
@@ -29,10 +30,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_SONGS_SUCCESS':
       return {
         ...state,
-        songs: state.songs
-          .concat(action.songs)
-          .toSet()
-          .toList(),
+        songs: state.youtubeTracks.concat(action.songs),
         fetchSongsError: false,
         fetchSongsPending: false
       };
@@ -132,19 +130,18 @@ export const songsReducer = (state = defaultState, action) => {
         fetchArtistSongsPending: false
       };
     case 'ADD_YOUTUBE_TRACK': {
+      const track = {
+        youtube: true,
+        added_at: now,
+        track: {
+          id: action.id,
+          name: action.name
+        }
+      };
       return {
         ...state,
-        songs: state.songs
-          .push({
-            youtube: true,
-            added_at: now,
-            track: {
-              id: action.id,
-              name: action.name
-            }
-          })
-          .toSet()
-          .toList()
+        songs: state.songs.push(track),
+        youtubeTracks: state.youtubeTracks.push(track)
       };
     }
 
