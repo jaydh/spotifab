@@ -53,7 +53,7 @@ body {
 
   display: grid;
   grid-template-columns: 75% 25%;
-  grid-template-rows: 5% 90% 5%;
+  grid-template-rows: 5% auto 0.5px;
 }
 
 #header {
@@ -73,8 +73,8 @@ body {
 
 #queue-container {
   display: grid;
-  grid-template-rows: 5% 60% auto 5%;
-  grid-row: 2/2;
+  grid-template-rows: 5% 70% auto 5%;
+  grid-row: 2/3;
   grid-column: 2/2;
 }
 
