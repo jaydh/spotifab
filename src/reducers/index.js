@@ -4,19 +4,19 @@ import queue from './queue';
 import playlistReducer from './playlistReducer';
 import songsReducer from './songsReducer';
 import albumsReducer from './albumsReducer';
-import uiReducer from './uiReducer';
 import browseReducer from './browseReducer';
 import player from './player';
 import token from './token';
 import { persistReducer } from 'redux-persist';
 import immutableTransform from 'redux-persist-transform-immutable';
 import storage from 'redux-persist/lib/storage';
+import ui from './ui';
 
 const persistConfig = {
   key: 'root',
   transforms: [immutableTransform()],
   storage,
-  whitelist: ['queue', 'songsReducer', 'userReducer']
+  whitelist: ['queue', 'songsReducer', 'token', 'userReducer']
 };
 
 const playerConfig = {
@@ -30,11 +30,11 @@ const rootReducer = combineReducers({
   playlistReducer,
   songsReducer,
   albumsReducer,
-  uiReducer,
   browseReducer,
   player: persistReducer(playerConfig, player),
   queue,
-  token
+  token,
+  ui
 });
 
 export default persistReducer(persistConfig, rootReducer);
