@@ -11,7 +11,7 @@ interface IProps {
   playing: any;
 }
 
-class SongControls extends React.Component<IProps, IState> {
+export default class SongProgress extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,15 +29,6 @@ class SongControls extends React.Component<IProps, IState> {
   public render() {
     return (
       <div id="song-progress-container">
-        {this.props.currentTrack && (
-          <div className="song-details">
-            <p className="song-name">{this.props.currentTrack.name}</p>
-            <p className="artist-name">
-              {this.props.currentTrack.artists &&
-                this.props.currentTrack.artists[0].name}
-            </p>
-          </div>
-        )}
         <div className="line-container">
           <Line
             percent={(this.state.position / this.state.duration) * 100}
@@ -77,4 +68,3 @@ class SongControls extends React.Component<IProps, IState> {
     }, 250) as any;
   }
 }
-export default SongControls;
