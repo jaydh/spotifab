@@ -1,12 +1,12 @@
 .volume {
   -webkit-appearance: none;
   height: 5px;
-  margin: auto 0;
+  width: 80%;
+  margin: auto auto;
   background: #4caf50;
   border-radius: 4px;
   outline: none;
   opacity: 1;
-  grid-column: 2;
 }
 
 input[type='range']::-moz-range-track {
@@ -17,11 +17,9 @@ input[type='range']::-moz-range-track {
 }
 
 .mute {
-  grid-column: 1;
 }
 .volume-container {
-  display: grid;
-  grid-template-columns: 35% auto;
+  display: inline-block;
 }
 
 .volume:hover {
