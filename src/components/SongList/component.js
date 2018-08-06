@@ -4,6 +4,9 @@ import './SongList.css';
 import Draggable from 'react-draggable';
 import { List } from 'immutable';
 import { List as VirtualList, AutoSizer } from 'react-virtualized';
+import Filter from '../Filter';
+import Sort from '../Sort';
+
 class SongList extends Component {
   constructor(props) {
     super(props);
@@ -15,11 +18,6 @@ class SongList extends Component {
     };
     this.rowRenderer = this.rowRenderer.bind(this);
   }
-  componentDidMount() {
-    this.props.fetchSongs();
-    const list = document.getElementById('song-list');
-  }
-
   makeNewQueue(i, j) {
     let end = i < j ? j : this.props.songs.size - 1;
     this.props.clearSongQueue();
@@ -61,12 +59,15 @@ class SongList extends Component {
           <div className="song-album-header">
             <p>Album</p>
           </div>
+          <Filter />
+          <Sort />
           {!this.state.selected.isEmpty() && (
-            <div className="selectes-buttons">
-              <button onClick={() => this.addSelectedToQueue()}>
+            <div className="selected-buttons">
+              <button className="btn" onClick={() => this.addSelectedToQueue()}>
                 <i className={'fa fa-plus'} aria-hidden="true" />
               </button>
               <button
+                className="btn"
                 onClick={() =>
                   this.makeNewQueue(
                     this.state.downSelectorPos,

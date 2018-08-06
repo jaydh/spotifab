@@ -9,27 +9,33 @@ import {
   shuffleQueue,
   clearSongQueue
 } from '../../actions/queueActions';
+import * as Fuse from 'fuse.js';
+import { List } from 'immutable';
 
 const mapStateToProps = state => {
+  const options = {
+    threshold: 0.3,
+    keys: [
+      { name: 'track.artists.name', weight: 0.5 },
+      { name: 'track.album.name', weight: 0.3 },
+      { name: 'track.name', weight: 1 }
+    ]
+  };
+  const fuse = new Fuse(state.songsReducer.songs.toJS(), options);
+  const filter = state.ui.filter;
   return {
-    songs: state.songsReducer.spotifyTracks.concat(
-      state.songsReducer.youtubeTracks
-    ),
-    fetchSongsError: state.songsReducer.fetchSongsError,
-    fetchSongsPending: state.songsReducer.fetchSongsPending,
-    fetchPlaylistSongsPending: state.songsReducer.fetchPlaylistSongsPending,
-    songPlaying: state.songsReducer.songPlaying,
-    songPaused: state.songsReducer.songPaused,
+    songs:
+      filter.length > 0
+        ? List(fuse.search(state.ui.filter))
+        : state.songsReducer.songs,
     songId: state.songsReducer.songId,
-    songAddedId: state.userReducer.songId || '',
-    viewType: state.songsReducer.viewType
+    sort: state.ui.sort
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      fetchSongs,
       addSongToLibrary,
       addSongToQueue,
       addSongToFront,
