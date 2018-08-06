@@ -152,10 +152,6 @@ class SongList extends Component {
                   ? this.props.songs.size
                   : this.state.upSelectorPos
               );
-              this.setState({ downSelectorPos: index });
-              this.setState({
-                upSelectorPos: this.props.songs.size - 1
-              });
               this.props.play();
             }}
             className="play-song"
