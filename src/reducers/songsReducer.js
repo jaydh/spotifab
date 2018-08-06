@@ -1,5 +1,5 @@
 import { List } from 'immutable';
-import { isBefore } from 'date-fns';
+import { isBefore, parse } from 'date-fns';
 
 const defaultState = {
   fetchSongsPending: true,
@@ -8,8 +8,7 @@ const defaultState = {
   songId: 0,
   viewType: 'songs',
   songPaused: true,
-  spotifyTracks: List(),
-  youtubeTracks: List()
+  songs: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {
@@ -30,7 +29,10 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_SONGS_SUCCESS':
       return {
         ...state,
-        spotifyTracks: action.songs,
+        songs: state.songs
+          .concat(action.songs)
+          .toSet()
+          .toList(),
         fetchSongsError: false,
         fetchSongsPending: false
       };
@@ -95,7 +97,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_PLAYLIST_SONGS_SUCCESS':
       return {
         ...state,
-        spotifyTracks: List(action.songs),
+        songs: List(action.songs),
         viewType: 'playlist',
         fetchPlaylistSongsError: false,
         fetchPlaylistSongsPending: false
@@ -132,20 +134,42 @@ export const songsReducer = (state = defaultState, action) => {
     case 'ADD_YOUTUBE_TRACK': {
       return {
         ...state,
-        youtubeTracks: state.youtubeTracks.push({
-          youtube: true,
-          added_at: now,
-          track: {
-            id: action.id,
-            name: action.name
-          }
-        })
+        songs: state.songs
+          .push({
+            youtube: true,
+            added_at: now,
+            track: {
+              id: action.id,
+              name: action.name
+            }
+          })
+          .toSet()
+          .toList()
       };
     }
 
     case 'PLAY':
       return {
         ...state
+      };
+    case 'SET_SORT':
+      return {
+        ...state,
+        songs: state.songs.sort((a, b) => {
+          switch (action.sort) {
+            case 'added-asc':
+              return isBefore(parse(a.added_at), parse(b.added_at)) ? 1 : -1;
+            case 'added-desc':
+              return isBefore(parse(a.added_at), parse(b.added_at)) ? -1 : 1;
+            case 'name-asc':
+              return a.track.name < b.track.name ? -1 : 1;
+            case 'name-desc':
+              return a.track.name < b.track.name ? 1 : -1;
+
+            default:
+              return a;
+          }
+        })
       };
 
     default:
