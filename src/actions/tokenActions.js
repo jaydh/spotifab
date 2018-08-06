@@ -19,9 +19,10 @@ export const listenForToken = () => {
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid)
       .onSnapshot(async doc => {
-        const { access_token } = await doc.data();
+        const { access_token, time } = await doc.data();
         dispatch({
           token: access_token,
+          time,
           type: 'SET_TOKEN'
         });
         setInterval(() => dispatch(requestTokenRefresh()), 1800000);
