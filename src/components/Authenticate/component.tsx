@@ -1,10 +1,15 @@
+import { addMinutes, isBefore, parse } from 'date-fns';
 import * as firebase from 'firebase';
 import * as querystring from 'querystring';
 import * as React from 'react';
+import { Redirect } from 'react-router-dom';
+import { ui } from '../../index';
 
 interface IProps {
   setAuthCode: (t: string) => void;
   requestTokenRefresh: () => void;
+  token: string;
+  time: any;
 }
 export default class Authenticat extends React.Component<IProps> {
   public componentDidMount() {
@@ -23,17 +28,41 @@ export default class Authenticat extends React.Component<IProps> {
     if (code.length > 0) {
       this.props.setAuthCode(code);
     }
+
+    const uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+          return false;
+        },
+        uiShown: () => {
+          document.getElementById('loader')!.style.display = 'none';
+        },
+
+        signInSuccessUrl: 'https://spotifab-3379e.firebaseapp.com/'
+      },
+      signInFlow: 'redirect',
+      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+    };
+    ui.start('#firebaseui-auth-container', uiConfig);
   }
   public render() {
     return (
-      <div style={{ color: 'blue' }}>
-        <button onClick={this.redirect}>Authorize with Spotify</button>
-        <button onClick={this.signInAnonymously}>Sign in anonymously</button>
+      <div style={{ color: 'blue', margin: 'auto 0' }}>
         <div id="firebaseui-auth-container" />
         <div id="loader">Loading...</div>
-        <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/spotilyrics%200.1.0.exe?alt=media&token=6db41137-2479-4eec-9a0f-fd3766c56545">
-          Download Windows Desktop App
-        </a>
+        <div>
+          <button className="btn" onClick={this.redirect}>
+            Authorize with Spotify
+          </button>
+          <br />
+          <button className="btn" onClick={this.signInAnonymously}>
+            Sign in anonymously
+          </button>
+        </div>
+        {this.props.token &&
+          isBefore(new Date(), addMinutes(parse(this.props.time), 30)) && (
+            <Redirect to="/library" />
+          )}
       </div>
     );
   }
@@ -52,8 +81,8 @@ export default class Authenticat extends React.Component<IProps> {
     const scopes =
       'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
     const callback = window.location.href.startsWith('http://localhost')
-      ? 'http://localhost:3000/callback'
-      : `https://spotifab-3379e.firebaseapp.com/callback`;
+      ? 'http://localhost:3000/authenticate'
+      : `https://spotifab-3379e.firebaseapp.com/authenticate`;
     window.location.href =
       'https://accounts.spotify.com/authorize?' +
       querystring.stringify({
