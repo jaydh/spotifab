@@ -53,8 +53,13 @@ export const fetchSongs = () => {
     }
     const data = await Promise.all(fetches.map(t => fetch(t)));
     const json = await Promise.all(data.map(t => t.json()));
-    const items = List(json.map(re => re.items).reduce((a, b) => [...a, ...b]));
-    dispatch(fetchSongsSuccess(items));
+    if (json) {
+      const items = List(
+        json.map(re => re.items).reduce((a, b) => [...a, ...b])
+      );
+      dispatch(fetchSongsSuccess(items));
+    }
+    return Promise.resolve()
   };
 };
 
