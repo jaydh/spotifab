@@ -10,12 +10,6 @@
   font-size: 12px;
 }
 
-.song-controls {
-  justify-content: center;
-  margin: 0 auto;
-  grid-column: 2;
-}
-
 .forward,
 .reverse,
 .play {
@@ -28,11 +22,59 @@
   -webkit-text-stroke: 4px rgb(40, 40, 40);
 }
 
-.song-player-container {
-  display: grid;
-  grid-template-columns: 50% auto;
+.current-playing-art {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
 }
 
-.volume-container {
-  grid-column: 1;
+/* Style the button and place it in the middle of the container/image */
+.playback-controls {
+  position: relative;
+}
+
+.playback-btn {
+  background-color: #555;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.playback-btn:hover {
+  opacity: 0.9;
+}
+.playback-btn:action {
+  -webkit-box-shadow: inset 1px 1px 10px #333;
+  -moz-box-shadow: inset 1px 1px 10px #333;
+  box-shadow: inset 1px 1px 10px #333;
+}
+
+.play {
+  position: absolute;
+  top: 85%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%);
+}
+
+.reverse {
+  position: absolute;
+  top: 90%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #555;
+}
+
+.forward {
+  position: absolute;
+  top: 90%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.playback-controls {
+  border-top: 2px outset white;
 }

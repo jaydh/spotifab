@@ -4,17 +4,19 @@ import { bindActionCreators } from 'redux';
 import {
   updatePosition,
   shuffleQueue,
-  toggleRepeat
+  toggleRepeat,
+  removeSongFromQueue,
+  clearSongQueue
 } from '../../actions/queueActions';
+import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
 import { addSongToLibrary } from '../../actions/userActions';
+import { createNewPlaylist } from '../../actions/playlistActions';
 
 const mapStateToProps = state => {
   return {
     songs: state.queue.queue,
     position: state.queue.position,
-    viewType: state.songsReducer.viewType,
-    repeat: state.player.repeat,
-    currentTrack: state.queue.currentTrack
+    repeat: state.player.repeat
   };
 };
 
@@ -24,7 +26,10 @@ const mapDispatchToProps = dispatch => {
       addSongToLibrary,
       updatePosition,
       shuffleQueue,
-      toggleRepeat
+      toggleRepeat,
+      removeSongFromQueue,
+      clearSongQueue,
+      createNewPlaylist
     },
     dispatch
   );
