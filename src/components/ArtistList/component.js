@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./ArtistList.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './ArtistList.css';
 
 const ArtistList = ({
   artists,
@@ -26,7 +26,7 @@ const ArtistList = ({
           <a>
             <div>
               <div className="artist-image">
-                <img src={artist.images[0] ? artist.images[0].url : ""} />
+                <img src={artist.images[0] ? artist.images[0].url : ''} />
               </div>
               <div className="artist-details">
                 <p>{artist.name}</p>
