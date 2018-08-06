@@ -198,9 +198,12 @@ export const togglePlay = () => {
       type: 'TOGGLE_PLAY'
     });
 
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position).track;
-    if (!next.uri) {
+    const track = getState().queue.currentTrack;
+    if (!track) {
+      window.ytPlayer.pauseVideo();
+      const state = await window.player.getCurrentState();
+      state ? window.player.togglePlay() : dispatch(play());
+    } else if (!track.uri) {
       window.ytPlayer.getPlayerState() === 1
         ? window.ytPlayer.pauseVideo()
         : window.ytPlayer.playVideo();
