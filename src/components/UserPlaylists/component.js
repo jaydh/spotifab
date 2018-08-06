@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import './UserPlaylists.css';
+import { NavLink } from 'react-router-dom';
 
 class UserPlaylists extends Component {
   componentDidMount() {
@@ -9,26 +9,23 @@ class UserPlaylists extends Component {
   renderPlaylists() {
     return this.props.playlistMenu.map(playlist => {
       const getPlaylistSongs = () => {
-        this.props.fetchPlaylistSongs(
-          playlist.owner.id,
-          playlist.id,
-          this.props.token
-        );
-        this.props.updateHeaderTitle(playlist.name);
+        this.props.fetchPlaylistSongs(playlist.owner.id, playlist.id);
       };
-
       return (
-        <li
-          onClick={getPlaylistSongs}
-          className={
-            this.props.title === playlist.name
-              ? 'active side-menu-item'
-              : 'side-menu-item'
-          }
-          key={playlist.id}
-        >
-          {playlist.name}
-        </li>
+        <div key={playlist.id}>
+          <NavLink
+            to={`/playlist/${playlist.name}`}
+            onClick={getPlaylistSongs}
+            activeClassName="active side-menu-item"
+            className={'side-menu-item'}
+          >
+            {playlist.name}
+            <br />
+          </NavLink>
+          <button onClick={() => this.props.unfollowPlaylist(playlist.id)}>
+            <i className="fa fa-minus" aria-hidden={true} />
+          </button>
+        </div>
       );
     });
   }
@@ -42,15 +39,5 @@ class UserPlaylists extends Component {
     );
   }
 }
-
-UserPlaylists.propTypes = {
-  userId: PropTypes.string,
-  token: PropTypes.string,
-  title: PropTypes.string,
-  playlistMenu: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
-  fetchPlaylistsMenu: PropTypes.func,
-  fetchPlaylistSongs: PropTypes.func,
-  updateHeaderTitle: PropTypes.func
-};
 
 export default UserPlaylists;
