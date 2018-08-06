@@ -36,6 +36,12 @@ export const addSongToFront = song => {
     song
   };
 };
+export const removeSongFromQueue = position => {
+  return {
+    type: 'REMOVE_SONG_FROM_QUEUE',
+    position
+  };
+};
 
 export const updatePosition = position => {
   return async (dispatch, getState) => {
@@ -63,14 +69,10 @@ export const updatePosition = position => {
     if (next.uri) {
       window.ytPlayer.pauseVideo();
       //If switching from youtube to spotify, use last played track
-      if (spotifyPaused) {
-        window.player.nextTrack();
-      } else {
-        apiPlay({
-          playerInstance: window.player,
-          spotify_uri: [next.uri]
-        });
-      }
+      apiPlay({
+        playerInstance: window.player,
+        spotify_uri: [next.uri]
+      });
     } else {
       window.ytPlayer.loadVideoById(next.id);
       window.player.pause();
