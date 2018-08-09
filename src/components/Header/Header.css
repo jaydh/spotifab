@@ -1,9 +1,0 @@
-#header {
-  background: rgb(24, 24, 24);
-}
-
-.header {
-  float: right;
-  display: grid;
-  grid-template-columns: 60% auto;
-}

@@ -9,12 +9,33 @@ const defaultState = {
   viewType: 'songs',
   songPaused: true,
   songs: List(),
-  youtubeTracks: List()
+  youtubeTracks: List(),
+  spotifyTracks: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {
   const now = new Date();
   switch (action.type) {
+    case 'ADD_SONG_TO_LIBRARY':
+      return {
+        ...state,
+        songs: state.songs.insert(0, {
+          added_at: new Date().getTime(),
+          track: action.track
+        }),
+        spotifyTracks: state.spotifyTracks.insert(0, {
+          added_at: new Date().getTime(),
+          track: action.track
+        })
+      };
+    case 'REMOVE_SONG_FROM_LIBRARY':
+      const index = state.songs.findIndex(t => t.track.id === action.track.id);
+      return {
+        ...state,
+        songs: state.songs.delete(index),
+        spotifyTracks: state.spotifyTracks.delete(index)
+      };
+
     case 'UPDATE_VIEW_TYPE':
       return {
         ...state,
@@ -30,7 +51,10 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_SONGS_SUCCESS':
       return {
         ...state,
-        songs: state.youtubeTracks.concat(action.songs),
+        songs: action.songs.isEmpty()
+          ? state.songs
+          : state.youtubeTracks.concat(action.songs),
+        spotifyTracks: action.songs,
         fetchSongsError: false,
         fetchSongsPending: false
       };
@@ -132,7 +156,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'ADD_YOUTUBE_TRACK': {
       const track = {
         youtube: true,
-        added_at: now,
+        added_at: action.added_at,
         track: {
           id: action.id,
           name: action.name
@@ -140,8 +164,12 @@ export const songsReducer = (state = defaultState, action) => {
       };
       return {
         ...state,
-        songs: state.songs.push(track),
-        youtubeTracks: state.youtubeTracks.push(track)
+        songs: state.songs.find(t => t.track.id === action.id)
+          ? state.songs
+          : state.songs.push(track),
+        youtubeTracks: state.youtubeTracks.find(t => t.track.id === action.id)
+          ? state.youtubeTracks
+          : state.youtubeTracks.push(track)
       };
     }
 
@@ -162,7 +190,22 @@ export const songsReducer = (state = defaultState, action) => {
               return a.track.name < b.track.name ? -1 : 1;
             case 'name-desc':
               return a.track.name < b.track.name ? 1 : -1;
-
+            case 'artist-asc':
+              if (!a.track.artists) {
+                return -1;
+              }
+              if (!b.track.artists) {
+                return 1;
+              }
+              return a.track.artists[0].name < b.track.artists[0].name ? -1 : 1;
+            case 'artist-desc':
+              if (!a.track.artists) {
+                return -1;
+              }
+              if (!b.track.artists) {
+                return 1;
+              }
+              return a.track.artists[0].name < b.track.artists[0].name ? 1 : -1;
             default:
               return a;
           }

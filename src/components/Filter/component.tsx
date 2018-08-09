@@ -18,12 +18,14 @@ export default class Filter extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <form onSubmit={this.handleChange}>
-        <input
-          placeholder={this.state.value === '' ? 'Search' : this.state.value}
-          onChange={this.handleChange}
-        />
-      </form>
+      <div>
+        <form onSubmit={this.handleChange}>
+          <input
+            placeholder={this.state.value === '' ? 'Filter' : this.state.value}
+            onChange={this.handleChange}
+          />
+        </form>
+      </div>
     );
   }
   private handleChange(e: any) {

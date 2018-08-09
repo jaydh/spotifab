@@ -30,7 +30,7 @@ export const initYoutube = () => {
       .getState()
       .queue.queue.get(store.getState().queue.position);
     if (current && current.youtube) {
-      window.ytPlayer.loadVideoById(current.track.id);
+      window.ytPlayer.cueVideoById(current.track.id);
       window.ytPlayer.pauseVideo();
     }
     store.dispatch({ type: 'YOUTUBE_READY' });

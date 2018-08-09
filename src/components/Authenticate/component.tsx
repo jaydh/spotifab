@@ -8,9 +8,12 @@ import { ui } from '../../index';
 interface IProps {
   setAuthCode: (t: string) => void;
   requestTokenRefresh: () => void;
+  refetching: boolean;
   token: string;
   time: any;
+  user: any;
 }
+
 export default class Authenticat extends React.Component<IProps> {
   public componentDidMount() {
     function getQueryVariable(variable) {
@@ -28,37 +31,59 @@ export default class Authenticat extends React.Component<IProps> {
     if (code.length > 0) {
       this.props.setAuthCode(code);
     }
+    if (!this.props.user) {
+      const uiConfig = {
+        callbacks: {
+          signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+            return false;
+          },
+          uiShown: () => {
+            document.getElementById('loader')!.style.display = 'none';
+          },
 
-    const uiConfig = {
-      callbacks: {
-        signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-          return false;
+          signInSuccessUrl: 'https://spotifab-3379e.firebaseapp.com/'
         },
-        uiShown: () => {
-          document.getElementById('loader')!.style.display = 'none';
-        },
-
-        signInSuccessUrl: 'https://spotifab-3379e.firebaseapp.com/'
-      },
-      signInFlow: 'redirect',
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
-    };
-    ui.start('#firebaseui-auth-container', uiConfig);
+        signInFlow: 'redirect',
+        signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
+      };
+      ui.start('#firebaseui-auth-container', uiConfig);
+    }
   }
   public render() {
     return (
-      <div style={{ color: 'blue', margin: 'auto 0' }}>
-        <div id="firebaseui-auth-container" />
-        <div id="loader">Loading...</div>
-        <div>
-          <button className="btn" onClick={this.redirect}>
-            Authorize with Spotify
-          </button>
-          <br />
-          <button className="btn" onClick={this.signInAnonymously}>
-            Sign in anonymously
-          </button>
-        </div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '400px'
+        }}
+      >
+        {this.props.user ? (
+          <React.Fragment>
+            <div style={{ margin: 'auto', width: '100px' }}>
+              {this.props.refetching && (
+                <React.Fragment>
+                  Connecting...
+                  <i className="fa fa-refresh fa-spin" />
+                </React.Fragment>
+              )}
+              <br />
+              Signed in{' '}
+              <button className="btn" onClick={this.redirect}>
+                Connect with Spotify
+              </button>
+            </div>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <div id="firebaseui-auth-container" />
+            <div id="loader">Loading...</div>
+            <button className="btn" onClick={this.signInAnonymously}>
+              Sign in anonymously
+            </button>
+          </React.Fragment>
+        )}
         {this.props.token &&
           isBefore(new Date(), addMinutes(parse(this.props.time), 30)) && (
             <Redirect to="/library" />

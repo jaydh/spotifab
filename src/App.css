@@ -73,7 +73,7 @@ body {
 
 #queue-container {
   display: grid;
-  grid-template-rows: 5% 70% auto 5%;
+  grid-template-rows: 5% 70% auto;
   grid-row: 2/3;
   grid-column: 2/2;
 }
@@ -138,4 +138,29 @@ body {
 .fa-disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Style the buttons */
+.btn {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50px;
+  background-color: #555;
+}
+
+.btn:action {
+  -webkit-box-shadow: inset 1px 1px 10px #333;
+  -moz-box-shadow: inset 1px 1px 10px #333;
+  box-shadow: inset 1px 1px 10px #333;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Style the active class (and buttons on mouse-over) */
+.active,
+.btn:hover {
+  color: black;
 }

@@ -33,7 +33,7 @@ export const store = createStore(
   reducers,
   composeWithDevTools(applyMiddleware(thunk))
 );
-const persistor = persistStore(store);
+export const persistor = persistStore(store);
 (window as any).nextTrack = () => store.dispatch<any>(nextSong());
 (window as any).previousTrack = () => store.dispatch<any>(prevSong());
 (window as any).togglePlay = () => store.dispatch<any>(togglePlay());
@@ -43,7 +43,8 @@ firebase.auth().onAuthStateChanged(user => {
   if (user) {
     store.dispatch({ type: 'SIGN_IN', user });
     store.dispatch<any>(listenForToken());
-    const { token, time } = store.getState().token;
+    const state = store.getState() as any;
+    const { token, time } = state.token;
     if (token && !isBefore(new Date(), addMinutes(parse(time), 30))) {
       store.dispatch<any>(requestTokenRefresh());
     }

@@ -6,7 +6,8 @@ import {
   shuffleQueue,
   toggleRepeat,
   removeSongFromQueue,
-  clearSongQueue
+  clearSongQueue,
+  insertSongInQueue
 } from '../../actions/queueActions';
 import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
 import { addSongToLibrary } from '../../actions/userActions';
@@ -29,7 +30,8 @@ const mapDispatchToProps = dispatch => {
       toggleRepeat,
       removeSongFromQueue,
       clearSongQueue,
-      createNewPlaylist
+      createNewPlaylist,
+      insertSongInQueue
     },
     dispatch
   );

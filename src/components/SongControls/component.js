@@ -8,8 +8,16 @@ interface IProps {
   togglePlay: () => void;
   playing: boolean;
 }
-
-class SongControls extends React.Component<IProps> {
+interface IState {
+  showYT: boolean;
+}
+class SongControls extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      showYT: false
+    };
+  }
   render() {
     const enable = this.props.youtubeReady && this.props.spotifyReady;
     return (

@@ -43,6 +43,14 @@ export const removeSongFromQueue = position => {
   };
 };
 
+export const insertSongInQueue = (track, position) => {
+  return {
+    type: 'INSERT_SONG_IN_QUEUE',
+    position,
+    track
+  };
+};
+
 export const updatePosition = position => {
   return async (dispatch, getState) => {
     dispatch({ type: 'UPDATE_POSITION', position });

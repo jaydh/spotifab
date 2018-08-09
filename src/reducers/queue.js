@@ -78,6 +78,11 @@ export default (
         position: state.queue.findIndex(t => t.id === action.track.id),
         currentTrack: action.track
       };
+    case 'INSERT_SONG_IN_QUEUE':
+      return {
+        ...state,
+        queue: state.queue.insert(action.position, action.track)
+      };
     case 'UPDATE_POSITION':
       return {
         ...state,

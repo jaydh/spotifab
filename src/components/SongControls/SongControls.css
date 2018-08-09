@@ -18,15 +18,12 @@
   cursor: pointer;
 }
 
-.play-btn .fa {
-  -webkit-text-stroke: 4px rgb(40, 40, 40);
-}
-
 .current-playing-art {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 40%;
+  margin: 0 auto;
+  height: 12em;
 }
 
 /* Style the button and place it in the middle of the container/image */
@@ -35,7 +32,6 @@
 }
 
 .playback-btn {
-  background-color: #555;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -51,30 +47,30 @@
 }
 
 .play {
-  position: absolute;
-  top: 85%;
+  top: 80%;
   left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
 }
 
 .reverse {
-  position: absolute;
-  top: 90%;
+  top: 75%;
   left: 25%;
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
-  background-color: #555;
 }
 
 .forward {
-  position: absolute;
-  top: 90%;
+  top: 75%;
   left: 75%;
   transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
 }
-
+.play,
+.reverse,
+.forward {
+  position: absolute;
+  background-color: #555;
+}
 .playback-controls {
   border-top: 2px outset white;
 }

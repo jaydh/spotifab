@@ -8,8 +8,17 @@ export default class UserDetails extends React.Component {
   render() {
     return (
       <div className="user-details-container">
-        <img alt="user" className="user-image" src={this.props.userImage} />
-        <p className="user-name">{this.props.displayName}</p>
+        {this.props.displayName &&
+          this.props.userImage && (
+            <React.Fragment>
+              <img
+                alt="user"
+                className="user-image"
+                src={this.props.userImage}
+              />
+              <p className="user-name">{this.props.displayName}</p>
+            </React.Fragment>
+          )}
       </div>
     );
   }

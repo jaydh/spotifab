@@ -2,13 +2,14 @@ import { database, app } from '../index';
 
 export const setAuthCode = authCode => {
   return (dispatch, getState) => {
+    console.log(getState());
     const ref = database
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid);
     return ref.get().then((doc: any) => {
-      if (doc.auth_code !== authCode) {
-        ref.set({ auth_code: authCode }, { merge: true });
-      }
+      return doc.auth_code !== authCode
+        ? ref.set({ auth_code: authCode }, { merge: true })
+        : Promise.resolve();
     });
   };
 };
@@ -19,12 +20,14 @@ export const listenForToken = () => {
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid)
       .onSnapshot(async doc => {
-        const { access_token, time } = await doc.data();
-        dispatch({
-          token: access_token,
-          time,
-          type: 'SET_TOKEN'
-        });
+        if (doc.exists) {
+          const { access_token, time } = await doc.data();
+          dispatch({
+            token: access_token,
+            time,
+            type: 'SET_TOKEN'
+          });
+        }
       });
     setInterval(() => dispatch(requestTokenRefresh()), 1800000);
   };

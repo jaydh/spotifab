@@ -21,7 +21,7 @@ class VolumeControls extends Component {
   render() {
     return (
       <div className="volume-container">
-        <button className="mute btn" onClick={this.props.toggleMute}>
+        <button className="mute" onClick={this.props.toggleMute}>
           <i
             className={
               this.props.muted

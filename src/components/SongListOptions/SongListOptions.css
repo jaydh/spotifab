@@ -1,0 +1,25 @@
+.song-header-container {
+  grid-row: 1/1;
+  margin-left: 60px;
+  display: grid;
+  grid-template-columns: 50% 20% 10% auto;
+  border-bottom: 1px solid #666;
+}
+
+.song-title-header {
+  grid-column: 1/1;
+}
+.song-artist-header {
+  grid-column: 2/2;
+}
+.song-album-header {
+  grid-column: 3/3;
+}
+
+.song-list-options {
+  display: flex;
+  padding-right: 2em;
+  grid-column: 4/4;
+  margin-left: auto;
+  justify-content: flex-end;
+}

@@ -17,6 +17,11 @@ input[type='range']::-moz-range-track {
 }
 
 .mute {
+  color: black;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50px;
 }
 .volume-container {
   display: inline-block;

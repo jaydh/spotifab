@@ -1,18 +1,52 @@
 import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
 import { requestTokenRefresh } from './tokenActions';
+import { database, app } from '../index';
 
-export const addYoutubeSong = id => {
-  return async dispatch => {
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&part=snippet&id=${id}`
-    );
-    const json = await res.json();
+export const addYoutubeSong = t => {
+  return async (dispatch, getState) => {
+    const name = t.snippet.title;
+    const id = t.id.videoId;
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('youtubeTracks')
+      .doc(id);
+    await ref.set({
+      name,
+      id,
+      added_at: new Date().getTime()
+    });
+
     dispatch({
       type: 'ADD_YOUTUBE_TRACK',
-      id: json.items['0'].id,
-      name: json.items['0'].snippet.title
+      id,
+      name,
+      added_at: new Date().getTime()
     });
+  };
+};
+
+export const fetchYoutubeSongs = () => {
+  return async (dispatch, getState) => {
+    const user = getState().userReducer.firebaseUser;
+    if (user) {
+      const ref = database
+        .collection('userData')
+        .doc(user.uid)
+        .collection('youtubeTracks');
+      return ref.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { id, name, added_at } = doc.data();
+          dispatch({
+            type: 'ADD_YOUTUBE_TRACK',
+            id,
+            name,
+            added_at
+          });
+        });
+      });
+    }
   };
 };
 
@@ -37,29 +71,46 @@ export const fetchSongsError = () => {
 
 export const fetchSongs = () => {
   return async (dispatch, getState) => {
+    dispatch(fetchSongsPending());
     const accessToken = getState().token.token;
     const fetches = [];
     dispatch(fetchSongsPending());
-    for (let i = 0; i < 8; i++) {
-      const request = new Request(
-        `https://api.spotify.com/v1/me/tracks?limit=50&offset=${i * 50}`,
-        {
-          headers: new Headers({
-            Authorization: 'Bearer ' + accessToken
-          })
-        }
-      );
-      fetches.push(request);
+    let next = `https://api.spotify.com/v1/me/tracks?limit=50`;
+    let tracks = List();
+    const currentFirst = getState().songsReducer.spotifyTracks.get(0);
+    while (next) {
+      const request = new Request(next, {
+        headers: new Headers({
+          Authorization: 'Bearer ' + accessToken
+        })
+      });
+      const json = await (await fetch(request)).json();
+      if (json.error) {
+        dispatch(fetchSongsError());
+      }
+      if (currentFirst && json.items[0].track.id === currentFirst.track.id) {
+        break;
+      }
+      tracks = tracks.concat(List(json.items));
+      next = json.next;
     }
-    const data = await Promise.all(fetches.map(t => fetch(t)));
-    const json = await Promise.all(data.map(t => t.json()));
-    if (json) {
-      const items = List(
-        json.map(re => re.items).reduce((a, b) => [...a, ...b])
-      );
-      dispatch(fetchSongsSuccess(items));
-    }
-    return Promise.resolve()
+    dispatch(
+      fetchSongsSuccess(
+        tracks.map(t => {
+          return {
+            added_at: t.added_at,
+            track: {
+              album: t.track.album,
+              artists: t.track.artists,
+              id: t.track.id,
+              name: t.track.name,
+              uri: t.track.uri
+            }
+          };
+        })
+      )
+    );
+    return Promise.resolve();
   };
 };
 
@@ -239,5 +290,56 @@ export const updateViewType = view => {
   return {
     type: 'UPDATE_VIEW_TYPE',
     view
+  };
+};
+
+export const seek = time => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: 'SEEK'
+    });
+    console.log(time);
+    const track = getState().queue.currentTrack;
+    if (!track) {
+      window.ytPlayer.pauseVideo();
+      const state = await window.player.getCurrentState();
+      state ? window.player.togglePlay() : dispatch(play());
+    } else if (!track.uri) {
+      window.ytPlayer.seekTo(time / 1000, true);
+    } else {
+      window.player.seek(time);
+    }
+  };
+};
+
+export const addSpotifySong = track => {
+  return async (dispatch, getState) => {
+    const accessToken = getState().token.token;
+    await fetch(`https://api.spotify.com/v1/me/tracks`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        ids: [track.id]
+      }),
+      headers: new Headers({
+        Authorization: 'Bearer ' + accessToken
+      })
+    });
+    dispatch({ type: 'ADD_SONG_TO_LIBRARY', track });
+  };
+};
+
+export const removeSpotifySong = track => {
+  return async (dispatch, getState) => {
+    const accessToken = getState().token.token;
+    await fetch(`https://api.spotify.com/v1/me/tracks`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        ids: [track.id]
+      }),
+      headers: new Headers({
+        Authorization: 'Bearer ' + accessToken
+      })
+    });
+    dispatch({ type: 'REMOVE_SONG_FROM_LIBRARY', track });
   };
 };

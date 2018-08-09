@@ -15,27 +15,47 @@
 }
 
 .user-playlist-item {
+  display: flex;
   list-style-type: none;
   line-height: 28px;
+}
+
+.user-playlist-link {
+  width: 75%;
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 140px;
   cursor: pointer;
 }
 
 .user-playlist-item:hover {
   color: #fff;
 }
+.user-playlist-item:hover > .playlist-action-container {
+  opacity: 100;
+  color: #fff;
+}
 
 .user-playlist-container .active {
-	margin-left: -3px;
+  margin-left: -3px;
 }
 
 .user-playlist-container .active:before {
-	content: "";
-	border-left: 3px solid #1db954;
-	position: relative;
-	left: -18px;
+  content: '';
+  border-left: 3px solid #1db954;
+  position: relative;
+  left: -18px;
+}
+
+.playlist-action-container {
+  display: flex;
+  width: 40%;
+  opacity: 0;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+.playist-action {
+  margin-left: auto;
+  justify-content: flex-end;
 }

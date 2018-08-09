@@ -20,43 +20,28 @@
   background: #555;
 }
 
-/* Style the buttons */
-.btn {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  color: white;
-}
-
-/* Style the active class (and buttons on mouse-over) */
-.active,
-.btn:hover {
-  color: black;
-}
-
 .queue {
   grid-row: 2/2;
+  border-left: 1px outset white;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .queue-header {
   display: grid;
-  grid-template-columns: 40% auto;
+  grid-template-columns: 50% auto;
   border-bottom: 1px solid #666;
 }
-
-.queue-buttons {
+.queuebuttons {
   grid-column: 1;
 }
-
 .volume-container {
   grid-column: 2;
 }
 
-.playback-controls{
-  display: inline-block;
-  grid-row: 3/4;
+.playback-controls {
+  border-left: 1px outset white;
+  grid-row: 3;
 }
 
 .album-art .btn:hover {

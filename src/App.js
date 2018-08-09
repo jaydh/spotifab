@@ -27,6 +27,10 @@ class App extends React.Component {
       </div>
     );
   }
+  componentDidCatch(error, info) {
+    console.log('od');
+    this.props.onReset();
+  }
 }
 
 const mapStateToProps = state => {
@@ -36,4 +40,12 @@ const mapStateToProps = state => {
     signedIn: state.userReducer.signedIn
   };
 };
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => {
+  return {
+    onReset: () => dispatch({ type: 'RESET' })
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
