@@ -21,14 +21,10 @@ class App extends React.Component {
             <MainView />
           </main>
         </React.Fragment>
-        {(!token || !isBefore(new Date(), addMinutes(time, 30))) && (
-          <Redirect to="/authenticate" />
-        )}
       </div>
     );
   }
   componentDidCatch(error, info) {
-    console.log('od');
     this.props.onReset();
   }
 }
