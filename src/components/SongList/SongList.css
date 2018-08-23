@@ -15,6 +15,11 @@
   background: rgb(51, 51, 51);
 }
 
+.active {
+  color: #1db954;
+  background: rgb(51, 51, 51);
+}
+
 .selected-user-song-item {
   color: #1db954;
   background: rgb(51, 51, 51);
@@ -37,10 +42,6 @@
   width: 20%;
 }
 
-.song-added {
-  width: 80px;
-}
-
 .song-buttons {
   opacity: 0;
   margin-left: auto;
@@ -52,15 +53,6 @@
 .play-song .fa:hover {
   color: #fff;
   opacity: 100;
-}
-
-.song-length,
-.song-length-header {
-  width: 60px;
-}
-
-.song-added {
-  width: 80px;
 }
 
 .song-album {
@@ -76,33 +68,10 @@
   width: 48%;
 }
 
-.song-title-header p,
-.song-artist-header p,
-.song-album-header p,
-.song-length-header p,
-.song-list-header p {
-  font-family: 'Proxima Thin', Georgia, sans-serif;
-  text-transform: uppercase;
-  font-size: 12px;
-  color: #ccc;
-  height: 2em;
-}
-
-.song-length-header .fa-clock-o {
-  font-size: 17px;
-  color: #ccc;
-}
-
-.song-added-header {
-  width: 80px;
-  color: #ccc;
-}
-
 .add-song {
   font-size: 20px;
   cursor: pointer;
   z-index: 1;
-  width: 20px;
 }
 
 .add-song .fa {

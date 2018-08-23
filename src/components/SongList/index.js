@@ -1,11 +1,13 @@
 import SongList from './component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { play, fetchSongs } from '../../actions/songActions';
+import { fetchSongs } from '../../actions/songActions';
+import { play } from '../../actions/queueActions';
 import { addSongToLibrary } from '../../actions/userActions';
 import {
   addSongToQueue,
   addSongToFront,
+  insertSongInQueue,
   shuffleQueue,
   clearSongQueue
 } from '../../actions/queueActions';
@@ -38,6 +40,7 @@ const mapDispatchToProps = dispatch => {
     {
       addSongToLibrary,
       addSongToQueue,
+      insertSongInQueue,
       addSongToFront,
       shuffleQueue,
       clearSongQueue,
