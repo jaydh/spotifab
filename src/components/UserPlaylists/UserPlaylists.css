@@ -27,6 +27,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  text-decoration: none;
+  color: white;
+  border-left: 5px outset black;
+  padding: 5px;
+}
+
+.user-playlist-link:visited {
+  color: white;
 }
 
 .user-playlist-item:hover {

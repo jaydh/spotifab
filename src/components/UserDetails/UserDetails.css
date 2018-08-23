@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: 40% auto;
   background: rgb(24, 24, 24);
+  padding: 20px;
 }
 
 .user-image {

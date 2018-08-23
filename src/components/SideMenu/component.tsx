@@ -9,14 +9,20 @@ export default class SideMenu extends React.Component {
   public render() {
     return (
       <Menu
-        width={'20%'}
+        width={'30%'}
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
       >
         <div className="left-side-section">
           <UserDetails />
           <AddYoutube />
-          <NavLink to="/library">Library</NavLink>
+          <NavLink
+            to="/library"
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+          >
+            Library
+          </NavLink>
           <UserPlaylists />
           <NavLink to="/authenticate">Authenticate</NavLink>
           <br />
