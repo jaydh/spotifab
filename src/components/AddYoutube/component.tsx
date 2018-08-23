@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import * as React from 'react';
 import { youtubeAPI } from '../../../src/apiKeys';
+import './Add.css';
 
 interface IProps {
   addYoutubeSong: (t: string) => void;
@@ -36,9 +37,9 @@ export default class Filter extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div>
+      <div className="add-container">
         <button className="btn" onClick={this.toggleShowSpotify}>
-          <i className="fa fa-spotify" /> <i className="fa fa-plus" />
+          <i className="fab fa-spotify" /> <i className="fa fa-plus" />
         </button>
         {this.state.showSpotify && (
           <form onSubmit={this.onSpotifySubmit}>
@@ -70,7 +71,7 @@ export default class Filter extends React.Component<IProps, IState> {
         )}
 
         <button className="btn" onClick={this.toggleShow}>
-          <i className="fa fa-youtube-play" /> <i className="fa fa-plus" />
+          <i className="fab fa-youtube" /> <i className="fa fa-plus" />
         </button>
         {this.state.show && (
           <form onSubmit={this.onSubmit}>
