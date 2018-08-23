@@ -6,6 +6,7 @@ interface IProps {
   currentSort: string;
   setSort: (t: string) => void;
   pending: boolean;
+  update: any;
 }
 
 export default class extends React.Component<IProps> {
@@ -29,28 +30,47 @@ export default class extends React.Component<IProps> {
     );
     return (
       <React.Fragment>
-        <div onClick={this.setName} className="song-title-header">
+        <div
+          onClick={this.setName}
+          className={`${
+            current === 'name' ? 'activeSort' : ''
+          } song-title-header`}
+        >
           <p>
-            {this.props.pending && <i className="fa fa-refresh fa-spin" />}{' '}
-            Title{current === 'name' && icon}
+            {this.props.pending && <i className="fa fa-sync fa-spin" />} Title{current ===
+              'name' && icon}
           </p>
         </div>
-        <div onClick={this.setArtist} className="song-artist-header">
+        <div
+          onClick={this.setArtist}
+          className={`${
+            current === 'artist' ? 'activeSort' : ''
+          } song-artist-header`}
+        >
           <p>
             Artist
             {current === 'artist' && icon}
           </p>
         </div>
-        <div onClick={this.setAlbum} className="song-album-header">
+        <div
+          onClick={this.setAlbum}
+          className={`${
+            current === 'album' ? 'activeSort' : ''
+          } song-album-header`}
+        >
           <p>
             Album
             {current === 'album' && icon}
           </p>
         </div>
-        <div className="song-list-options">
+        <div
+          className={`${
+            current === 'added' ? 'activeSort' : ''
+          } song-list-options`}
+        >
+          <Filter />
           <i onClick={this.setAdded} className="fa fa-calendar" />
           {current === 'added' && icon}
-          <Filter />
         </div>
       </React.Fragment>
     );
@@ -61,6 +81,7 @@ export default class extends React.Component<IProps> {
     ) === 'desc'
       ? this.props.setSort('name-asc')
       : this.props.setSort('name-desc');
+    this.props.update();
   }
   private setArtist() {
     this.props.currentSort.substring(
@@ -68,6 +89,7 @@ export default class extends React.Component<IProps> {
     ) === 'desc'
       ? this.props.setSort('artist-asc')
       : this.props.setSort('artist-desc');
+    this.props.update();
   }
 
   private setAlbum() {
@@ -76,6 +98,7 @@ export default class extends React.Component<IProps> {
     ) === 'desc'
       ? this.props.setSort('album-asc')
       : this.props.setSort('album-desc');
+    this.props.update();
   }
 
   private setAdded() {
@@ -84,5 +107,6 @@ export default class extends React.Component<IProps> {
     ) === 'desc'
       ? this.props.setSort('added-asc')
       : this.props.setSort('added-desc');
+    this.props.update();
   }
 }
