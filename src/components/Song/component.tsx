@@ -2,15 +2,14 @@ import * as React from 'react';
 
 interface IProps {
   index: number;
-  key: string;
   song: any;
-  style: any;
-  makeNewQueueAndPlay: () => void;
+  makeNewQueueAndPlay: (index) => void;
   selected: boolean;
   updateDown: () => void;
   updateUp: () => void;
   addSongToQueue: (song: string) => void;
-  removeSpotifySong: (song: string) => void;
+  removeSpotifySong: (song) => void;
+  removeYoutubeSong: (song) => void;
 }
 
 interface IState {
@@ -24,25 +23,23 @@ export default class extends React.Component<IProps, IState> {
       showOptions: false
     };
     this.toggleShow = this.toggleShow.bind(this);
+    this.handleDouble = this.handleDouble.bind(this);
   }
   public render() {
-    const buttonClass = 'fa-play-circle-o';
-    const { song, key, style, selected, makeNewQueueAndPlay } = this.props;
+    const { song, selected, makeNewQueueAndPlay, index } = this.props;
     return (
       <div
         className={
           selected ? 'user-song-item selected-user-song-item' : 'user-song-item'
         }
-        key={key}
-        style={style}
+        onDoubleClick={this.handleDouble(index)}
       >
         <button className="play-song btn" onClick={makeNewQueueAndPlay}>
-          <i className={`fa ${buttonClass} play-btn`} aria-hidden="true" />
+          <i className={`fas fa-play-circle play-btn`} aria-hidden="true" />
         </button>
         <div className="song-title">
           <p>
-            {song.youtube && <i className="fa fa-youtube-play" />}{' '}
-            {song.track.name}
+            {song.youtube && <i className="fab fa-youtube" />} {song.track.name}
           </p>
         </div>
 
@@ -56,7 +53,7 @@ export default class extends React.Component<IProps, IState> {
         <div className="song-buttons">
           {this.state.showOptions ? (
             <React.Fragment>
-              <button className="btn" onClick={this.handleRemove(song.track)}>
+              <button className="btn" onClick={this.handleRemove(song)}>
                 <i className="fa fa-trash" />
               </button>
             </React.Fragment>
@@ -86,7 +83,14 @@ export default class extends React.Component<IProps, IState> {
   private handleAdd = song => () => {
     this.props.addSongToQueue(song);
   };
-  private handleRemove = track => () => {
-    this.props.removeSpotifySong(track);
+  private handleRemove = song => () => {
+    if (song.youtube) {
+      this.props.removeYoutubeSong(song.track);
+    } else {
+      this.props.removeSpotifySong(song.track);
+    }
+  };
+  private handleDouble = start => () => {
+    this.props.makeNewQueueAndPlay(start);
   };
 }
