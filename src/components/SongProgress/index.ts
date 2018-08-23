@@ -14,7 +14,9 @@ const mapDispatchtoProps = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    currentTrack: state.queue.currentTrack,
+    currentTrack: state.queue.queue.isEmpty()
+      ? null
+      : state.queue.queue.get(state.queue.position).track,
     playing: state.player.playing
   };
 };
