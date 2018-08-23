@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './Filter.css';
 
 interface IProps {
   setFilter: (t: string) => void;
@@ -21,6 +22,7 @@ export default class Filter extends React.Component<IProps, IState> {
       <div>
         <form onSubmit={this.handleChange}>
           <input
+            type="text"
             placeholder={this.state.value === '' ? 'Filter' : this.state.value}
             onChange={this.handleChange}
           />
