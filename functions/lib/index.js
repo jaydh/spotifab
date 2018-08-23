@@ -23,10 +23,9 @@ admin.initializeApp(config);
 exports.getToken = functions.firestore
     .document('tokens/{uid}')
     .onWrite((change, context) => __awaiter(this, void 0, void 0, function* () {
-    const redirect_uri = 'https://spotifab-3379e.firebaseapp.com/authenticate';
-    const oldCode = change.before.data()
-        ? change.before.data().auth_code
-        : null;
+    const redirect_uri = 'https://bard.jaydanhoward.com/authenticate/';
+    const oldData = change.before.data();
+    const oldCode = oldData ? change.before.data().auth_code : null;
     const newCode = change.after.data().auth_code;
     const { id, secret } = yield (yield admin
         .firestore()
@@ -41,18 +40,15 @@ exports.getToken = functions.firestore
         method: 'POST'
     })).json();
     console.log(json);
-    return oldCode !== newCode
+    const useNew = oldCode !== newCode;
+    return json.access_token || (!useNew && oldData)
         ? change.after.ref.set({
-            access_token: json.access_token
-                ? json.access_token
-                : change.after.data().access_token,
-            refresh_token: json.refresh_token
-                ? json.refresh_token
-                : change.after.data().refresh_token,
-            auth_code: newCode,
-            time: Date.now()
+            access_token: useNew ? json.access_token : oldData.access_token,
+            refresh_token: useNew ? json.refresh_token : oldData.refresh_token,
+            auth_code: useNew ? newCode : oldData.auth_code,
+            time: useNew ? Date.now() : oldData.time
         })
-        : null;
+        : change.after.ref.delete();
 }));
 exports.refreshToken = functions.firestore
     .document('tokens/{uid}')
