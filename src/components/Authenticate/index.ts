@@ -8,7 +8,8 @@ const mapStateToProps = state => {
     token: state.token.token,
     time: state.token.time,
     user: state.userReducer.firebaseUser,
-    refetching: state.token.refetch
+    refetching: state.token.refetching,
+    signedIn: state.userReducer.signedIn
   };
 };
 

@@ -2,7 +2,7 @@ import { addMinutes, isBefore, parse } from 'date-fns';
 import * as firebase from 'firebase';
 import * as querystring from 'querystring';
 import * as React from 'react';
-import { Redirect } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import { ui } from '../../index';
 
 interface IProps {
@@ -12,6 +12,7 @@ interface IProps {
   token: string;
   time: any;
   user: any;
+  signedIn: boolean;
 }
 
 export default class Authenticat extends React.Component<IProps> {
@@ -41,7 +42,7 @@ export default class Authenticat extends React.Component<IProps> {
             document.getElementById('loader')!.style.display = 'none';
           },
 
-          signInSuccessUrl: 'https://spotifab-3379e.firebaseapp.com/'
+          signInSuccessUrl: 'https://bard.jaydanhoward.com/'
         },
         signInFlow: 'redirect',
         signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
@@ -70,9 +71,14 @@ export default class Authenticat extends React.Component<IProps> {
               )}
               <br />
               Signed in{' '}
-              <button className="btn" onClick={this.redirect}>
-                Connect with Spotify
+              <button className="btn">
+                <a href={this.redirect()}> Connect with Spotify</a>
               </button>
+              {this.props.signedIn && (
+                <button className="btn">
+                  <NavLink to="/library">Continue</NavLink>
+                </button>
+              )}
             </div>
           </React.Fragment>
         ) : (
@@ -106,15 +112,17 @@ export default class Authenticat extends React.Component<IProps> {
     const scopes =
       'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
     const callback = window.location.href.startsWith('http://localhost')
-      ? 'http://localhost:3000/authenticate'
-      : `https://spotifab-3379e.firebaseapp.com/authenticate`;
-    window.location.href =
-      'https://accounts.spotify.com/authorize?' +
+      ? 'http://localhost:3000/authenticate/'
+      : `https://bard.jaydanhoward.com/authenticate/`;
+    console.log(callback);
+    const url =
+      'https://accounts.spotify.com/authorize/?' +
       querystring.stringify({
         response_type: 'code',
         client_id: '6d46aac55bb24239af40209109ca5cb2',
         scope: scopes,
         redirect_uri: callback
       });
+    return url;
   }
 }
