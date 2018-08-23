@@ -23,17 +23,31 @@
 .queue {
   grid-row: 2/2;
   border-left: 1px outset white;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 200px;
 }
 
 .queue-header {
   display: grid;
-  grid-template-columns: 50% auto;
+  grid-template-columns: 60% auto;
   border-bottom: 1px solid #666;
+  grid-row: 1/1;
+  align-content: center;
 }
-.queuebuttons {
+.queue-left {
   grid-column: 1;
+  font-family: 'Proxima Thin', Georgia, sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: #ccc;
+  height: 2em;
+}
+.queue-buttons {
+  opacity: 0.1;
+}
+.queue-buttons:hover {
+  opacity: 1;
 }
 .volume-container {
   grid-column: 2;
@@ -41,7 +55,7 @@
 
 .playback-controls {
   border-left: 1px outset white;
-  grid-row: 3;
+  grid-row: 3/3;
 }
 
 .album-art .btn:hover {
