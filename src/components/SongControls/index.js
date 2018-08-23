@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SongControls from './component';
-import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
+import { nextSong, prevSong, togglePlay } from '../../actions/queueActions';
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
@@ -16,9 +16,8 @@ const mapDispatchToProps = dispatch =>
 const mapStateToProps = state => {
   return {
     playing: state.player.playing,
-    spotifyReady: state.player.spotifyReady,
-    youtubeReady: state.player.youtubeReady,
-    currentTrack: state.queue.currentTrack
+    ready: state.player.spotifyReady && state.player.youtubeReady,
+    currentTrack: state.queue.queue.get(state.queue.position)
   };
 };
 
