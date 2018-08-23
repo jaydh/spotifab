@@ -1,11 +1,13 @@
 import { store } from './index';
-import { nextSong } from './actions/songActions';
+import { nextSong } from './actions/queueActions';
+import runYoutubeScript from './lib/youtubeAPI';
+import runSpotifyScript from './lib/spotifySDK';
 
 export const initYoutube = () => {
-  const tag = document.createElement('script');
+  /*const tag = document.createElement('script');
   tag.src = 'https://www.youtube.com/iframe_api';
   const firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);*/
   window.onYouTubeIframeAPIReady = () => {
     window.ytPlayer = new YT.Player('ytPlayer', {
       height: '500',
@@ -14,7 +16,8 @@ export const initYoutube = () => {
       playerVars: {
         controls: 0,
         disablekd: 1,
-        modestbranding: 1
+        modestbranding: 1,
+        fs: 1
       },
       events: {
         onReady: onPlayerReady,
@@ -45,15 +48,10 @@ export const initYoutube = () => {
       state: event.data
     });
   }
+  runYoutubeScript();
 };
 
 export const initSpotify = () => {
-  const tag = document.createElement('script');
-
-  tag.src = 'https://sdk.scdn.co/spotify-player.js';
-  const firstScriptTag = document.getElementsByTagName('script')[0];
-  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
       name: 'player',
@@ -97,7 +95,6 @@ export const initSpotify = () => {
 
     // Ready
     player.addListener('ready', ({ device_id }) => {
-      console.log('Ready with Device ID', device_id);
       window.player = player;
       player.setVolume(store.getState().player.volume);
       store.dispatch({ type: 'SPOTIFY_READY' });
@@ -111,6 +108,7 @@ export const initSpotify = () => {
     // Connect to the player!
     player.connect();
   };
+  runSpotifyScript();
 };
 export default () => {
   initSpotify();
