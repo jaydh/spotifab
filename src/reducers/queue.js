@@ -3,7 +3,6 @@ import shuffle from 'immutable-shuffle';
 export default (
   state = {
     queue: List(),
-    currentTrack: null,
     repeat: true,
     position: 0
   },
@@ -12,8 +11,7 @@ export default (
   switch (action.type) {
     case 'PLAY':
       return {
-        ...state,
-        currentTrack: state.queue.get(state.position).track
+        ...state
       };
     case 'TOGGLE_REPEAT':
       return {
@@ -24,8 +22,7 @@ export default (
       return {
         ...state,
         queue: List(),
-        position: 0,
-        currentTrack: null
+        position: 0
       };
     case 'ADD_SONG_TO_FRONT_QUEUE':
       return {
@@ -46,8 +43,7 @@ export default (
           : state.position - 1;
       return {
         ...state,
-        position: nextPos,
-        currentTrack: state.queue.get(nextPos).track
+        position: nextPos
       };
     }
     case 'NEXT_SONG': {
@@ -57,8 +53,7 @@ export default (
           : state.position + 1;
       return {
         ...state,
-        position: nextPos,
-        currentTrack: state.queue.get(nextPos).track
+        position: nextPos
       };
     }
     case 'ADD_SONG_TO_QUEUE':
@@ -67,17 +62,15 @@ export default (
         queue: state.queue.push(action.song)
       };
     case 'SHUFFLE_QUEUE':
-      const shuffled = shuffle(state.queue.delete(state.position)).insert(
-        0,
-        state.queue.find(t => t.track.id === state.currentTrack.id)
-      );
+      const shuffled = state.queue.isEmpty()
+        ? state.queue
+        : shuffle(state.queue.delete(state.position)).insert(
+            0,
+            state.queue.find(
+              t => t.track.id === state.queue.get(state.position).track.id
+            )
+          );
       return { ...state, queue: shuffled, position: 0 };
-    case 'UPDATE_CURRENT_TRACK':
-      return {
-        ...state,
-        position: state.queue.findIndex(t => t.id === action.track.id),
-        currentTrack: action.track
-      };
     case 'INSERT_SONG_IN_QUEUE':
       return {
         ...state,
@@ -86,8 +79,7 @@ export default (
     case 'UPDATE_POSITION':
       return {
         ...state,
-        position: action.position,
-        currentTrack: state.queue.get(action.position).track
+        position: action.position
       };
     default:
       return state;

@@ -10,6 +10,7 @@ import token from './token';
 import { persistReducer } from 'redux-persist';
 import immutableTransform from 'redux-persist-transform-immutable';
 import ui from './ui';
+import synced from './synced';
 import * as localForage from 'localforage';
 
 localForage.config({
@@ -43,7 +44,8 @@ const appReducer = combineReducers({
   player: persistReducer(playerConfig, player),
   queue,
   token,
-  ui
+  ui,
+  synced
 });
 const rootReducer = (state, action) => {
   if (action.type === 'RESET') {

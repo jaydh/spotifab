@@ -28,14 +28,32 @@ export const songsReducer = (state = defaultState, action) => {
           track: action.track
         })
       };
-    case 'REMOVE_SONG_FROM_LIBRARY':
-      const index = state.songs.findIndex(t => t.track.id === action.track.id);
+    case 'REMOVE_SONG_FROM_LIBRARY': {
+      const index = state.songs.findIndex(t => t.track.id === action.id);
+      const spotifyIndex = state.spotifyTracks.findIndex(
+        t => t.track.id === action.id
+      );
+
       return {
         ...state,
         songs: state.songs.delete(index),
-        spotifyTracks: state.spotifyTracks.delete(index)
+        spotifyTracks: state.spotifyTracks.delete(spotifyIndex)
       };
+    }
+    case 'REMOVE_YOUTUBE_TRACK': {
+      const index = state.songs.findIndex(
+        t => t.youtube && t.track.id === action.id
+      );
+      const youtubeIndex = state.youtubeTracks.findIndex(
+        t => t.youbue && t.track.id === action.id
+      );
 
+      return {
+        ...state,
+        songs: state.songs.delete(index),
+        youtubeTracks: state.youtubeTracks.delete(youtubeIndex)
+      };
+    }
     case 'UPDATE_VIEW_TYPE':
       return {
         ...state,
@@ -187,9 +205,13 @@ export const songsReducer = (state = defaultState, action) => {
             case 'added-desc':
               return isBefore(parse(a.added_at), parse(b.added_at)) ? -1 : 1;
             case 'name-asc':
-              return a.track.name < b.track.name ? -1 : 1;
+              return a.track.name
+                .toLowerCase()
+                .localeCompare(b.track.name.toLowerCase());
             case 'name-desc':
-              return a.track.name < b.track.name ? 1 : -1;
+              return b.track.name
+                .toLowerCase()
+                .localeCompare(a.track.name.toLowerCase());
             case 'artist-asc':
               if (!a.track.artists) {
                 return -1;
@@ -197,7 +219,9 @@ export const songsReducer = (state = defaultState, action) => {
               if (!b.track.artists) {
                 return 1;
               }
-              return a.track.artists[0].name < b.track.artists[0].name ? -1 : 1;
+              return a.track.artists[0].name
+                .toLowerCase()
+                .localeCompare(b.track.artists[0].name.toLowerCase());
             case 'artist-desc':
               if (!a.track.artists) {
                 return -1;
@@ -205,7 +229,30 @@ export const songsReducer = (state = defaultState, action) => {
               if (!b.track.artists) {
                 return 1;
               }
-              return a.track.artists[0].name < b.track.artists[0].name ? 1 : -1;
+              b.track.artists[0].name
+                .toLowerCase()
+                .localeCompare(a.track.artists[0].name.toLowerCase());
+            case 'album-asc':
+              if (!a.track.album) {
+                return -1;
+              }
+              if (!b.track.album) {
+                return 1;
+              }
+              return a.track.album.name
+                .toLowerCase()
+                .localeCompare(b.track.album.name.toLowerCase());
+            case 'album-desc':
+              if (!a.track.album) {
+                return -1;
+              }
+              if (!b.track.album) {
+                return 1;
+              }
+              return b.track.album.name
+                .toLowerCase()
+                .localeCompare(a.track.album.name.toLowerCase());
+
             default:
               return a;
           }

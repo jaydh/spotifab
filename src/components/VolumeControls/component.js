@@ -3,19 +3,9 @@ import PropTypes from 'prop-types';
 import './VolumeControls.css';
 
 class VolumeControls extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      volume: props.volume
-    };
-  }
-
   updateVolume = e => {
-    this.setState({
-      volume: e.target.value
-    });
-
-    this.props.updateVolume(Number(e.target.value));
+    const newV = e.target.value > 80 ? e.target.value : e.target.value + 20;
+    this.props.updateVolume(Number(newV));
   };
 
   render() {
@@ -24,9 +14,7 @@ class VolumeControls extends Component {
         <button className="mute" onClick={this.props.toggleMute}>
           <i
             className={
-              this.props.muted
-                ? 'fa fa-lg fa-volume-off'
-                : 'fa fa-lg fa-volume-up'
+              this.props.muted ? 'fa fa-volume-off' : 'fa fa-volume-up'
             }
             aria-hidden="true"
           />
@@ -37,7 +25,7 @@ class VolumeControls extends Component {
           min={0}
           max={1}
           step={0.01}
-          value={this.state.volume.toString()}
+          value={this.props.volume.toString()}
           onChange={this.updateVolume}
         />
       </div>
