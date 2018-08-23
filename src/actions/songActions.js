@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
 import { requestTokenRefresh } from './tokenActions';
 import { database, app } from '../index';
+import { play } from './queueActions';
 
 export const addYoutubeSong = t => {
   return async (dispatch, getState) => {
@@ -211,81 +212,6 @@ export const fetchRecentlyPlayed = () => {
   };
 };
 
-export const play = () => {
-  return async (dispatch, getState) => {
-    dispatch({
-      type: 'PLAY'
-    });
-
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position);
-    const apiPlay = async ({
-      spotify_uri,
-      playerInstance: {
-        _options: { getOAuthToken, id }
-      }
-    }) =>
-      getOAuthToken(accessToken =>
-        fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-          method: 'PUT',
-          body: JSON.stringify({ uris: spotify_uri }),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-      );
-    if (next.youtube) {
-      window.player.pause();
-      window.ytPlayer.loadVideoById(next.track.id);
-    } else {
-      window.ytPlayer.pauseVideo();
-      return apiPlay({
-        playerInstance: window.player,
-        spotify_uri: [next.track.uri]
-      });
-    }
-  };
-};
-
-export const togglePlay = () => {
-  return async (dispatch, getState) => {
-    dispatch({
-      type: 'TOGGLE_PLAY'
-    });
-
-    const track = getState().queue.currentTrack;
-    if (!track) {
-      window.ytPlayer.pauseVideo();
-      const state = await window.player.getCurrentState();
-      state ? window.player.togglePlay() : dispatch(play());
-    } else if (!track.uri) {
-      window.ytPlayer.getPlayerState() === 1
-        ? window.ytPlayer.pauseVideo()
-        : window.ytPlayer.playVideo();
-    } else {
-      const state = await window.player.getCurrentState();
-      state ? window.player.togglePlay() : dispatch(play());
-    }
-  };
-};
-export const nextSong = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'NEXT_SONG'
-    });
-    dispatch(play());
-  };
-};
-export const prevSong = () => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: 'PREV_SONG'
-    });
-    dispatch(play());
-  };
-};
-
 export const updateViewType = view => {
   return {
     type: 'UPDATE_VIEW_TYPE',
@@ -299,7 +225,8 @@ export const seek = time => {
       type: 'SEEK'
     });
     console.log(time);
-    const track = getState().queue.currentTrack;
+    const position = getState().queue.position;
+    const track = getState().queue.queue.get(position).track;
     if (!track) {
       window.ytPlayer.pauseVideo();
       const state = await window.player.getCurrentState();
@@ -340,6 +267,22 @@ export const removeSpotifySong = track => {
         Authorization: 'Bearer ' + accessToken
       })
     });
-    dispatch({ type: 'REMOVE_SONG_FROM_LIBRARY', track });
+    dispatch({ type: 'REMOVE_SONG_FROM_LIBRARY', id });
+  };
+};
+
+export const removeYoutubeSong = track => {
+  return async (dispatch, getState) => {
+    const id = track.id;
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('youtubeTracks')
+      .doc(id);
+    await ref.delete();
+    dispatch({
+      type: 'REMOVE_YOUTUBE_TRACK',
+      id
+    });
   };
 };

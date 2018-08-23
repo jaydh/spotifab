@@ -1,5 +1,4 @@
 import { List } from 'immutable';
-import { play } from './songActions';
 
 export const toggleRepeat = () => {
   return {
@@ -52,9 +51,26 @@ export const insertSongInQueue = (track, position) => {
 };
 
 export const updatePosition = position => {
+  return {
+    type: 'UPDATE_POSITION',
+    position
+  };
+};
+
+export const play = () => {
   return async (dispatch, getState) => {
-    dispatch({ type: 'UPDATE_POSITION', position });
-    const next = getState().queue.queue.get(position).track;
+    const ready =
+      getState().player.spotifyReady && getState().player.youtubeReady;
+    if (!ready) {
+      return;
+    }
+    if (ready) {
+      dispatch({
+        type: 'PLAY'
+      });
+    }
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position);
     const token = getState().token.token;
     const spotifyPaused =
       getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
@@ -73,18 +89,54 @@ export const updatePosition = position => {
         }
       });
     };
-
-    if (next.uri) {
-      window.ytPlayer.pauseVideo();
-      //If switching from youtube to spotify, use last played track
-      apiPlay({
-        playerInstance: window.player,
-        spotify_uri: [next.uri]
-      });
-    } else {
-      window.ytPlayer.loadVideoById(next.id);
+    if (next.youtube) {
       window.player.pause();
+      window.ytPlayer.loadVideoById(next.track.id);
+    } else {
+      window.ytPlayer.pauseVideo();
+      return apiPlay({
+        playerInstance: window.player,
+        spotify_uri: [next.track.uri]
+      });
     }
-    dispatch({ type: 'PLAY' });
+  };
+};
+
+export const nextSong = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: 'NEXT_SONG'
+    });
+    dispatch(play());
+  };
+};
+export const prevSong = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: 'PREV_SONG'
+    });
+    dispatch(play());
+  };
+};
+
+export const togglePlay = () => {
+  return async (dispatch, getState) => {
+    dispatch({
+      type: 'TOGGLE_PLAY'
+    });
+    const position = getState().queue.position;
+    const track = getState().queue.queue.get(position);
+    if (!track) {
+      window.ytPlayer.pauseVideo();
+      const state = await window.player.getCurrentState();
+      state ? window.player.togglePlay() : dispatch(play());
+    } else if (track.youtube) {
+      window.ytPlayer.getPlayerState() === 1
+        ? window.ytPlayer.pauseVideo()
+        : window.ytPlayer.playVideo();
+    } else {
+      const state = await window.player.getCurrentState();
+      state ? window.player.togglePlay() : dispatch(play());
+    }
   };
 };
