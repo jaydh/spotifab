@@ -23,7 +23,7 @@ function createWindow() {
   });
   mainWindowState.manage(win);
   // Create the browser window.
-  win.loadURL('https://spotifab-3379e.firebaseapp.com/');
+  win.loadURL('https://bard.jaydanhoward.com/');
   if (isDev) {
     win.webContents.openDevTools();
   }
@@ -48,6 +48,15 @@ function createWindow() {
 
   globalShortcut.register('VolumeMute', () =>
     win.webContents.executeJavaScript(`window.toggleMute()`)
+  );
+  globalShortcut.register('control+m', () =>
+    win.webContents.executeJavaScript(`window.toggleMute()`)
+  );
+  globalShortcut.register('control+u', () =>
+    win.webContents.executeJavaScript(`window.volumeUp()`)
+  );
+  globalShortcut.register('control+n', () =>
+    win.webContents.executeJavaScript(`window.volumeDown()`)
   );
 
   win.on('closed', () => {

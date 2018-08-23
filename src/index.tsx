@@ -12,8 +12,8 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
 import thunk from 'redux-thunk';
-import { nextSong, prevSong, togglePlay } from './actions/songActions';
-import { toggleMute } from './actions/soundActions';
+import { nextSong, prevSong, togglePlay } from './actions/queueActions';
+import { toggleMute, updateVolume } from './actions/soundActions';
 import { listenForToken, requestTokenRefresh } from './actions/tokenActions';
 import { firebaseConf } from './apiKeys';
 import App from './App';
@@ -34,19 +34,22 @@ export const store = createStore(
   composeWithDevTools(applyMiddleware(thunk))
 );
 export const persistor = persistStore(store);
-(window as any).nextTrack = () => store.dispatch<any>(nextSong());
-(window as any).previousTrack = () => store.dispatch<any>(prevSong());
-(window as any).togglePlay = () => store.dispatch<any>(togglePlay());
-(window as any).volumeMute = () => store.dispatch<any>(toggleMute());
-
+(window as any).nextTrack = () => store.dispatch(nextSong());
+(window as any).previousTrack = () => store.dispatch(prevSong());
+(window as any).togglePlay = () => store.dispatch(togglePlay());
+(window as any).toggleMute = () => store.dispatch(toggleMute());
+(window as any).volumeDown = () =>
+  store.dispatch(updateVolume(store.getState().player.volume - 0.05));
+(window as any).volumeUp = () =>
+  store.dispatch(updateVolume(store.getState().player.volume + 0.05));
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     store.dispatch({ type: 'SIGN_IN', user });
-    store.dispatch<any>(listenForToken());
+    store.dispatch(listenForToken());
     const state = store.getState() as any;
     const { token, time } = state.token;
     if (token && !isBefore(new Date(), addMinutes(parse(time), 30))) {
-      store.dispatch<any>(requestTokenRefresh());
+      store.dispatch(requestTokenRefresh());
     }
   } else {
     store.dispatch({ type: 'SIGN_OUT' });
