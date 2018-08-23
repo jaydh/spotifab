@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {
   updatePosition,
+  play,
   shuffleQueue,
   toggleRepeat,
   removeSongFromQueue,
@@ -24,13 +25,11 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      addSongToLibrary,
-      updatePosition,
       shuffleQueue,
       toggleRepeat,
-      removeSongFromQueue,
       clearSongQueue,
       createNewPlaylist,
+      removeSongFromQueue,
       insertSongInQueue
     },
     dispatch
