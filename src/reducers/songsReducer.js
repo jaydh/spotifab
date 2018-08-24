@@ -8,9 +8,9 @@ const defaultState = {
   songId: 0,
   viewType: 'songs',
   songPaused: true,
-  songs: List(),
   youtubeTracks: List(),
-  spotifyTracks: List()
+  spotifyTracks: List(),
+  playlistSongs: List()
 };
 
 export const songsReducer = (state = defaultState, action) => {
@@ -19,38 +19,28 @@ export const songsReducer = (state = defaultState, action) => {
     case 'ADD_SONG_TO_LIBRARY':
       return {
         ...state,
-        songs: state.songs.insert(0, {
-          added_at: new Date().getTime(),
-          track: action.track
-        }),
         spotifyTracks: state.spotifyTracks.insert(0, {
           added_at: new Date().getTime(),
           track: action.track
         })
       };
     case 'REMOVE_SONG_FROM_LIBRARY': {
-      const index = state.songs.findIndex(t => t.track.id === action.id);
       const spotifyIndex = state.spotifyTracks.findIndex(
         t => t.track.id === action.id
       );
 
       return {
         ...state,
-        songs: state.songs.delete(index),
         spotifyTracks: state.spotifyTracks.delete(spotifyIndex)
       };
     }
     case 'REMOVE_YOUTUBE_TRACK': {
-      const index = state.songs.findIndex(
-        t => t.youtube && t.track.id === action.id
-      );
       const youtubeIndex = state.youtubeTracks.findIndex(
         t => t.youbue && t.track.id === action.id
       );
 
       return {
         ...state,
-        songs: state.songs.delete(index),
         youtubeTracks: state.youtubeTracks.delete(youtubeIndex)
       };
     }
@@ -69,33 +59,25 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_SONGS_SUCCESS':
       return {
         ...state,
-        songs: action.songs.isEmpty()
-          ? state.songs
-          : state.youtubeTracks.concat(action.songs),
-        spotifyTracks: action.songs,
-        fetchSongsError: false,
-        fetchSongsPending: false
+        spotifyTracks: action.songs.isEmpty()
+          ? state.spotifyTracks
+          : action.songs
       };
 
     case 'FETCH_SONGS_ERROR':
       return {
-        ...state,
-        fetchSongsError: true,
-        fetchSongsPending: false
+        ...state
       };
 
     case 'SEARCH_SONGS_PENDING':
       return {
-        ...state,
-        searchSongsPending: true
+        ...state
       };
 
     case 'SEARCH_SONGS_SUCCESS':
       return {
         ...state,
         spotifyTracks: List(action.songs),
-        searchSongsError: false,
-        searchSongsPending: false,
         viewType: 'search'
       };
 
@@ -137,7 +119,7 @@ export const songsReducer = (state = defaultState, action) => {
     case 'FETCH_PLAYLIST_SONGS_SUCCESS':
       return {
         ...state,
-        songs: List(action.songs),
+        playlistSongs: List(action.songs),
         viewType: 'playlist',
         fetchPlaylistSongsError: false,
         fetchPlaylistSongsPending: false
@@ -182,9 +164,6 @@ export const songsReducer = (state = defaultState, action) => {
       };
       return {
         ...state,
-        songs: state.songs.find(t => t.track.id === action.id)
-          ? state.songs
-          : state.songs.push(track),
         youtubeTracks: state.youtubeTracks.find(t => t.track.id === action.id)
           ? state.youtubeTracks
           : state.youtubeTracks.push(track)
@@ -195,70 +174,6 @@ export const songsReducer = (state = defaultState, action) => {
       return {
         ...state
       };
-    case 'SET_SORT':
-      return {
-        ...state,
-        songs: state.songs.sort((a, b) => {
-          switch (action.sort) {
-            case 'added-asc':
-              return isBefore(parse(a.added_at), parse(b.added_at)) ? 1 : -1;
-            case 'added-desc':
-              return isBefore(parse(a.added_at), parse(b.added_at)) ? -1 : 1;
-            case 'name-asc':
-              return a.track.name
-                .toLowerCase()
-                .localeCompare(b.track.name.toLowerCase());
-            case 'name-desc':
-              return b.track.name
-                .toLowerCase()
-                .localeCompare(a.track.name.toLowerCase());
-            case 'artist-asc':
-              if (!a.track.artists) {
-                return -1;
-              }
-              if (!b.track.artists) {
-                return 1;
-              }
-              return a.track.artists[0].name
-                .toLowerCase()
-                .localeCompare(b.track.artists[0].name.toLowerCase());
-            case 'artist-desc':
-              if (!a.track.artists) {
-                return -1;
-              }
-              if (!b.track.artists) {
-                return 1;
-              }
-              b.track.artists[0].name
-                .toLowerCase()
-                .localeCompare(a.track.artists[0].name.toLowerCase());
-            case 'album-asc':
-              if (!a.track.album) {
-                return -1;
-              }
-              if (!b.track.album) {
-                return 1;
-              }
-              return a.track.album.name
-                .toLowerCase()
-                .localeCompare(b.track.album.name.toLowerCase());
-            case 'album-desc':
-              if (!a.track.album) {
-                return -1;
-              }
-              if (!b.track.album) {
-                return 1;
-              }
-              return b.track.album.name
-                .toLowerCase()
-                .localeCompare(a.track.album.name.toLowerCase());
-
-            default:
-              return a;
-          }
-        })
-      };
-
     default:
       return state;
   }
