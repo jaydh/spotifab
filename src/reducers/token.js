@@ -1,8 +1,11 @@
+import { addMinutes, isBefore, parse } from 'date-fns';
+
 export default (
   state = {
     token: undefined,
     time: undefined,
-    refetch: false
+    refetch: false,
+    valid: false
   },
   action
 ) => {
@@ -12,7 +15,8 @@ export default (
         ...state,
         token: action.token,
         time: action.time,
-        refetch: false
+        refetch: false,
+        valid: isBefore(new Date(), addMinutes(parse(action.time), 30))
       };
     case 'REFETCH_TOKEN':
       return {
