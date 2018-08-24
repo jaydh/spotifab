@@ -29,16 +29,8 @@ export default connect(
 )(
   class SongMain extends React.Component<IProps> {
     public componentDidMount() {
-      if (this.props.location.pathname.startsWith('/library')) {
-        this.props.fetchSongs();
-        this.props.fetchYoutubeSongs();
-      }
-    }
-    public componentWillReceiveProps(nextProps) {
-      if (nextProps.location.pathname.startsWith('/library')) {
-        this.props.fetchSongs();
-        this.props.fetchYoutubeSongs();
-      }
+      this.props.fetchSongs();
+      this.props.fetchYoutubeSongs();
     }
     public render() {
       return (

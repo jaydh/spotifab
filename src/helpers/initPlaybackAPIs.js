@@ -1,7 +1,7 @@
-import { store } from './index';
-import { nextSong } from './actions/queueActions';
-import runYoutubeScript from './lib/youtubeAPI';
-import runSpotifyScript from './lib/spotifySDK';
+import { store } from '../index';
+import { nextSong } from '../actions/queueActions';
+import runYoutubeScript from '../lib/youtubeAPI';
+import runSpotifyScript from '../lib/spotifySDK';
 
 export const initYoutube = () => {
   /*const tag = document.createElement('script');

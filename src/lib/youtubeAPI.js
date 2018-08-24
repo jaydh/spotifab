@@ -47,6 +47,5 @@ export default () => {
       var b = document.getElementsByTagName('script')[0];
       b.parentNode.insertBefore(a, b);
     })();
-    console.log('2');
   }
 };

@@ -75,7 +75,6 @@ export const fetchSongs = () => {
     dispatch(fetchSongsPending());
     const accessToken = getState().token.token;
     const fetches = [];
-    dispatch(fetchSongsPending());
     let next = `https://api.spotify.com/v1/me/tracks?limit=50`;
     let tracks = List();
     const currentFirst = getState().songsReducer.spotifyTracks.get(0);
@@ -89,28 +88,31 @@ export const fetchSongs = () => {
       if (json.error) {
         dispatch(fetchSongsError());
       }
-      if (currentFirst && json.items[0].track.id === currentFirst.track.id) {
+      if (
+        !json.items ||
+        (currentFirst && json.items[0].track.id === currentFirst.track.id)
+      ) {
         break;
       }
-      tracks = tracks.concat(List(json.items));
       next = json.next;
+      tracks = tracks.concat(
+        List(
+          json.items.map(t => {
+            return {
+              added_at: t.added_at,
+              track: {
+                album: t.track.album,
+                artists: t.track.artists,
+                id: t.track.id,
+                name: t.track.name,
+                uri: t.track.uri
+              }
+            };
+          })
+        )
+      );
     }
-    dispatch(
-      fetchSongsSuccess(
-        tracks.map(t => {
-          return {
-            added_at: t.added_at,
-            track: {
-              album: t.track.album,
-              artists: t.track.artists,
-              id: t.track.id,
-              name: t.track.name,
-              uri: t.track.uri
-            }
-          };
-        })
-      )
-    );
+    dispatch(fetchSongsSuccess(tracks));
     return Promise.resolve();
   };
 };
@@ -224,7 +226,6 @@ export const seek = time => {
     dispatch({
       type: 'SEEK'
     });
-    console.log(time);
     const position = getState().queue.position;
     const track = getState().queue.queue.get(position).track;
     if (!track) {

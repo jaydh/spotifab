@@ -7,20 +7,12 @@ import { fetchFeatured } from '../../actions/browseActions';
 
 const mapStateToProps = state => {
   return {
-    userId: state.userReducer.user ? state.userReducer.user.id : '',
+    userId: state.userReducer.user ? state.userReducer.user.id : ''
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      fetchRecentlyPlayed,
-      fetchSongs,
-      fetchAlbums,
-      fetchFeatured,
-    },
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 };
 
 export default connect(

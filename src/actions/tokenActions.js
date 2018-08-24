@@ -29,7 +29,7 @@ export const listenForToken = () => {
           });
         }
       });
-    setInterval(() => dispatch(requestTokenRefresh()), 1800000);
+    setInterval(() => dispatch(requestTokenRefresh()), 900000);
   };
 };
 

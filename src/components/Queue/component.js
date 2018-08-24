@@ -6,7 +6,7 @@ import { List, AutoSizer } from 'react-virtualized';
 import VolumeControls from '../VolumeControls';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import initAPIs from '../../initSpotifySDK';
+import initAPIs from '../../helpers/initPlaybackAPIs';
 
 export default class SongList extends Component {
   constructor(props) {

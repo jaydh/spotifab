@@ -9,7 +9,7 @@ const mapDispatch = dispatch => {
 
 const mapStateToProps = state => {
   return {
-    pending: state.songsReducer.fetchSongsPending,
+    pending: !state.synced.songsSynced,
     currentSort: state.ui.sort
   };
 };
