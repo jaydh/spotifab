@@ -10,7 +10,6 @@ import {
 const mapStateToProps = state => {
   return {
     user: state.userReducer.user,
-    userId: state.userReducer.user ? state.userReducer.user.id : '',
     playlistMenu: state.playlistReducer.playlistMenu,
     synced: state.synced.playlistSynced,
     tokenTime: state.token.time
@@ -21,7 +20,6 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       fetchPlaylistsMenu,
-      fetchPlaylistSongs,
       unfollowPlaylist
     },
     dispatch

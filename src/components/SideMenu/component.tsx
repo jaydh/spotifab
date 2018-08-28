@@ -23,10 +23,36 @@ export default class SideMenu extends React.Component {
           >
             Library
           </NavLink>
+          <NavLink
+            to="/recent"
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+          >
+            Recently Played
+          </NavLink>
+          <NavLink
+            to="/new"
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+          >
+            New Albums
+          </NavLink>
           <UserPlaylists />
-          <NavLink to="/authenticate">Authenticate</NavLink>
+          <NavLink
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+            to="/authenticate"
+          >
+            Authenticate
+          </NavLink>
           <br />
-          <NavLink to="/Downloads">Downloads</NavLink>
+          <NavLink
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+            to="/Downloads"
+          >
+            Downloads
+          </NavLink>
         </div>
       </Menu>
     );

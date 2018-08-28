@@ -43,7 +43,9 @@ class MainView extends React.Component {
       <Switch>
         <Route exact path="/" component={Authenticate} />
         <Route path="/library" component={SongMain} />
-        <Route path="/playlist/" component={SongMain} />
+        <Route path="/recent" component={SongMain} />
+        <Route path="/new" component={SongMain} />
+        <Route path="/playlist/:type/:owner/:id" component={SongMain} />
         <Route path="/authenticate" component={Authenticate} />
         <Route path="/authenticate/:auth" component={Authenticate} />
         <Route path="/downloads" component={Downloads} />

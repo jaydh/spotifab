@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import { parse } from 'date-fns';
 
 export const fetchPlaylistMenuPending = () => {
   return {
@@ -71,27 +72,72 @@ export const fetchPlaylistSongsError = () => {
 };
 
 export const fetchPlaylistSongs = (userId, playlistId) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     dispatch(fetchPlaylistSongsPending());
-
-    fetch(
-      `https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`,
+    const res = await fetch(
+      `https://api.spotify.com/v1/me/player/recently-played?limit=50`,
       {
         headers: new Headers({
           Authorization: 'Bearer ' + accessToken
         })
       }
-    )
-      .then(res => {
-        return res.json();
+    );
+    const json = await res.json();
+    dispatch(fetchPlaylistSongsSuccess(json.items));
+  };
+};
+
+export const fetchRecent = () => {
+  return async (dispatch, getState) => {
+    const accessToken = getState().token.token;
+    dispatch(fetchPlaylistSongsPending());
+    const res = await fetch(
+      `https://api.spotify.com/v1/me/player/recently-played?limit=50`,
+      {
+        headers: new Headers({
+          Authorization: 'Bearer ' + accessToken
+        })
+      }
+    );
+    const json = await res.json();
+    dispatch(fetchPlaylistSongsSuccess(json.items));
+  };
+};
+
+export const fetchNew = () => {
+  return async (dispatch, getState) => {
+    const accessToken = getState().token.token;
+    dispatch(fetchPlaylistSongsPending());
+    const res = await (await fetch(
+      `https://api.spotify.com/v1/browse/new-releases?country=US&limit=20`,
+      {
+        headers: new Headers({
+          Authorization: 'Bearer ' + accessToken
+        })
+      }
+    )).json();
+    console.log(res);
+    const trackArrays = await Promise.all(
+      res.albums.items.map(async t => {
+        const tracks = await (await fetch(
+          `https://api.spotify.com/v1/albums/${t.id}/tracks`,
+          {
+            headers: new Headers({
+              Authorization: 'Bearer ' + accessToken
+            })
+          }
+        )).json();
+
+        return tracks.items.map(track => {
+          return {
+            added_at: parse(t.release_date),
+            track: { ...track, album: t }
+          };
+        });
       })
-      .then(res => {
-        dispatch(fetchPlaylistSongsSuccess(res.items));
-      })
-      .catch(err => {
-        dispatch(fetchPlaylistSongsError(err));
-      });
+    );
+    dispatch(fetchPlaylistSongsSuccess([].concat.apply([], trackArrays)));
   };
 };
 

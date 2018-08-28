@@ -8,11 +8,13 @@ class UserPlaylists extends Component {
     super(props);
     this.state = {
       showMenu: false,
-      unfollowCount: 0
+      unfollowCount: 0,
+      showPlaylist: false
     };
     this.toggleShow = this.toggleShow.bind(this);
     this.hideMenu = this.hideMenu.bind(this);
     this.handleUnfollow = this.handleUnfollow.bind(this);
+    this.toggleShowPlaylist = this.toggleShowPlaylist.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -24,22 +26,32 @@ class UserPlaylists extends Component {
   render() {
     return (
       <div className="user-playlist-container">
-        <h3 className="user-playlist-header">Playlists</h3>
-        {this.props.playlistMenu && this.renderPlaylists()}
+        <div className="user-playlist-link" onClick={this.toggleShowPlaylist}>
+          <h3 className="user-playlist-header">
+            Playlists{' '}
+            <i
+              className={`fa ${
+                this.state.showPlaylist ? 'fa-minus' : 'fa-plus'
+              }`}
+            />
+          </h3>
+        </div>
+        {this.state.showPlaylist &&
+          this.props.playlistMenu &&
+          this.renderPlaylists()}
       </div>
     );
   }
 
+  toggleShowPlaylist() {
+    this.setState({ showPlaylist: !this.state.showPlaylist });
+  }
   renderPlaylists() {
     return this.props.playlistMenu.map(playlist => {
-      const getPlaylistSongs = () => {
-        this.props.fetchPlaylistSongs(playlist.owner.id, playlist.id);
-      };
       return (
         <div className={'user-playlist-item'} key={playlist.id}>
           <NavLink
-            to={`/playlist/${playlist.name}`}
-            onClick={getPlaylistSongs}
+            to={`/playlist/spotify/${playlist.owner.id}/${playlist.id}`}
             activeClassName="active side-menu-item"
             className="user-playlist-link"
           >

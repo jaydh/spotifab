@@ -120,7 +120,6 @@ export const songsReducer = (state = defaultState, action) => {
       return {
         ...state,
         playlistSongs: List(action.songs),
-        viewType: 'playlist',
         fetchPlaylistSongsError: false,
         fetchPlaylistSongsPending: false
       };

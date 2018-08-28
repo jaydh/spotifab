@@ -8,6 +8,7 @@ import {
   addSongToQueue,
   addSongToFront,
   insertSongInQueue,
+  makeNewQueue,
   shuffleQueue,
   clearSongQueue
 } from '../../actions/queueActions';
@@ -15,7 +16,7 @@ import * as Fuse from 'fuse.js';
 import { List } from 'immutable';
 import { isBefore, parse } from 'date-fns';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const options = {
     threshold: 0.3,
     keys: [
@@ -24,9 +25,10 @@ const mapStateToProps = state => {
       { name: 'track.name', weight: 1 }
     ]
   };
-  const library = state.songsReducer.spotifyTracks
-    .concat(state.songsReducer.youtubeTracks)
-    .sort((a, b) => sortBy(state.ui.sort, a, b));
+  const library = (ownProps.isLibrary
+    ? state.songsReducer.spotifyTracks.concat(state.songsReducer.youtubeTracks)
+    : state.songsReducer.playlistSongs
+  ).sort((a, b) => sortBy(state.ui.sort, a, b));
   const fuse = new Fuse(library.toJS(), options);
   const filter = state.ui.filter;
   return {
@@ -41,6 +43,7 @@ const mapDispatchToProps = dispatch => {
     {
       addSongToLibrary,
       addSongToQueue,
+      makeNewQueue,
       insertSongInQueue,
       addSongToFront,
       shuffleQueue,
