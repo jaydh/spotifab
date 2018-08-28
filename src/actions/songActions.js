@@ -99,6 +99,7 @@ export const fetchSongs = () => {
           json.items.map(t => {
             return {
               added_at: t.added_at,
+              spotify: true,
               track: {
                 album: t.track.album,
                 artists: t.track.artists,

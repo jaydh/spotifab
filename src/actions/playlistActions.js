@@ -84,7 +84,13 @@ export const fetchPlaylistSongs = (userId, playlistId) => {
       }
     );
     const json = await res.json();
-    dispatch(fetchPlaylistSongsSuccess(json.items));
+    dispatch(
+      fetchPlaylistSongsSuccess(
+        json.items.map(t => {
+          return { ...t, spotify: true };
+        })
+      )
+    );
   };
 };
 
@@ -101,7 +107,13 @@ export const fetchRecent = () => {
       }
     );
     const json = await res.json();
-    dispatch(fetchPlaylistSongsSuccess(json.items));
+    dispatch(
+      fetchPlaylistSongsSuccess(
+        json.items.map(t => {
+          return { ...t, spotify: true };
+        })
+      )
+    );
   };
 };
 
@@ -132,6 +144,7 @@ export const fetchNew = () => {
         return tracks.items.map(track => {
           return {
             added_at: parse(t.release_date),
+            spotify: true,
             track: { ...track, album: t }
           };
         });
