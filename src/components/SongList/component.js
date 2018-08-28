@@ -19,8 +19,9 @@ class SongList extends Component {
     this.updateUp = this.updateUp.bind(this);
     this.makeNewQueue = this.makeNewQueue.bind(this);
     this.makeNewQueueAndPlay = this.makeNewQueueAndPlay.bind(this);
+    this.makeQueueFromSelectors = this.makeQueueFromSelectors.bind(this);
     this.forceUpdate = this.forceUpdate.bind(this);
-    this.onDragEnd = this.onDragEnd.bind(this);
+    this.addSelectedToQueue = this.addSelectedToQueue.bind(this);
   }
 
   render() {
@@ -32,18 +33,10 @@ class SongList extends Component {
           <SongListOptions update={this.forceUpdate} />
           {selectionMade && (
             <div className="selected-buttons">
-              <button className="btn" onClick={() => this.addSelectedToQueue()}>
+              <button className="btn" onClick={this.addSelectedToQueue}>
                 <i className={'fa fa-plus'} aria-hidden="true" />
               </button>
-              <button
-                className="btn"
-                onClick={() =>
-                  this.makeNewQueue(
-                    this.state.downSelectorPos,
-                    this.state.upSelectorPos
-                  )
-                }
-              >
+              <button className="btn" onClick={this.makeQueueFromSelectors}>
                 <i className={'fa fa-file'} aria-hidden="true" />
               </button>
             </div>
@@ -102,23 +95,26 @@ class SongList extends Component {
 
   makeNewQueue(i, j) {
     let end = i < j ? j : this.props.songs.size;
-    this.props.clearSongQueue();
-    this.props.songs.slice(i, end + 1).map(t => {
-      this.props.addSongToQueue(t);
-    });
+    const songs = this.props.songs.slice(i, end + 1);
+    this.props.makeNewQueue(songs);
   }
   makeNewQueueAndPlay = index => () => {
     this.makeNewQueue(
       index,
-      this.state.upSelectorPos === 0
-        ? this.props.songs.length
-        : this.state.upSelectorPos
+      this.state.upSelectorPos === 0 ? index + 200 : this.state.upSelectorPos
     );
     this.props.play();
   };
 
+  makeQueueFromSelectors() {
+    this.makeNewQueue(this.state.downSelectorPos, this.state.upSelectorPos);
+  }
+
   addSelectedToQueue() {
     this.state.selected.map(t => this.props.addSongToQueue(t));
+  }
+  addSelectedToQueue() {
+    this.addSelectedToQueue();
   }
   forceUpdate() {
     this.refs.forceUpdateGrid();

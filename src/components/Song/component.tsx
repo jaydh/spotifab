@@ -26,13 +26,13 @@ export default class extends React.Component<IProps, IState> {
     this.handleDouble = this.handleDouble.bind(this);
   }
   public render() {
-    const { song, selected, makeNewQueueAndPlay, index } = this.props;
+    const { song, selected, makeNewQueueAndPlay } = this.props;
     return (
       <div
         className={
           selected ? 'user-song-item selected-user-song-item' : 'user-song-item'
         }
-        onDoubleClick={this.handleDouble(index)}
+        onDoubleClick={this.handleDouble}
       >
         <button className="play-song btn" onClick={makeNewQueueAndPlay}>
           <i className={`fas fa-play-circle play-btn`} aria-hidden="true" />
@@ -90,7 +90,7 @@ export default class extends React.Component<IProps, IState> {
       this.props.removeSpotifySong(song.track);
     }
   };
-  private handleDouble = start => () => {
-    this.props.makeNewQueueAndPlay(start);
-  };
+  private handleDouble() {
+    this.props.makeNewQueueAndPlay(this.props.index);
+  }
 }

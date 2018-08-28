@@ -36,6 +36,9 @@ export default (
         queue: state.queue.delete(action.position)
       };
 
+    case 'MAKE_NEW_QUEUE': {
+      return { ...state, queue: action.songs, position: 0 };
+    }
     case 'PREV_SONG': {
       const nextPos =
         state.position - 1 < 0 && state.repeat

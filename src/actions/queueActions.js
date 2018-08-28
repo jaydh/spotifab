@@ -18,6 +18,14 @@ export const addSongToQueue = song => {
     song
   };
 };
+
+export const makeNewQueue = songs => {
+  return {
+    type: 'MAKE_NEW_QUEUE',
+    songs
+  };
+};
+
 export const clearSongQueue = () => {
   return {
     type: 'CLEAR_QUEUE'
@@ -127,9 +135,9 @@ export const togglePlay = () => {
     const position = getState().queue.position;
     const track = getState().queue.queue.get(position);
     if (!track) {
-      window.ytPlayer.pauseVideo();
+      await window.ytPlayer.pauseVideo();
       const state = await window.player.getCurrentState();
-      state ? window.player.togglePlay() : dispatch(play());
+      state ? await window.player.togglePlay() : await dispatch(play());
     } else if (track.youtube) {
       window.ytPlayer.getPlayerState() === 1
         ? window.ytPlayer.pauseVideo()
