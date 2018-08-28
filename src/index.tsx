@@ -1,4 +1,3 @@
-import { addMinutes, isBefore, parse } from 'date-fns';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -14,7 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import thunk from 'redux-thunk';
 import { nextSong, prevSong, togglePlay } from './actions/queueActions';
 import { toggleMute, updateVolume } from './actions/soundActions';
-import { listenForToken, requestTokenRefresh } from './actions/tokenActions';
+import { listenForToken } from './actions/tokenActions';
 import { firebaseConf } from './apiKeys';
 import App from './App';
 import reducers from './reducers';
@@ -39,18 +38,13 @@ export const persistor = persistStore(store);
 (window as any).togglePlay = () => store.dispatch(togglePlay());
 (window as any).toggleMute = () => store.dispatch(toggleMute());
 (window as any).volumeDown = () =>
-  store.dispatch(updateVolume(store.getState().player.volume - 0.05));
+  store.dispatch(updateVolume(store.getState().player.volume - 0.01));
 (window as any).volumeUp = () =>
-  store.dispatch(updateVolume(store.getState().player.volume + 0.05));
+  store.dispatch(updateVolume(store.getState().player.volume + 0.01));
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
     store.dispatch({ type: 'SIGN_IN', user });
     store.dispatch(listenForToken());
-    const state = store.getState() as any;
-    const { token, time } = state.token;
-    if (token && !isBefore(new Date(), addMinutes(parse(time), 30))) {
-      store.dispatch(requestTokenRefresh());
-    }
   } else {
     store.dispatch({ type: 'SIGN_OUT' });
   }

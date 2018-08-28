@@ -1,6 +1,5 @@
 import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
-import { requestTokenRefresh } from './tokenActions';
 import { database, app } from '../index';
 import { play } from './queueActions';
 

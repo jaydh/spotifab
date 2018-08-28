@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { bindActionCreators } from 'redux';
-import { setToken } from './actions/tokenActions';
 import { fetchUser } from './actions/userActions';
 import { addMinutes, isBefore } from 'date-fns';
 import './App.css';

@@ -114,7 +114,6 @@ export default class Authenticat extends React.Component<IProps> {
     const callback = window.location.href.startsWith('http://localhost')
       ? 'http://localhost:3000/authenticate/'
       : `https://bard.jaydanhoward.com/authenticate/`;
-    console.log(callback);
     const url =
       'https://accounts.spotify.com/authorize/?' +
       querystring.stringify({
