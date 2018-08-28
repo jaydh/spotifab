@@ -54,7 +54,7 @@ export const initYoutube = () => {
 export const initSpotify = () => {
   window.onSpotifyWebPlaybackSDKReady = () => {
     const player = new Spotify.Player({
-      name: 'player',
+      name: 'bard',
       getOAuthToken: cb => {
         const token = store.getState().token.token;
         cb(token);

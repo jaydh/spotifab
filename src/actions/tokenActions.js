@@ -1,8 +1,10 @@
 import { database, app } from '../index';
+import { initSpotify } from '../helpers/initPlaybackAPIs';
+import runSpotifyScript from '../lib/spotifySDK';
+import { addMinutes, isBefore, parse } from 'date-fns';
 
 export const setAuthCode = authCode => {
   return (dispatch, getState) => {
-    console.log(getState());
     const ref = database
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid);
@@ -16,6 +18,7 @@ export const setAuthCode = authCode => {
 
 export const listenForToken = () => {
   return (dispatch, getState) => {
+    initSpotify();
     database
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid)
@@ -27,6 +30,20 @@ export const listenForToken = () => {
             time,
             type: 'SET_TOKEN'
           });
+          if (
+            access_token &&
+            !isBefore(new Date(), addMinutes(parse(time), 30))
+          ) {
+            dispatch(requestTokenRefresh());
+          }
+
+          if (
+            access_token &&
+            isBefore(new Date(), addMinutes(parse(time, 30))) &&
+            !getState().player.spotifyReady
+          ) {
+            runSpotifyScript();
+          }
         }
       });
     setInterval(() => dispatch(requestTokenRefresh()), 900000);
