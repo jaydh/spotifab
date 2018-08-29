@@ -9,6 +9,7 @@ interface IProps {
   fetchSongs: () => void;
   fetchYoutubeSongs: () => void;
   fetchPlaylistSongs: (owner: string, id: string) => void;
+  fetchUnifiedSongs: (ownder: string, id: string) => void;
   fetchNew: () => void;
   fetchRecent: () => void;
   location: any;
@@ -40,6 +41,7 @@ export default class SongMain extends React.Component<IProps> {
       location,
       match,
       fetchPlaylistSongs,
+      fetchUnifiedSongs,
       fetchSongs,
       fetchYoutubeSongs,
       fetchRecent,
@@ -51,6 +53,8 @@ export default class SongMain extends React.Component<IProps> {
         fetchYoutubeSongs();
       } else if (match.params.type === 'spotify') {
         fetchPlaylistSongs(match.params.owner, match.params.id);
+      } else if (match.params.type === 'unified') {
+        fetchUnifiedSongs(match.params.owner, match.params.id);
       } else if (location.pathname === '/recent') {
         fetchRecent();
       } else if (location.pathname === '/new') {

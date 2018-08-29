@@ -3,7 +3,8 @@ import { bindActionCreators } from 'redux';
 import {
   fetchNew,
   fetchPlaylistSongs,
-  fetchRecent
+  fetchRecent,
+  fetchUnifiedSongs
 } from '../../actions/playlistActions';
 import { fetchSongs, fetchYoutubeSongs } from '../../actions/songActions';
 import Component from './component';
@@ -13,6 +14,7 @@ const mapDispatchToProps = dispatch => {
     {
       fetchSongs,
       fetchYoutubeSongs,
+      fetchUnifiedSongs,
       fetchPlaylistSongs,
       fetchRecent,
       fetchNew

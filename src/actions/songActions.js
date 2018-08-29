@@ -100,13 +100,7 @@ export const fetchSongs = () => {
             return {
               added_at: t.added_at,
               spotify: true,
-              track: {
-                album: t.track.album,
-                artists: t.track.artists,
-                id: t.track.id,
-                name: t.track.name,
-                uri: t.track.uri
-              }
+              track: t.track
             };
           })
         )

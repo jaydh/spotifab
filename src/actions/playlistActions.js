@@ -1,5 +1,38 @@
 import { List } from 'immutable';
 import { parse } from 'date-fns';
+import { database, app } from '../index';
+import hash from 'string-hash';
+
+export const addUnifiedPlaylist = name => {
+  return async (dispatch, getState) => {
+    const tracks = getState().queue.queue;
+    const batch = database.batch();
+    const id = hash(name).toString();
+    dispatch({
+      type: 'ADD_UNIFIED_PLAYLIST',
+      name,
+      id,
+      owner: { id: getState().userReducer.firebaseUser.uid },
+      tracks
+    });
+
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('playlists')
+      .doc(id);
+
+    batch.set(ref, {
+      name,
+      id,
+      owner: { id: getState().userReducer.firebaseUser.uid }
+    });
+    tracks.forEach(t => {
+      batch.set(ref.collection('tracks').doc(t.track.id), t);
+    });
+    return batch.commit();
+  };
+};
 
 export const fetchPlaylistMenuPending = () => {
   return {
@@ -28,27 +61,43 @@ export const addPlaylistItem = playlist => {
 };
 
 export const fetchPlaylistsMenu = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     dispatch(fetchPlaylistMenuPending());
 
-    fetch(`https://api.spotify.com/v1/me/playlists`, {
+    const res = await (await fetch(`https://api.spotify.com/v1/me/playlists`, {
       headers: new Headers({
         Authorization: 'Bearer ' + accessToken
       })
-    })
-      .then(res => {
-        if (res.statusText === 'Unauthorized') {
-          window.location.href = './';
-        }
-        return res.json();
-      })
-      .then(res => {
-        dispatch(fetchPlaylistMenuSuccess(res.items));
-      })
-      .catch(err => {
-        dispatch(fetchPlaylistMenuError(err));
-      });
+    })).json();
+    dispatch(
+      fetchPlaylistMenuSuccess(
+        res.items.map(t => {
+          return { ...t, spotify: true };
+        })
+      )
+    );
+  };
+};
+
+export const fetchUnifiedPlaylistMenu = () => {
+  return (dispatch, getState) => {
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('playlists');
+    return ref.get().then(query => {
+      const playlists = [];
+      query.forEach(doc =>
+        playlists.push({
+          name: doc.data().name,
+          id: doc.data().id,
+          owner: doc.data().owner,
+          unified: true
+        })
+      );
+      dispatch({ type: 'FETCH_UNIFIED_PLAYLIST_MENU', playlists });
+    });
   };
 };
 
@@ -76,7 +125,7 @@ export const fetchPlaylistSongs = (userId, playlistId) => {
     const accessToken = getState().token.token;
     dispatch(fetchPlaylistSongsPending());
     const res = await fetch(
-      `https://api.spotify.com/v1/me/player/recently-played?limit=50`,
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
         headers: new Headers({
           Authorization: 'Bearer ' + accessToken
@@ -91,6 +140,34 @@ export const fetchPlaylistSongs = (userId, playlistId) => {
         })
       )
     );
+  };
+};
+
+export const fetchUnifiedSongs = (userId, playlistId) => {
+  return async (dispatch, getState) => {
+    dispatch(fetchPlaylistSongsPending());
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('playlists')
+      .doc(playlistId)
+      .collection('tracks');
+    return ref.get().then(query => {
+      const tracks = [];
+      query.forEach(doc => tracks.push(doc.data()));
+      dispatch(fetchPlaylistSongsSuccess(tracks));
+    });
+  };
+};
+export const deleteUnifiedPlaylist = id => {
+  return async (dispatch, getState) => {
+    dispatch({ type: 'DELETE_UNIFIED_PLAYLIST', id });
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('playlists')
+      .doc(id);
+    return ref.delete();
   };
 };
 
@@ -129,7 +206,6 @@ export const fetchNew = () => {
         })
       }
     )).json();
-    console.log(res);
     const trackArrays = await Promise.all(
       res.albums.items.map(async t => {
         const tracks = await (await fetch(
@@ -201,7 +277,6 @@ export const unfollowPlaylist = id => {
   return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     const userId = getState().userReducer.user.id;
-    console.log('ehy');
     await fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists/${id}/followers`,
       {
