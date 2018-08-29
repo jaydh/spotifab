@@ -98,7 +98,7 @@ export const play = () => {
       });
     };
     if (next.youtube) {
-      window.player.pause();
+      await window.player.pause();
       window.ytPlayer.loadVideoById(next.track.id);
     } else {
       window.ytPlayer.pauseVideo();
@@ -111,11 +111,40 @@ export const play = () => {
 };
 
 export const nextSong = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: 'NEXT_SONG'
     });
-    dispatch(play());
+    const position = getState().queue.position;
+    const next = getState().queue.queue.get(position);
+    const token = getState().token.token;
+    const spotifyPaused =
+      getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
+    const apiPlay = ({
+      spotify_uri,
+      playerInstance: {
+        _options: { id }
+      }
+    }) => {
+      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ uris: spotify_uri }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+    };
+    if (next.youtube) {
+      await window.player.pause();
+      window.ytPlayer.loadVideoById(next.track.id);
+    } else {
+      window.ytPlayer.pauseVideo();
+      return apiPlay({
+        playerInstance: window.player,
+        spotify_uri: [next.track.uri]
+      });
+    }
   };
 };
 export const prevSong = () => {
@@ -123,7 +152,7 @@ export const prevSong = () => {
     dispatch({
       type: 'PREV_SONG'
     });
-    dispatch(play());
+    return dispatch(play());
   };
 };
 

@@ -9,6 +9,10 @@ export const setAuthCode = authCode => {
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid);
     return ref.get().then((doc: any) => {
+      dispatch({
+        type: 'REFETCH_TOKEN'
+      });
+
       return doc.auth_code !== authCode
         ? ref.set(
             { auth_code: authCode, host: window.location.host },

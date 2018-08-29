@@ -12,13 +12,14 @@ import {
 } from '../../actions/queueActions';
 import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
 import { addSongToLibrary } from '../../actions/userActions';
-import { createNewPlaylist } from '../../actions/playlistActions';
+import { addUnifiedPlaylist } from '../../actions/playlistActions';
 
 const mapStateToProps = state => {
   return {
     songs: state.queue.queue,
     position: state.queue.position,
-    repeat: state.player.repeat
+    repeat: state.player.repeat,
+    youtubeReady: state.player.youtubeReady
   };
 };
 
@@ -28,7 +29,7 @@ const mapDispatchToProps = dispatch => {
       shuffleQueue,
       toggleRepeat,
       clearSongQueue,
-      createNewPlaylist,
+      addUnifiedPlaylist,
       removeSongFromQueue,
       insertSongInQueue
     },

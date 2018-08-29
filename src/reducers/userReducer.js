@@ -1,6 +1,7 @@
 export const userReducer = (
   state = {
-    signedIn: false
+    signedIn: false,
+    spotifySignedIn: false
   },
   action
 ) => {
@@ -15,7 +16,8 @@ export const userReducer = (
     case 'FETCH_USER_ERROR':
       return {
         ...state,
-        fetchUserError: true
+        fetchUserError: true,
+        spotifySignedIn: false
       };
 
     case 'ADD_SONG_TO_LIBRARY_SUCCESS':

@@ -24,7 +24,9 @@ export default class SongList extends Component {
   }
 
   componentDidMount() {
-    initYoutube();
+    if (!this.props.youtubeReady) {
+      initYoutube();
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.position !== nextProps.position) {
@@ -49,7 +51,7 @@ export default class SongList extends Component {
   }
   handleSumbit(e) {
     e.preventDefault();
-    this.props.createNewPlaylist(this.state.newPlaylistName, 'newss');
+    this.props.addUnifiedPlaylist(this.state.newPlaylistName);
   }
   handleChange(e) {
     e.preventDefault();
