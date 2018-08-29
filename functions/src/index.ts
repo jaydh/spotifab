@@ -15,8 +15,9 @@ admin.initializeApp(config);
 export const getToken = functions.firestore
   .document('tokens/{uid}')
   .onCreate(async (change, context) => {
-    const redirect_uri = 'https://bard.jaydanhoward.com/authenticate/';
     const code = change.data().auth_code;
+    const host = change.data().host;
+    const redirect_uri = `https://${host}/authenticate/`;
     const { id, secret } = await (await admin
       .firestore()
       .collection('client')
@@ -29,7 +30,7 @@ export const getToken = functions.firestore
       },
       method: 'POST'
     })).json();
-    console.log(json);
+    console.log(json, redirect_uri);
     return json.access_token
       ? change.ref.set({
           access_token: json.access_token,

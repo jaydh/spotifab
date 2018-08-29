@@ -10,7 +10,10 @@ export const setAuthCode = authCode => {
       .doc(getState().userReducer.firebaseUser.uid);
     return ref.get().then((doc: any) => {
       return doc.auth_code !== authCode
-        ? ref.set({ auth_code: authCode }, { merge: true })
+        ? ref.set(
+            { auth_code: authCode, host: window.location.host },
+            { merge: true }
+          )
         : Promise.resolve();
     });
   };
@@ -35,14 +38,9 @@ export const listenForToken = () => {
             !isBefore(new Date(), addMinutes(parse(time), 30))
           ) {
             dispatch(requestTokenRefresh());
-          }
-
-          if (
-            access_token &&
-            isBefore(new Date(), addMinutes(parse(time, 30))) &&
-            !getState().player.spotifyReady
-          ) {
-            runSpotifyScript();
+            if (!getState().player.spotifyReady) {
+              runSpotifyScript();
+            }
           }
         }
       });
