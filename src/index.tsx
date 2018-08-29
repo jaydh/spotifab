@@ -26,6 +26,7 @@ export const app = firebase.initializeApp(firebaseConf);
 export const database = app.firestore();
 const settings = { timestampsInSnapshots: true };
 database.settings(settings);
+export const auth = firebase.auth();
 export const ui = new firebaseui.auth.AuthUI(app.auth());
 
 export const store = createStore(
@@ -46,7 +47,7 @@ firebase.auth().onAuthStateChanged(user => {
     store.dispatch({ type: 'SIGN_IN', user });
     store.dispatch(listenForToken());
   } else {
-    store.dispatch({ type: 'SIGN_OUT' });
+    store.dispatch({ type: 'RESET' });
   }
 });
 

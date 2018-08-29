@@ -1,4 +1,3 @@
-import { addMinutes, isBefore, parse } from 'date-fns';
 import * as firebase from 'firebase';
 import * as querystring from 'querystring';
 import * as React from 'react';
@@ -8,10 +7,8 @@ import { ui } from '../../index';
 interface IProps {
   setAuthCode: (t: string) => void;
   requestTokenRefresh: () => void;
+  validToken: boolean;
   refetching: boolean;
-  token: string;
-  time: any;
-  user: any;
   signedIn: boolean;
 }
 
@@ -32,7 +29,7 @@ export default class Authenticat extends React.Component<IProps> {
     if (code.length > 0) {
       this.props.setAuthCode(code);
     }
-    if (!this.props.user) {
+    if (!this.props.signedIn && !this.props.validToken) {
       const uiConfig = {
         callbacks: {
           signInSuccessWithAuthResult: (authResult, redirectUrl) => {
@@ -42,7 +39,7 @@ export default class Authenticat extends React.Component<IProps> {
             document.getElementById('loader')!.style.display = 'none';
           },
 
-          signInSuccessUrl: 'https://bard.jaydanhoward.com/'
+          signInSuccessUrl: `https://${window.location.host}/`
         },
         signInFlow: 'redirect',
         signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID]
@@ -60,7 +57,7 @@ export default class Authenticat extends React.Component<IProps> {
           height: '400px'
         }}
       >
-        {this.props.user ? (
+        {this.props.signedIn ? (
           <React.Fragment>
             <div style={{ margin: 'auto', width: '100px' }}>
               {this.props.refetching && (
@@ -90,10 +87,8 @@ export default class Authenticat extends React.Component<IProps> {
             </button>
           </React.Fragment>
         )}
-        {this.props.token &&
-          isBefore(new Date(), addMinutes(parse(this.props.time), 30)) && (
-            <Redirect to="/library" />
-          )}
+        {this.props.signedIn &&
+          this.props.validToken && <Redirect to="/library" />}
       </div>
     );
   }
@@ -111,9 +106,7 @@ export default class Authenticat extends React.Component<IProps> {
   private redirect() {
     const scopes =
       'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
-    const callback = window.location.href.startsWith('http://localhost')
-      ? 'http://localhost:3000/authenticate/'
-      : `https://bard.jaydanhoward.com/authenticate/`;
+    const callback = `https://${window.location.host}/authenticate/`;
     const url =
       'https://accounts.spotify.com/authorize/?' +
       querystring.stringify({

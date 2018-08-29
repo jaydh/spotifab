@@ -5,9 +5,7 @@ import Authenticate from './component';
 
 const mapStateToProps = state => {
   return {
-    token: state.token.token,
-    time: state.token.time,
-    user: state.userReducer.firebaseUser,
+    validToken: state.token.valid,
     refetching: state.token.refetching,
     signedIn: state.userReducer.signedIn
   };
