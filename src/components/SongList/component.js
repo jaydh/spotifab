@@ -30,7 +30,12 @@ class SongList extends Component {
     return (
       <div id="song-list-container">
         <div className="song-header-container song-list-header">
-          <SongListOptions update={this.forceUpdate} />
+          <SongListOptions
+            update={this.forceUpdate}
+            isLibrary={this.props.isLibrary}
+            playlistId={this.props.playlistId}
+            isUnified={this.props.isUnified}
+          />
           {selectionMade && (
             <div className="selected-buttons">
               <button className="btn" onClick={this.addSelectedToQueue}>

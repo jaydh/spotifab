@@ -117,7 +117,6 @@ export const songsReducer = (state = defaultState, action) => {
       };
 
     case 'FETCH_PLAYLIST_SONGS_SUCCESS':
-      console.log(action.songs);
       return {
         ...state,
         playlistSongs: List(action.songs),

@@ -6,7 +6,11 @@ interface IProps {
   currentSort: string;
   setSort: (t: string) => void;
   pending: boolean;
+  isLibrary: boolean;
+  playlistId: string;
+  isUnified: boolean;
   update: any;
+  convertPlaylistToUnified: (name: string) => void;
 }
 
 export default class extends React.Component<IProps> {
@@ -16,6 +20,7 @@ export default class extends React.Component<IProps> {
     this.setArtist = this.setArtist.bind(this);
     this.setAlbum = this.setAlbum.bind(this);
     this.setAdded = this.setAdded.bind(this);
+    this.convert = this.convert.bind(this);
   }
   public render() {
     const current = this.props.currentSort.substring(
@@ -28,8 +33,18 @@ export default class extends React.Component<IProps> {
     const icon = (
       <i className={`fa fa-chevron-${ascDesc === 'desc' ? 'up' : 'down'}`} />
     );
+
     return (
       <React.Fragment>
+        {!this.props.isLibrary &&
+          !this.props.isUnified && (
+            <button
+              className="btn"
+              onClick={this.convert(this.props.playlistId)}
+            >
+              Convert to unified
+            </button>
+          )}
         <div
           onClick={this.setName}
           className={`${
@@ -109,4 +124,8 @@ export default class extends React.Component<IProps> {
       : this.props.setSort('added-desc');
     this.props.update();
   }
+  private convert = name => () => {
+    console.log('22');
+    this.props.convertPlaylistToUnified(name);
+  };
 }

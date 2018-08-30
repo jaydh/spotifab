@@ -123,7 +123,7 @@ export default class Filter extends React.Component<IProps, IState> {
     const res = (await fetch(
       `https://www.googleapis.com/youtube/v3/search?key=${youtubeAPI}&q=${encodeURIComponent(
         this.state.value
-      )}&part=snippet&maxResults=25`
+      )}&part=snippet&maxResults=25&type=video`
     )) as any;
     const json = await res.json();
     this.setState({ videos: List(json.items) });
@@ -131,7 +131,6 @@ export default class Filter extends React.Component<IProps, IState> {
   private async onSpotifySubmit(e: any) {
     e.preventDefault();
     const { accessToken } = this.props;
-    console.log(accessToken);
     const res = (await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         this.state.value
@@ -143,7 +142,6 @@ export default class Filter extends React.Component<IProps, IState> {
       }
     )) as any;
     const json = await res.json();
-    console.log(json);
     this.setState({ spotifySongs: List(json.tracks.items) });
   }
 

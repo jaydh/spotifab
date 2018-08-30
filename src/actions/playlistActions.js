@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import { parse } from 'date-fns';
 import { database, app } from '../index';
 import hash from 'string-hash';
+import { youtubeAPI } from '../../src/apiKeys';
 
 export const addUnifiedPlaylist = name => {
   return async (dispatch, getState) => {
@@ -31,6 +32,68 @@ export const addUnifiedPlaylist = name => {
       batch.set(ref.collection('tracks').doc(t.track.id), t);
     });
     return batch.commit();
+  };
+};
+
+export const convertPlaylistToUnified = playlistId => {
+  return async (dispatch, getState) => {
+    const name = getState().playlistReducer.playlistMenu.find(
+      t => t.id === playlistId
+    ).name;
+    let tracks = getState().songsReducer.playlistSongs;
+    tracks = await Promise.all(
+      tracks.map(async t => {
+        if (t.is_local) {
+          const res = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?key=${youtubeAPI}&q=${encodeURIComponent(
+              (t.track.name ? t.track.name : '') +
+                ' ' +
+                (t.track.artists.name ? t.track.artists.name : '') +
+                ' ' +
+                (t.track.album.name ? t.track.album.name : '')
+            )}&part=snippet&maxResults=1&type=video`
+          );
+          const json = await res.json();
+          const item = json.items[0];
+          const track = {
+            id: item.id.videoId,
+            name: item.snippet.title
+          };
+          return {
+            added_at: new Date().getTime(),
+            youtube: true,
+            track
+          };
+        }
+        return t;
+      })
+    );
+    const batch = database.batch();
+    const id = hash(name).toString();
+    const ref = database
+      .collection('userData')
+      .doc(getState().userReducer.firebaseUser.uid)
+      .collection('playlists')
+      .doc(id);
+
+    batch.set(ref, {
+      name,
+      id,
+      owner: { id: getState().userReducer.firebaseUser.uid }
+    });
+    tracks.forEach(t => {
+      console.log(t);
+      batch.set(ref.collection('tracks').doc(t.track.id), t);
+    });
+    return batch.commit().then(() =>
+      dispatch({
+        type: 'ADD_UNIFIED_PLAYLIST',
+        name,
+        id,
+        owner: { id: getState().userReducer.firebaseUser.uid },
+        tracks
+      })
+    );
   };
 };
 
