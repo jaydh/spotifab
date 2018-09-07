@@ -2,13 +2,9 @@ import * as React from 'react';
 import './SongControls.css';
 
 interface IProps {
-  nextSong: () => void;
-  prevSong: () => void;
-  togglePlay: () => void;
-  playing: boolean;
   currentTrack: any;
-  ready: boolean;
 }
+
 interface IState {
   showYT: boolean;
 }
@@ -19,9 +15,6 @@ class SongControls extends React.Component<IProps, IState> {
       showYT: false
     };
     this.toggleYoutube = this.toggleYoutube.bind(this);
-    this.togglePlay = this.togglePlay.bind(this);
-    this.nextSong = this.nextSong.bind(this);
-    this.prevSong = this.prevSong.bind(this);
   }
   public componentWillReceiveProps(nextProps) {
     if (nextProps.currentTrack && !nextProps.currentTrack.youtube) {
@@ -30,7 +23,6 @@ class SongControls extends React.Component<IProps, IState> {
     }
   }
   public render() {
-    const enable = this.props.ready;
     let image = '';
     if (this.props.currentTrack) {
       image = this.props.currentTrack.track.album
@@ -41,28 +33,21 @@ class SongControls extends React.Component<IProps, IState> {
     }
     return (
       <div
-        className="playback-controls"
         style={{
           backgroundImage: this.state.showYT ? '' : `url(${image})`,
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center'
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          width: '95%',
+          height: '20vh'
         }}
       >
-        {this.props.currentTrack && (
-          <div className="song-details">
-            <p className="song-name">{this.props.currentTrack.track.name}</p>
-            <p className="artist-name">
-              {this.props.currentTrack.track.artists &&
-                this.props.currentTrack.track.artists[0].name}
-            </p>
-            {this.props.currentTrack.youtube && (
-              <button className="btn">
-                <i className="fab fa-youtube" onClick={this.toggleYoutube} />
-              </button>
-            )}
-          </div>
-        )}
+        {this.props.currentTrack &&
+          this.props.currentTrack.youtube && (
+            <button className="btn">
+              <i className="fab fa-youtube" onClick={this.toggleYoutube} />
+            </button>
+          )}
         <div
           style={{
             display: 'flex',
@@ -78,42 +63,10 @@ class SongControls extends React.Component<IProps, IState> {
               margin: 'auto',
               maxWidth: '80%',
               maxHeight: '75%',
-              height: 'auto',
+              height: 'auto'
             }}
           />
         </div>
-        <button
-          onClick={this.prevSong}
-          className={
-            enable ? 'playback-btn reverse' : 'playback-btn reverse fa-disabled'
-          }
-          disabled={!enable}
-        >
-          <i className="fa fa-sm fa-step-backward reverse" aria-hidden="true" />
-        </button>
-        <button
-          onClick={this.togglePlay}
-          className={
-            enable ? 'playback-btn play' : 'plackback-btn play fa-disabled'
-          }
-          disabled={!enable}
-        >
-          <i
-            className={
-              this.props.playing ? 'fa fa-2x fa-pause' : 'fa fa-2x fa-play'
-            }
-            aria-hidden="true"
-          />
-        </button>
-        <button
-          className={
-            enable ? 'playback-btn forward' : 'playback-btn forward fa-disabled'
-          }
-          onClick={this.nextSong}
-          disabled={!enable}
-        >
-          <i className="fa fa-sm fa-step-forward forward" aria-hidden="true" />
-        </button>
       </div>
     );
   }
@@ -122,17 +75,6 @@ class SongControls extends React.Component<IProps, IState> {
       ? 'none'
       : 'flex';
     this.setState({ showYT: !this.state.showYT });
-  }
-
-  private nextSong() {
-    this.props.nextSong();
-  }
-  private prevSong() {
-    this.props.prevSong();
-  }
-
-  private togglePlay() {
-    this.props.togglePlay();
   }
 }
 export default SongControls;

@@ -1,7 +1,12 @@
 .user-playlist-container {
-  padding: 20px 20px 280px 20px;
   color: rgb(179, 179, 179);
   margin: 0;
+}
+
+.playlists {
+  height: 50vh;
+  overflow-y: auto;
+  border-bottom: 3px outset gray;
 }
 
 .user-playlist-header {

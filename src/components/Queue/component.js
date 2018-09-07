@@ -7,6 +7,7 @@ import VolumeControls from '../VolumeControls';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { initYoutube } from '../../helpers/initPlaybackAPIs';
+import { slide as Menu } from 'react-burger-menu';
 
 export default class SongList extends Component {
   constructor(props) {
@@ -28,10 +29,10 @@ export default class SongList extends Component {
       initYoutube();
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.position !== nextProps.position) {
+  componentDidUpdate(prevProps) {
+    if (this.props.position !== prevProps.position) {
       const current = document.getElementById(
-        `queue-item-${nextProps.position}`
+        `queue-item-${this.props.position}`
       );
       if (current) {
         current.scrollIntoView({
@@ -43,8 +44,8 @@ export default class SongList extends Component {
     }
     if (
       !this.props.songs.isEmpty() &&
-      !nextProps.songs.isEmpty() &&
-      this.props.songs.get(0).track.id !== nextProps.songs.get(0).track.id
+      !prevProps.songs.isEmpty() &&
+      this.props.songs.get(0).track.id !== prevProps.songs.get(0).track.id
     ) {
       this.refs.forceUpdateGrid();
     }
@@ -65,47 +66,68 @@ export default class SongList extends Component {
 
   render() {
     return (
-      <div id="queue-container">
-        <div className="queue-header">
-          <div className="queue-left song-list-header">
-            Queue{'    '}
-            <span className="queue-buttons">
-              <button className="btn" onClick={this.handleShuffle}>
-                <i className="fa fa-random" aria-hidden={true} />
-              </button>
-              <button
-                onClick={this.props.toggleRepeat}
-                className={'btn' + (this.props.repeat ? 'active' : '')}
-              >
-                <i className="fa fa-redo" aria-hidden={true} />
-              </button>
-              <button
-                className="btn"
-                onClick={() => {
-                  this.props.clearSongQueue();
-                }}
-              >
-                <i className="fa fa-trash" aria-hidden={true} />
-              </button>
-              {this.state.showPlaylist ? (
-                <form onSubmit={this.handleSumbit}>
-                  <input
-                    onChange={this.handleChange}
-                    placeholder="Playlist name"
-                  />
-                </form>
-              ) : (
+      <Menu
+        right={true}
+        noOverlay={true}
+        disableOverlayClick={true}
+        styles={styles}
+        width={`${
+          window.matchMedia('(min-width: 400px)').matches
+        }?'30%':'80vw'`}
+        pageWrapId={'page-wrap'}
+        outerContainerId={'app-container'}
+        id={'queue-container'}
+        customBurgerIcon={
+          <React.Fragment>
+            <i
+              style={{ color: '#BB0A21' }}
+              className="fas fa-list-ol fa-lg"
+            />
+          </React.Fragment>
+        }
+      >
+        <React.Fragment>
+          <div className="queue-header">
+            <div className="queue-left song-list-header">
+              Queue{'    '}
+              <span className="queue-buttons">
+                <button className="btn" onClick={this.handleShuffle}>
+                  <i className="fa fa-random" aria-hidden={true} />
+                </button>
+                <button
+                  onClick={this.props.toggleRepeat}
+                  className={'btn' + (this.props.repeat ? 'active' : '')}
+                >
+                  <i className="fa fa-redo" aria-hidden={true} />
+                </button>
                 <button
                   className="btn"
-                  onClick={() => this.setState({ showPlaylist: true })}
+                  onClick={() => {
+                    this.props.clearSongQueue();
+                  }}
                 >
-                  <i className="fa fa-external-link-alt" aria-hidden={true} />
+                  <i className="fa fa-trash" aria-hidden={true} />
                 </button>
-              )}{' '}
-            </span>
+                {this.state.showPlaylist ? (
+                  <form onSubmit={this.handleSumbit}>
+                    <input
+                      onChange={this.handleChange}
+                      placeholder="Playlist name"
+                    />
+                  </form>
+                ) : (
+                  <button
+                    className="btn"
+                    onClick={() => this.setState({ showPlaylist: true })}
+                  >
+                    <i className="fa fa-external-link-alt" aria-hidden={true} />
+                  </button>
+                )}{' '}
+              </span>
+            </div>
+            <VolumeControls />
           </div>
-          <VolumeControls />
-        </div>
+        </React.Fragment>
         <DragDropContext onDragEnd={this.handleDragStop}>
           <Droppable droppableId={'queue-droppbale'}>
             {(provided, snapshot) => (
@@ -131,7 +153,7 @@ export default class SongList extends Component {
           </Droppable>
         </DragDropContext>
         <SongControls />
-      </div>
+      </Menu>
     );
   }
   rowRenderer(options) {
@@ -162,3 +184,40 @@ export default class SongList extends Component {
     this.props.insertSongInQueue(song, result.destination.index);
   }
 }
+
+const styles = {
+  bmBurgerButton: {
+    position: 'fixed',
+    left: '95%',
+    top: '36px'
+  },
+  bmBurgerBars: {
+    background: '#BB0A21'
+  },
+  bmCrossButton: {
+    height: '24px',
+    width: '24px'
+  },
+  bmCross: {
+    background: '#BB0A21'
+  },
+  bmMenu: {
+    background: '#BB0A21',
+    padding: '2.5em 1.5em 0',
+    fontSize: '1.15em',
+    opacity: '0.80'
+  },
+  bmMorphShape: {
+    fill: '#252627'
+  },
+  bmItemList: {
+    color: '#252627'
+  },
+  bmItem: {
+    display: 'inline-block',
+    width: '100%'
+  },
+  bmOverlay: {
+    background: 'rgba(0, 0, 0, 0.3)'
+  }
+};

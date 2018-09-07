@@ -21,11 +21,10 @@
 }
 
 .queue {
-  grid-row: 2/2;
-  border-left: 1px outset white;
   overflow-x: hidden;
   overflow-y: auto;
-  min-height: 200px;
+  min-height: 70vh;
+  min-width: 100%;
 }
 
 .queue-header {
@@ -42,19 +41,10 @@
   color: #ccc;
   height: 2em;
 }
-.queue-buttons {
-  opacity: 0.1;
-}
-.queue-buttons:hover {
-  opacity: 1;
-}
 .volume-container {
-  grid-column: 2;
 }
 
 .playback-controls {
-  border-left: 1px outset white;
-  grid-row: 3/3;
 }
 
 .album-art .btn:hover {

@@ -5,18 +5,23 @@ import { auth } from '../../index';
 import AddYoutube from '../AddYoutube';
 import UserDetails from '../UserDetails';
 import UserPlaylists from '../UserPlaylists';
-
+import './SideMenu.css';
 export default class SideMenu extends React.Component {
   public render() {
     return (
       <Menu
-        width={'30%'}
+        width={`${
+          window.matchMedia('(min-width: 400px)').matches
+        }?'15vw':'80vw'`}
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
+        className="side-menu-container"
       >
-        <div className="left-side-section">
+        <div className="menu-header">
           <UserDetails />
           <AddYoutube />
+        </div>
+        <div className="menu-middle">
           <NavLink
             to="/library"
             activeClassName={'active side-menu-item'}
@@ -38,8 +43,10 @@ export default class SideMenu extends React.Component {
           >
             New Albums
           </NavLink>
-          <UserPlaylists />
           <br />
+          <UserPlaylists />
+        </div>
+        <div className="bottom">
           <NavLink
             activeClassName={'active side-menu-item'}
             className="user-playlist-link"
@@ -47,7 +54,6 @@ export default class SideMenu extends React.Component {
           >
             Downloads
           </NavLink>
-          <br />
           <NavLink
             activeClassName={'active side-menu-item'}
             className="user-playlist-link"

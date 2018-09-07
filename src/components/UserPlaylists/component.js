@@ -32,11 +32,15 @@ class UserPlaylists extends Component {
             />
           </h3>
         </div>
-        {this.state.showPlaylist &&
-          this.props.playlistMenu &&
-          this.props.unifiedMenu
-            .concat(this.props.playlistMenu)
-            .map(playlist => <ConnectedPlaylist playlist={playlist} />)}
+        <div className="playlists">
+          {this.state.showPlaylist &&
+            this.props.playlistMenu &&
+            this.props.unifiedMenu
+              .concat(this.props.playlistMenu)
+              .map(playlist => (
+                <ConnectedPlaylist key={playlist.id} playlist={playlist} />
+              ))}
+        </div>
       </div>
     );
   }
@@ -75,7 +79,7 @@ export class Playlist extends React.Component {
   render() {
     const { playlist } = this.props;
     return (
-      <div className={'user-playlist-item'} key={playlist.id}>
+      <div className={'user-playlist-item'}>
         <NavLink
           to={`/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
             playlist.owner.id

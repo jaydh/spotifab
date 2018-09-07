@@ -7,34 +7,39 @@ const SongList = asyncComponent(() => import('../SongList'));
 const Queue = asyncComponent(() => import('../Queue'));
 const Authenticate = asyncComponent(() => import('../Authenticate'));
 const SongProgress = asyncComponent(() => import('../SongProgress'));
+import SideMenu from '../SideMenu';
 import { connect } from 'react-redux';
 
 const Downloads = () => (
-  <div
-    style={{
-      display: 'flex',
-      margin: '0 auto',
-      alignContent: 'center',
-      justifyContent: 'center'
-    }}
-  >
-    <button className="btn">
-      <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard-1.0.0-mac.zip?alt=media&token=b2e737f2-3892-46a1-9a11-796a118f228d">
-        Mac App
-      </a>{' '}
-    </button>
-    <button className="btn">
-      {' '}
-      <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard%20Setup%201.0.0.exe?alt=media&token=b5b1f858-d1aa-4b04-81d2-4c6801a05d49">
-        Windows Desktop App
-      </a>
-    </button>
-    <button className="btn">
-      <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard-1.0.0-x86_64.AppImage?alt=media&token=80ef0391-4d4b-4009-9c64-b7b330f04348">
-        Linux AppImage{' '}
-      </a>{' '}
-    </button>
-  </div>
+  <React.Fragment>
+    <SideMenu />
+    <main
+      id="page-wrap"
+      style={{
+        display: 'flex',
+        margin: '0 auto',
+        alignContent: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <button className="btn">
+        <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard-1.0.0-mac.zip?alt=media&token=b2e737f2-3892-46a1-9a11-796a118f228d">
+          Mac App
+        </a>{' '}
+      </button>
+      <button className="btn">
+        {' '}
+        <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard%20Setup%201.0.0.exe?alt=media&token=b5b1f858-d1aa-4b04-81d2-4c6801a05d49">
+          Windows Desktop App
+        </a>
+      </button>
+      <button className="btn">
+        <a href="https://firebasestorage.googleapis.com/v0/b/spotifab-3379e.appspot.com/o/bard-1.0.0-x86_64.AppImage?alt=media&token=80ef0391-4d4b-4009-9c64-b7b330f04348">
+          Linux AppImage{' '}
+        </a>{' '}
+      </button>
+    </main>
+  </React.Fragment>
 );
 
 class MainView extends React.Component {

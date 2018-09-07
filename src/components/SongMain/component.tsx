@@ -2,8 +2,9 @@ import * as React from 'react';
 import asyncComponent from '../AsyncComponent';
 
 const SongList = asyncComponent(() => import('../SongList'));
-const Queue = asyncComponent(() => import('../Queue'));
 const SongProgress = asyncComponent(() => import('../SongProgress'));
+const Queue = asyncComponent(() => import('../Queue'));
+const SideMenu = asyncComponent(() => import('../SideMenu'));
 
 interface IProps {
   fetchSongs: () => void;
@@ -35,15 +36,18 @@ export default class SongMain extends React.Component<IProps, IState> {
   }
   public render() {
     return (
-      <div className="main-view">
-        <SongList
-          isLibrary={this.props.location.pathname === '/library'}
-          playlistId={this.state.playlistId}
-          isUnified={this.state.isUnified}
-        />
+      <React.Fragment>
+        <SideMenu />
         <Queue />
-        <SongProgress />
-      </div>
+        <main id="page-wrap" className="main-view">
+          <SongList
+            isLibrary={this.props.location.pathname === '/library'}
+            playlistId={this.state.playlistId}
+            isUnified={this.state.isUnified}
+          />
+          <SongProgress />
+        </main>
+      </React.Fragment>
     );
   }
   private handleFetch(current: IProps, prev?: IProps) {

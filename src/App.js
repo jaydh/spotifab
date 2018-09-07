@@ -5,7 +5,6 @@ import { addMinutes, isBefore } from 'date-fns';
 import './App.css';
 import { Redirect } from 'react-router-dom';
 import MainView from './components/MainView';
-import SideMenu from './components/SideMenu';
 import UserPlaylists from './components/UserPlaylists';
 import { connect } from 'react-redux';
 
@@ -14,12 +13,7 @@ class App extends React.Component {
     const { token, signedIn, time } = this.props;
     return (
       <div id="app-container">
-        <React.Fragment>
-          <SideMenu />
-          <main id="page-wrap">
-            <MainView />
-          </main>
-        </React.Fragment>
+        <MainView />
       </div>
     );
   }

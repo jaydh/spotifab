@@ -9,8 +9,12 @@ interface IState {
   seekString: string;
 }
 interface IProps {
+  nextSong: () => void;
+  prevSong: () => void;
+  togglePlay: () => void;
+  playing: boolean;
   currentTrack: any;
-  playing: any;
+  ready: boolean;
   seek: (t: number) => void;
 }
 
@@ -25,6 +29,9 @@ export default class SongProgress extends React.Component<IProps, IState> {
     };
     this.handleHover = this.handleHover.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.togglePlay = this.togglePlay.bind(this);
+    this.nextSong = this.nextSong.bind(this);
+    this.prevSong = this.prevSong.bind(this);
   }
   public componentDidMount() {
     this.calculateTime();
@@ -34,8 +41,65 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   public render() {
+    const enable = this.props.ready;
+
     return (
       <div id="song-progress-container">
+        {this.props.currentTrack && (
+          <div className="song-details">
+            <p className="song-name">{this.props.currentTrack.track.name}</p>
+            <p className="artist-name">
+              {this.props.currentTrack.track.artists &&
+                this.props.currentTrack.track.artists[0].name}
+            </p>
+          </div>
+        )}
+        <div className="song-controls-container">
+          <button
+            onClick={this.prevSong}
+            className={
+              enable
+                ? 'playback-btn reverse btn'
+                : 'playback-btn reverse fa-disabled btn'
+            }
+            disabled={!enable}
+          >
+            <i
+              className="fa fa-sm fa-step-backward reverse"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            onClick={this.togglePlay}
+            className={
+              enable
+                ? 'playback-btn play btn'
+                : 'plackback-btn play fa-disabled btn'
+            }
+            disabled={!enable}
+          >
+            <i
+              className={
+                this.props.playing ? 'fa fa-2x fa-pause' : 'fa fa-2x fa-play'
+              }
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            className={
+              enable
+                ? 'playback-btn forward btn'
+                : 'playback-btn forward fa-disabled btn'
+            }
+            onClick={this.nextSong}
+            disabled={!enable}
+          >
+            <i
+              className="fa fa-sm fa-step-forward forward"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
         <div className="line-container">
           <Line
             percent={
@@ -44,7 +108,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
                 : 0
             }
             strokeWidth="0.3"
-            strokeColor="#1db954"
+            strokeColor="#252627"
             onClick={this.handleClick}
             onMouseMove={this.handleHover}
           />
@@ -74,16 +138,23 @@ export default class SongProgress extends React.Component<IProps, IState> {
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
 
+  private nextSong() {
+    this.props.nextSong();
+  }
+  private prevSong() {
+    this.props.prevSong();
+  }
+
+  private togglePlay() {
+    this.props.togglePlay();
+  }
+
   private calculateTime() {
     (this as any).intervalId = setInterval(async () => {
       if (this.props.playing) {
-        const { currentTrack } = this.props;
-        if (
-          currentTrack &&
-          (window as any).player &&
-          (window as any).ytPlayer
-        ) {
-          if (!currentTrack.uri) {
+        const { currentTrack, ready } = this.props;
+        if (currentTrack && ready) {
+          if (currentTrack.youtube) {
             this.setState({
               position:
                 (await (window as any).ytPlayer.getCurrentTime()) * 1000,
@@ -100,6 +171,6 @@ export default class SongProgress extends React.Component<IProps, IState> {
           }
         }
       }
-    }, 250) as any;
+    }, 100) as any;
   }
 }

@@ -6,23 +6,23 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #ccc;
+  color: #252627;
   cursor: pointer;
 }
 
 .user-song-item:hover {
-  color: #1db954;
-  background: rgb(51, 51, 51);
+  color: #252627;
+  background: #4b88a2;
 }
 
 .active {
-  color: #1db954;
-  background: rgb(51, 51, 51);
+  color: #252627;
+  background: #4b88a2;
 }
 
 .selected-user-song-item {
-  color: #1db954;
-  background: rgb(51, 51, 51);
+  color: #252627;
+  background: #4b88a2;
 }
 
 .user-song-item:hover > .song-buttons,

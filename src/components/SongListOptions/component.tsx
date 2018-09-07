@@ -83,9 +83,9 @@ export default class extends React.Component<IProps> {
             current === 'added' ? 'activeSort' : ''
           } song-list-options`}
         >
-          <Filter />
           <i onClick={this.setAdded} className="fa fa-calendar" />
           {current === 'added' && icon}
+          <Filter />
         </div>
       </React.Fragment>
     );

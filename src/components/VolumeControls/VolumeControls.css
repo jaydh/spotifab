@@ -2,7 +2,7 @@
   -webkit-appearance: none;
   height: 5px;
   margin: auto auto;
-  background: #4caf50;
+  background: #fef2d7;
   border-radius: 4px;
   outline: none;
   opacity: 1;
@@ -10,7 +10,7 @@
 }
 
 input[type='range']::-moz-range-track {
-  background: #4caf50;
+  background: #fef2d7;
   border-radius: 4px;
   outline: none;
   opacity: 1;

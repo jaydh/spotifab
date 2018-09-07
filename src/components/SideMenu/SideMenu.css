@@ -1,16 +1,8 @@
 .side-menu-container {
-  padding: 20px;
-  color: rgb(179, 179, 179);
-  margin: 0;
+  height: 100vh;
 }
 
-.user-library-header {
-  font-weight: 300;
-  text-transform: uppercase;
-  font-size: 13px;
-  margin: 0;
-  padding: 0 0 5px 0;
-  letter-spacing: 1px;
+.menu-header {
 }
 
 .side-menu-item {
@@ -19,25 +11,15 @@
   font-size: 14px;
   width: 140px;
   cursor: pointer;
-text-overflow: ellipsis;
-white-space: nowrap;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .side-menu-item:hover {
   color: #fff;
 }
 
-.radio {
-  margin-bottom: 20px;
-}
-
-.side-menu-container .active {
-	margin-left: -3px;
-}
-
-.side-menu-container .active:before {
-	content: "";
-	border-left: 3px solid #1db954;
-	position: relative;
-	left: -18px;
+.bottom {
+  position: absolute;
+  bottom: 20px;
 }

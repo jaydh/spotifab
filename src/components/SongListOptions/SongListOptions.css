@@ -1,11 +1,12 @@
-.song-title-header p,
+song-title-header p,
 .song-artist-header p,
 .song-album-header p,
 .song-length-header p,
 .song-list-header p {
   text-transform: uppercase;
   font-size: 12px;
-  color: #ccc;
+  font-weight: bold;
+  color: #252627;
   height: 2em;
 }
 
@@ -24,7 +25,7 @@
 .song-artist-header p:hover,
 .song-album-header p:hover,
 .song-list-options i:hover {
-  color: green;
+  color: #bb0a21;
 }
 .song-title-header {
   grid-column: 1/1;
