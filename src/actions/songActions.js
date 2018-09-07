@@ -246,7 +246,7 @@ export const addSpotifySong = track => {
         Authorization: 'Bearer ' + accessToken
       })
     });
-    dispatch({ type: 'ADD_SONG_TO_LIBRARY', track });
+    dispatch({ type: 'ADD_SONG_TO_LIBRARY', track, spotify: true });
   };
 };
 
