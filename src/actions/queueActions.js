@@ -1,5 +1,19 @@
 import { List } from 'immutable';
 
+export const updatePlayer = state => {
+  return dispatch => {
+    if (state) {
+      if (state.position === state.duration) {
+        dispatch(nextSong());
+      }
+      dispatch({
+        type: 'UPDATE_SPOTIFY_PLAYER_STATE',
+        state
+      });
+    }
+  };
+};
+
 export const toggleRepeat = () => {
   return {
     type: 'TOGGLE_REPEAT'
@@ -65,115 +79,146 @@ export const updatePosition = position => {
   };
 };
 
+const apiPlay = (
+  token,
+  {
+    spotify_uri,
+    playerInstance: {
+      _options: { id }
+    }
+  }
+) =>
+  fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({ uris: spotify_uri }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
 export const play = () => {
   return async (dispatch, getState) => {
-    const ready =
-      getState().player.spotifyReady && getState().player.youtubeReady;
+    const state = await getState();
+    const ready = state.player.spotifyReady && state.player.youtubeReady;
     if (!ready) {
       return;
     }
-    if (ready) {
-      dispatch({
-        type: 'PLAY'
-      });
-    }
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position);
-    const token = getState().token.token;
-    const spotifyPaused =
-      getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
-    const apiPlay = ({
-      spotify_uri,
-      playerInstance: {
-        _options: { id }
-      }
-    }) => {
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-    };
-    if (next.youtube) {
-      await window.player.pause();
-      window.ytPlayer.loadVideoById(next.track.id);
+    dispatch({
+      type: 'PLAY'
+    });
+
+    const position = state.queue.position;
+    const song = state.queue.queue.get(position);
+    const firstYoutube = state.queue.queue.filter(t => t.youtube).first();
+    return song.youtube
+      ? window.ytPlayer.loadVideoById(song.track.id)
+      : apiPlay(state.token.token, {
+          playerInstance: window.player,
+          spotify_uri: state.queue.queue
+            .slice(position)
+            .filter(t => t.spotify)
+            .map(t => t.track.uri)
+            .toArray()
+        }).then(() => window.ytPlayer.cueVideoById(firstYoutube.track.id));
+  };
+};
+export const nextSong = () => {
+  const key = Math.random();
+  const thunk = async (dispatch, getState) => {
+    dispatch({
+      type: 'CANCEL',
+      meta: { debounce: { cancel: true, key } }
+    });
+    const queue = getState().queue;
+    const position = queue.position;
+    const next = queue.queue.get(
+      position + 1 === queue.queue.size ? 0 : position + 1
+    );
+    const nextYoutube = queue.queue.find(
+      (t, index) => index > position && t.youtube
+    );
+    const current = queue.queue.get(queue.position);
+    let promise;
+    if (next.spotify && current.spotify) {
+      promise = window.player
+        .nextTrack()
+        .then(() =>
+          window.ytPlayer.cueVideoById(
+            nextYoutube ? nextYoutube.track.id : Promise.resolve()
+          )
+        );
+    } else if (next.youtube && current.youtube) {
+      promise = Promise.resolve(window.ytPlayer.loadVideoById(next.track.id));
     } else {
-      window.ytPlayer.pauseVideo();
-      return apiPlay({
-        playerInstance: window.player,
-        spotify_uri: [next.track.uri]
-      });
+      const firstSpotify = queue.queue.filter(t => t.spotify).first().track;
+      if (next.spotify) {
+        promise =
+          firstSpotify.id === next.track.id
+            ? apiPlay(getState().token.token, {
+                playerInstance: window.player,
+                spotify_uri: queue.queue
+                  .filter(t => t.spotify)
+                  .map(t => t.track.uri)
+                  .toArray()
+              })
+                .then(() => window.ytPlayer.stopVideo())
+                .then(() =>
+                  window.ytPlayer.cueVideoById(
+                    nextYoutube ? nextYoutube.track.id : Promise.resolve()
+                  )
+                )
+            : window.player.nextTrack().then(() => window.ytPlayer.stopVideo());
+      } else {
+        promise = window.player.pause().then(() => window.ytPlayer.playVideo());
+      }
+    }
+    return promise.then(() =>
+      dispatch({
+        type: 'NEXT_SONG'
+      })
+    );
+  };
+  thunk.meta = {
+    debounce: {
+      time: '800',
+      leading: true,
+      trailing: false,
+      key
     }
   };
+  return thunk;
 };
 
-export const nextSong = () => {
-  return async (dispatch, getState) => {
-    dispatch({
-      type: 'NEXT_SONG'
-    });
-    const position = getState().queue.position;
-    const next = getState().queue.queue.get(position);
-    const token = getState().token.token;
-    const spotifyPaused =
-      getState().player.spotifyPlayer && getState().player.spotifyPlayer.paused;
-    const apiPlay = ({
-      spotify_uri,
-      playerInstance: {
-        _options: { id }
-      }
-    }) => {
-      fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ uris: spotify_uri }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        }
-      });
-    };
-    if (next.youtube) {
-      await window.player.pause();
-      window.ytPlayer.loadVideoById(next.track.id);
-    } else {
-      window.ytPlayer.pauseVideo();
-      return apiPlay({
-        playerInstance: window.player,
-        spotify_uri: [next.track.uri]
-      });
-    }
-  };
-};
 export const prevSong = () => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: 'PREV_SONG'
     });
-    return dispatch(play());
+    return window.player
+      .pause()
+      .then(() => window.ytPlayer.stopVideo())
+      .then(() => dispatch(play()));
   };
 };
 
 export const togglePlay = () => {
   return async (dispatch, getState) => {
-    dispatch({
-      type: 'TOGGLE_PLAY'
-    });
-    const position = getState().queue.position;
-    const track = getState().queue.queue.get(position);
-    if (!track) {
-      await window.ytPlayer.pauseVideo();
-      const state = await window.player.getCurrentState();
-      state ? await window.player.togglePlay() : await dispatch(play());
-    } else if (track.youtube) {
-      window.ytPlayer.getPlayerState() === 1
-        ? window.ytPlayer.pauseVideo()
-        : window.ytPlayer.playVideo();
+    const playing = getState().player.playing;
+    if (playing) {
+      return window.player
+        .pause()
+        .then(() => window.ytPlayer.pauseVideo())
+        .then(() =>
+          dispatch({
+            type: 'TOGGLE_PLAY'
+          })
+        );
     } else {
-      const state = await window.player.getCurrentState();
-      state ? window.player.togglePlay() : dispatch(play());
+      dispatch({
+        type: 'TOGGLE_PLAY'
+      });
+      return dispatch(play());
     }
   };
 };

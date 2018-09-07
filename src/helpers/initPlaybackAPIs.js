@@ -1,5 +1,5 @@
 import { store } from '../index';
-import { nextSong } from '../actions/queueActions';
+import { updatePlayer, nextSong } from '../actions/queueActions';
 import runYoutubeScript from '../lib/youtubeAPI';
 import runSpotifyScript from '../lib/spotifySDK';
 
@@ -76,21 +76,8 @@ export const initSpotify = () => {
     });
 
     // Playback status updates
-    let nexted = false;
     player.addListener('player_state_changed', state => {
-      store.dispatch({
-        type: 'UPDATE_SPOTIFY_PLAYER_STATE',
-        state
-      });
-      if (state) {
-        if (!nexted && state.paused && state.position === 0) {
-          nexted = true;
-          store.dispatch(nextSong());
-        }
-        if (state.position !== 0) {
-          nexted = false;
-        }
-      }
+      store.dispatch(updatePlayer(state));
     });
 
     // Ready
