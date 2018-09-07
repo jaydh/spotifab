@@ -4,13 +4,15 @@ export default (
   state = {
     queue: List(),
     repeat: true,
-    position: 0
+    position: 0,
+    controller: null
   },
   action
 ) => {
   switch (action.type) {
     case 'PLAY':
       return {
+        controller: action.controller,
         ...state
       };
     case 'TOGGLE_REPEAT':

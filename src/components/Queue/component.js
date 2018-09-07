@@ -72,17 +72,14 @@ export default class SongList extends Component {
         disableOverlayClick={true}
         styles={styles}
         width={`${
-          window.matchMedia('(min-width: 400px)').matches
-        }?'30%':'80vw'`}
+          window.matchMedia('(max-width: 400px)').matches
+        }?'80vw':'30vw'`}
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
         id={'queue-container'}
         customBurgerIcon={
           <React.Fragment>
-            <i
-              style={{ color: '#BB0A21' }}
-              className="fas fa-list-ol fa-lg"
-            />
+            <i style={{ color: '#BB0A21' }} className="fas fa-list-ol fa-lg" />
           </React.Fragment>
         }
       >

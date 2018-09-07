@@ -107,6 +107,7 @@ export const play = () => {
     dispatch({
       type: 'PLAY'
     });
+    await window.player.pause().then(() => window.ytPlayer.stopVideo());
 
     const position = state.queue.position;
     const song = state.queue.queue.get(position);
@@ -115,79 +116,17 @@ export const play = () => {
       ? window.ytPlayer.loadVideoById(song.track.id)
       : apiPlay(state.token.token, {
           playerInstance: window.player,
-          spotify_uri: state.queue.queue
-            .slice(position)
-            .filter(t => t.spotify)
-            .map(t => t.track.uri)
-            .toArray()
-        }).then(() => window.ytPlayer.cueVideoById(firstYoutube.track.id));
+          spotify_uri: [song.track.uri]
+        });
   };
 };
 export const nextSong = () => {
-  const key = Math.random();
-  const thunk = async (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch({
-      type: 'CANCEL',
-      meta: { debounce: { cancel: true, key } }
+      type: 'NEXT_SONG'
     });
-    const queue = getState().queue;
-    const position = queue.position;
-    const next = queue.queue.get(
-      position + 1 === queue.queue.size ? 0 : position + 1
-    );
-    const nextYoutube = queue.queue.find(
-      (t, index) => index > position && t.youtube
-    );
-    const current = queue.queue.get(queue.position);
-    let promise;
-    if (next.spotify && current.spotify) {
-      promise = window.player
-        .nextTrack()
-        .then(() =>
-          window.ytPlayer.cueVideoById(
-            nextYoutube ? nextYoutube.track.id : Promise.resolve()
-          )
-        );
-    } else if (next.youtube && current.youtube) {
-      promise = Promise.resolve(window.ytPlayer.loadVideoById(next.track.id));
-    } else {
-      const firstSpotify = queue.queue.filter(t => t.spotify).first().track;
-      if (next.spotify) {
-        promise =
-          firstSpotify.id === next.track.id
-            ? apiPlay(getState().token.token, {
-                playerInstance: window.player,
-                spotify_uri: queue.queue
-                  .filter(t => t.spotify)
-                  .map(t => t.track.uri)
-                  .toArray()
-              })
-                .then(() => window.ytPlayer.stopVideo())
-                .then(() =>
-                  window.ytPlayer.cueVideoById(
-                    nextYoutube ? nextYoutube.track.id : Promise.resolve()
-                  )
-                )
-            : window.player.nextTrack().then(() => window.ytPlayer.stopVideo());
-      } else {
-        promise = window.player.pause().then(() => window.ytPlayer.playVideo());
-      }
-    }
-    return promise.then(() =>
-      dispatch({
-        type: 'NEXT_SONG'
-      })
-    );
+    return dispatch(play());
   };
-  thunk.meta = {
-    debounce: {
-      time: '800',
-      leading: true,
-      trailing: false,
-      key
-    }
-  };
-  return thunk;
 };
 
 export const prevSong = () => {
@@ -195,30 +134,30 @@ export const prevSong = () => {
     dispatch({
       type: 'PREV_SONG'
     });
-    return window.player
-      .pause()
-      .then(() => window.ytPlayer.stopVideo())
-      .then(() => dispatch(play()));
+    return dispatch(play());
   };
 };
 
 export const togglePlay = () => {
   return async (dispatch, getState) => {
-    const playing = getState().player.playing;
+    const { spotifyPlayer, playing, ytPlayer } = getState().player;
+    const position = getState().queue.position;
+    const song = getState().queue.queue.get(position);
+    dispatch({
+      type: 'TOGGLE_PLAY'
+    });
+
     if (playing) {
-      return window.player
-        .pause()
-        .then(() => window.ytPlayer.pauseVideo())
-        .then(() =>
-          dispatch({
-            type: 'TOGGLE_PLAY'
-          })
-        );
+      return window.player.pause().then(() => window.ytPlayer.pauseVideo());
     } else {
-      dispatch({
-        type: 'TOGGLE_PLAY'
-      });
-      return dispatch(play());
+      if (ytPlayer === 5 && !spotifyPlayer.context.uri) {
+        return dispatch(play());
+      }
+      if (song.youtube) {
+        window.ytPlayer.pauseVideo();
+      } else if (song.spotify) {
+        await window.player.pause();
+      }
     }
   };
 };

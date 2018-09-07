@@ -38,7 +38,9 @@ class SongControls extends React.Component<IProps, IState> {
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          width: '95%',
+          width: `${
+            window.matchMedia('(min-width: 400px)').matches
+          }?'30vw':'80vw'`,
           height: '20vh'
         }}
       >
@@ -61,7 +63,6 @@ class SongControls extends React.Component<IProps, IState> {
               display: 'none',
               padding: '20px',
               margin: 'auto',
-              maxWidth: '80%',
               maxHeight: '75%',
               height: 'auto'
             }}

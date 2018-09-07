@@ -11,7 +11,7 @@ export const initYoutube = () => {
   window.onYouTubeIframeAPIReady = () => {
     window.ytPlayer = new YT.Player('ytPlayer', {
       height: '500',
-      width: '800',
+      width: `${window.matchMedia('(max-width: 400px)').matches}?'70vw':'25vw'`,
       suggestedQuality: 'small',
       playerVars: {
         controls: 0,

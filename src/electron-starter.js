@@ -80,9 +80,6 @@ app.on('activate', () => {
 });
 
 app.on('will-quit', () => {
-  // Unregister a shortcut.
-  globalShortcut.unregister('CommandOrControl+X');
-
   // Unregister all shortcuts.
   globalShortcut.unregisterAll();
 });
