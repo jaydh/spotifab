@@ -107,9 +107,9 @@ export const play = () => {
           song.youtube
             ? window.ytPlayer.loadVideoById(song.track.id)
             : apiPlay(state.token.token, {
-                playerInstance: window.player,
-                spotify_uri: [song.track.uri]
-              })
+              playerInstance: window.player,
+              spotify_uri: [song.track.uri]
+            })
       );
   };
 };
@@ -143,13 +143,10 @@ export const togglePlay = () => {
     if (playing) {
       return window.player.pause().then(() => window.ytPlayer.pauseVideo());
     } else {
-      if (ytPlayer === 5 && !spotifyPlayer.context.uri) {
-        return dispatch(play());
-      }
       if (song.youtube) {
-        window.ytPlayer.pauseVideo();
+        window.ytPlayer.getPlayerState() === 2 ? window.ytPlayer.playVideo() : dispatch(play())
       } else if (song.spotify) {
-        await window.player.pause();
+        (await window.player.getCurrentState()).paused ? window.player.resume() : dispatch(play())
       }
     }
   };
