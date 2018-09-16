@@ -1,17 +1,7 @@
 import { List } from 'immutable';
 
 export const updatePlayer = state => {
-  return dispatch => {
-    if (state) {
-      if (state.position === state.duration) {
-        dispatch(nextSong());
-      }
-      dispatch({
-        type: 'UPDATE_SPOTIFY_PLAYER_STATE',
-        state
-      });
-    }
-  };
+ return
 };
 
 export const toggleRepeat = () => {
@@ -99,7 +89,7 @@ const apiPlay = (
 
 export const play = () => {
   return async (dispatch, getState) => {
-    const state = await getState();
+    const state = getState();
     const ready = state.player.spotifyReady && state.player.youtubeReady;
     if (!ready) {
       return;
@@ -107,17 +97,20 @@ export const play = () => {
     dispatch({
       type: 'PLAY'
     });
-    await window.player.pause().then(() => window.ytPlayer.stopVideo());
-
     const position = state.queue.position;
     const song = state.queue.queue.get(position);
-    const firstYoutube = state.queue.queue.filter(t => t.youtube).first();
-    return song.youtube
-      ? window.ytPlayer.loadVideoById(song.track.id)
-      : apiPlay(state.token.token, {
-          playerInstance: window.player,
-          spotify_uri: [song.track.uri]
-        });
+    return window.player
+      .pause()
+      .then(() => window.ytPlayer.stopVideo())
+      .then(
+        () =>
+          song.youtube
+            ? window.ytPlayer.loadVideoById(song.track.id)
+            : apiPlay(state.token.token, {
+                playerInstance: window.player,
+                spotify_uri: [song.track.uri]
+              })
+      );
   };
 };
 export const nextSong = () => {
