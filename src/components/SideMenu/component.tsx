@@ -10,12 +10,12 @@ export default class SideMenu extends React.Component {
   public render() {
     return (
       <Menu
+        styles={styles}
         width={`${
-          window.matchMedia('(min-width: 400px)').matches
-        }?'15vw':'80vw'`}
+          window.matchMedia("(max-width: 700px)").matches
+            ? '99vw' : '35vw'}`}
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
-        className="side-menu-container"
       >
         <div className="menu-header">
           <UserDetails />
@@ -68,5 +68,42 @@ export default class SideMenu extends React.Component {
   }
   private signOut() {
     auth.signOut();
+  }
+}
+const styles = {
+  bmBurgerButton: {
+    position: 'fixed',
+    width: '16px',
+    height: '10px',
+    left: '36px',
+    top: '36px'
+  },
+  bmBurgerBars: {
+    background: '#4b88a2'
+  },
+  bmCrossButton: {
+    height: '24px',
+    width: '24px'
+  },
+  bmCross: {
+    background: '#bdc3c7'
+  },
+  bmMenu: {
+    background: '#373a47',
+    padding: '2.5em 1.5em 0',
+    fontSize: '1.15em'
+  },
+  bmMorphShape: {
+    fill: '#373a47'
+  },
+  bmItemList: {
+    color: '#b8b7ad',
+    padding: '0.8em'
+  },
+  bmItem: {
+    display: 'inline-block'
+  },
+  bmOverlay: {
+    background: 'rgba(0, 0, 0, 0.3)'
   }
 }
