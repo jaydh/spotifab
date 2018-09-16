@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@firebase/app-types": "^0.3.2",
+    "@ibm/plex": "^1.1.6",
     "@types/react": "^16.4.11",
     "date-fns": "^1.29.0",
     "electron-is-dev": "^0.3.0",

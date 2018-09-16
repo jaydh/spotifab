@@ -215,6 +215,10 @@
     lodash "^4.17.5"
     protobufjs "^6.8.6"
 
+"@ibm/plex@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@ibm/plex/-/plex-1.1.6.tgz#9fe299d64233ad952986e238333ca95c9247d2c6"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
