@@ -2,11 +2,18 @@ import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
 import { database, app } from '../index';
 import { play } from './queueActions';
+import { parse, toSeconds } from 'iso8601-duration';
 
 export const addYoutubeSong = t => {
   return async (dispatch, getState) => {
     const name = t.snippet.title;
     const id = t.id.videoId;
+    const res = (await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
+    ));
+    const json = await res.json();
+    const durationMs = (toSeconds(parse(json.items[0].contentDetails.duration))) * 1000
+
     const ref = database
       .collection('userData')
       .doc(getState().userReducer.firebaseUser.uid)
@@ -15,14 +22,17 @@ export const addYoutubeSong = t => {
     await ref.set({
       name,
       id,
-      added_at: new Date().getTime()
+      added_at: new Date().getTime(),
+      durationMs
     });
+
 
     dispatch({
       type: 'ADD_YOUTUBE_TRACK',
       id,
       name,
-      added_at: new Date().getTime()
+      added_at: new Date().getTime(),
+      duration_ms
     });
   };
 };
@@ -36,13 +46,29 @@ export const fetchYoutubeSongs = () => {
         .doc(user.uid)
         .collection('youtubeTracks');
       return ref.get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
+        querySnapshot.forEach(async doc => {
           const { id, name, added_at } = doc.data();
+          let { duration_ms } = doc.data()
+          if (!duration_ms) {
+            const res = (await fetch(
+              `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
+            ));
+            const json = await res.json();
+            duration_ms = (toSeconds(parse(json.items[0].contentDetails.duration))) * 1000
+
+            await ref.doc(id).set({
+              duration_ms
+            }, {
+                merge: true
+              });
+          }
+
           dispatch({
             type: 'ADD_YOUTUBE_TRACK',
             id,
             name,
-            added_at
+            added_at,
+            durationMs: duration_ms
           });
         });
       });

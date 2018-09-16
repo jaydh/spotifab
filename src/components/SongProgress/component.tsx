@@ -5,7 +5,6 @@ import './songProcess.css';
 
 interface IState {
   position: number;
-  duration: number;
   seekTime: number;
   seekString: string;
 }
@@ -24,7 +23,6 @@ export default class SongProgress extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       position: 0,
-      duration: 0,
       seekTime: 0,
       seekString: '0:00'
     };
@@ -34,16 +32,18 @@ export default class SongProgress extends React.Component<IProps, IState> {
     this.nextSong = this.nextSong.bind(this);
     this.prevSong = this.prevSong.bind(this);
   }
-  public componentDidMount() {
+  public async componentDidMount() {
     this.calculateTime();
   }
+
   public componentWillUnmount() {
     clearInterval((this as any).intervalId);
   }
 
   public render() {
     const enable = this.props.ready;
-
+    const { currentTrack } = this.props;
+    const { duration_ms } = currentTrack ? currentTrack.track : 0
     return (
       <div id="song-progress-container">
         {this.props.currentTrack && (
@@ -56,6 +56,9 @@ export default class SongProgress extends React.Component<IProps, IState> {
           </div>
         )}
         <div className="song-controls-container">
+          <p>
+            {this.millisToMinutesAndSeconds(this.state.position)}
+          </p>
           <button
             onClick={this.prevSong}
             className={
@@ -100,13 +103,14 @@ export default class SongProgress extends React.Component<IProps, IState> {
               aria-hidden="true"
             />
           </button>
+          <p>{this.millisToMinutesAndSeconds(duration_ms)}</p>
           <VolumeControls />
         </div>
-        <div className="line-container">
+        <div id="line-container">
           <Line
             percent={
-              !isNaN(this.state.position / this.state.duration)
-                ? (this.state.position / this.state.duration) * 100
+              !isNaN(this.state.position / duration_ms)
+                ? (this.state.position / duration_ms) * 100
                 : 0
             }
             strokeWidth="0.6"
@@ -125,14 +129,19 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   private handleHover(e: any) {
-    const t = document.getElementById('song-progress-container');
-    const percentage = e.clientX / t!.clientWidth;
-    this.setState({
-      seekTime: this.state.duration * percentage,
-      seekString: this.millisToMinutesAndSeconds(
-        this.state.duration * percentage
-      )
-    });
+    const t = document.getElementById('line-container');
+    const percentage = e.clientX / t!.scrollWidth
+    const { currentTrack } = this.props;
+
+    if (currentTrack) {
+      const { duration_ms } = currentTrack.track
+      this.setState({
+        seekTime: duration_ms * percentage,
+        seekString: this.millisToMinutesAndSeconds(
+          duration_ms * percentage
+        )
+      });
+    }
   }
 
   private millisToMinutesAndSeconds(millis: number) {
@@ -154,24 +163,19 @@ export default class SongProgress extends React.Component<IProps, IState> {
 
   private calculateTime() {
     (this as any).intervalId = setInterval(async () => {
-      if (this.props.playing) {
-        const { currentTrack, ready } = this.props;
-        if (currentTrack && ready) {
-          const { position, duration } = currentTrack.youtube
-            ? {
-              position:
-                (await (window as any).ytPlayer.getCurrentTime()) * 1000,
-              duration: (await (window as any).ytPlayer.getDuration()) * 1000
-            }
-            : await (window as any).player.getCurrentState() ? await (window as any).player.getCurrentState() : { position: null, duration: null };
-          if ((duration && position) && duration - position < 300) {
-            this.props.nextSong();
-          }
-          this.setState({
-            position,
-            duration
-          });
+      const { currentTrack, ready } = this.props;
+
+      if (currentTrack && ready) {
+        const { duration_ms } = currentTrack.track
+        const position = currentTrack.youtube
+          ? (await (window as any).ytPlayer.getCurrentTime()) * 1000
+          : await (window as any).player.getCurrentState() ? (await (window as any).player.getCurrentState()).position : 0
+        if ((position) && duration_ms - position < 300) {
+          this.props.nextSong();
         }
+        this.setState({
+          position
+        });
       }
     }, 50) as any;
   }

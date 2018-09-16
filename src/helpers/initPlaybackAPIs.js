@@ -29,7 +29,14 @@ export const initYoutube = () => {
   // 4. The API will call this function when the video player is ready.
   function onPlayerReady(event) {
     window.ytPlayer.setVolume(store.getState().player.volume * 100);
+    const current = store
+      .getState()
+      .queue.queue.get(store.getState().queue.position);
+    if (current && current.youtube) {
+      window.ytPlayer.cueVideoById(current.track.id);
+    }
     store.dispatch({ type: 'YOUTUBE_READY' });
+
   }
 
   function onPlayerStateChange(event) {

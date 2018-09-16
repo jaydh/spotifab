@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.line-container {
+#line-container {
   bottom: 0;
 }
 

@@ -158,7 +158,8 @@ export const songsReducer = (state = defaultState, action) => {
         added_at: action.added_at,
         track: {
           id: action.id,
-          name: action.name
+          name: action.name,
+          duration_ms: action.durationMs
         }
       };
       return {
