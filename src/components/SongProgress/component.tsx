@@ -159,12 +159,12 @@ export default class SongProgress extends React.Component<IProps, IState> {
         if (currentTrack && ready) {
           const { position, duration } = currentTrack.youtube
             ? {
-                position:
-                  (await (window as any).ytPlayer.getCurrentTime()) * 1000,
-                duration: (await (window as any).ytPlayer.getDuration()) * 1000
-              }
-            : await (window as any).player.getCurrentState();
-          if (duration - position < 300) {
+              position:
+                (await (window as any).ytPlayer.getCurrentTime()) * 1000,
+              duration: (await (window as any).ytPlayer.getDuration()) * 1000
+            }
+            : await (window as any).player.getCurrentState() ? await (window as any).player.getCurrentState() : { position: null, duration: null };
+          if ((duration && position) && duration - position < 300) {
             this.props.nextSong();
           }
           this.setState({
@@ -173,6 +173,6 @@ export default class SongProgress extends React.Component<IProps, IState> {
           });
         }
       }
-    }, 100) as any;
+    }, 50) as any;
   }
 }
