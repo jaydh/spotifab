@@ -109,8 +109,8 @@ export default class SongProgress extends React.Component<IProps, IState> {
                 ? (this.state.position / this.state.duration) * 100
                 : 0
             }
-            strokeWidth="0.8"
-            trailWidth="0.5"
+            strokeWidth="0.6"
+            trailWidth="0.3"
             strokeColor="#252627"
             onClick={this.handleClick}
             onMouseMove={this.handleHover}
@@ -157,24 +157,20 @@ export default class SongProgress extends React.Component<IProps, IState> {
       if (this.props.playing) {
         const { currentTrack, ready } = this.props;
         if (currentTrack && ready) {
-          if (currentTrack.youtube) {
-            this.setState({
-              position:
-                (await (window as any).ytPlayer.getCurrentTime()) * 1000,
-              duration: (await (window as any).ytPlayer.getDuration()) * 1000
-            });
-          } else {
-            const state = await (window as any).player.getCurrentState();
-            if (state) {
-              if (state.duration - state.position < 300) {
-                this.props.nextSong();
+          const { position, duration } = currentTrack.youtube
+            ? {
+                position:
+                  (await (window as any).ytPlayer.getCurrentTime()) * 1000,
+                duration: (await (window as any).ytPlayer.getDuration()) * 1000
               }
-              this.setState({
-                position: state.position,
-                duration: state.duration
-              });
-            }
+            : await (window as any).player.getCurrentState();
+          if (duration - position < 300) {
+            this.props.nextSong();
           }
+          this.setState({
+            position,
+            duration
+          });
         }
       }
     }, 100) as any;
