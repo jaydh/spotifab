@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 
 export const updatePlayer = state => {
- return
+  return { type: 'UPDATE_PLAYER' };
 };
 
 export const toggleRepeat = () => {

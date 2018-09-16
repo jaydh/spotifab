@@ -7,7 +7,6 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { applyMiddleware, createStore } from 'redux';
-import createDebounce from 'redux-debounced';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -32,7 +31,7 @@ export const ui = new firebaseui.auth.AuthUI(app.auth());
 
 export const store = createStore(
   reducers,
-  composeWithDevTools(applyMiddleware(createDebounce(), thunk))
+  composeWithDevTools(applyMiddleware(thunk))
 );
 export const persistor = persistStore(store);
 (window as any).nextTrack = () => store.dispatch(nextSong());
