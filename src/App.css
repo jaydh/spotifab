@@ -86,7 +86,7 @@ body {
   display: grid;
   height: 100vh;
   grid-template-columns: 100%;
-  grid-template-rows: 5% auto 40px;
+  grid-template-rows: 5% auto 50px;
   overflow-y: hideen;
 }
 

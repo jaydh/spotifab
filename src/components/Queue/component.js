@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import './Queue.css';
 import SongControls from '../SongControls';
 import { List, AutoSizer } from 'react-virtualized';
-import VolumeControls from '../VolumeControls';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { initYoutube } from '../../helpers/initPlaybackAPIs';
@@ -68,8 +67,6 @@ export default class SongList extends Component {
     return (
       <Menu
         right={true}
-        noOverlay={true}
-        disableOverlayClick={true}
         styles={styles}
         width={`${
           window.matchMedia('(max-width: 400px)').matches
@@ -122,7 +119,6 @@ export default class SongList extends Component {
                 )}{' '}
               </span>
             </div>
-            <VolumeControls />
           </div>
         </React.Fragment>
         <DragDropContext onDragEnd={this.handleDragStop}>

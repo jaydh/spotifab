@@ -3,9 +3,12 @@
   grid-column: 1/3;
   border-top: 2px outset white;
   background: #4b88a2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .line-container {
-  margin-top: auto;
+  bottom: 0;
 }
 
 .song-controls-container {

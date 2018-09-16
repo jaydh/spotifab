@@ -1,5 +1,6 @@
 import { Line } from 'rc-progress';
 import * as React from 'react';
+import VolumeControls from '../VolumeControls';
 import './songProcess.css';
 
 interface IState {
@@ -99,6 +100,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
               aria-hidden="true"
             />
           </button>
+          <VolumeControls />
         </div>
         <div className="line-container">
           <Line
@@ -107,7 +109,8 @@ export default class SongProgress extends React.Component<IProps, IState> {
                 ? (this.state.position / this.state.duration) * 100
                 : 0
             }
-            strokeWidth="0.3"
+            strokeWidth="0.8"
+            trailWidth="0.5"
             strokeColor="#252627"
             onClick={this.handleClick}
             onMouseMove={this.handleHover}
@@ -163,6 +166,9 @@ export default class SongProgress extends React.Component<IProps, IState> {
           } else {
             const state = await (window as any).player.getCurrentState();
             if (state) {
+              if (state.duration - state.position < 300) {
+                this.props.nextSong();
+              }
               this.setState({
                 position: state.position,
                 duration: state.duration

@@ -25,6 +25,8 @@ input[type='range']::-moz-range-track {
   grid-column: 1;
 }
 .volume-container {
+  position: absolute;
+  right: 2em;
   display: grid;
   grid-template-columns: 20% 80%;
   align-content: center;

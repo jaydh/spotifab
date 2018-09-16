@@ -41,12 +41,6 @@
   color: #ccc;
   height: 2em;
 }
-.volume-container {
-}
-
-.playback-controls {
-}
-
 .album-art .btn:hover {
   background-color: black;
 }
