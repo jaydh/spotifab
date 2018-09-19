@@ -19,13 +19,14 @@ export default class Filter extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div>
+      <div className="filter">
         <form onSubmit={this.handleChange}>
           <input
             type="text"
-            placeholder={this.state.value === '' ? 'Filter' : this.state.value}
+            placeholder="filter"
             onChange={this.handleChange}
           />
+          <i className="fa fa-search" />
         </form>
       </div>
     );

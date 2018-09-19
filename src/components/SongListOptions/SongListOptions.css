@@ -1,4 +1,4 @@
-song-title-header p,
+.song-title-header p,
 .song-artist-header p,
 .song-album-header p,
 .song-length-header p,
@@ -10,13 +10,15 @@ song-title-header p,
   height: 2em;
 }
 
-.song-header-container {
-  grid-row: 1/1;
-  margin-left: 60px;
-  display: grid;
-  grid-template-columns: 50% 20% 10% auto;
+.song-list-options-container {
+  display: flex;
   border-bottom: 1px solid #666;
-  align-content: center;
+}
+.song-list-options {
+  display: flex;
+  align-content: flex-end;
+  margin-left: auto;
+  margin-right: 4%;
 }
 
 .activeSort,
@@ -27,20 +29,44 @@ song-title-header p,
 .song-list-options i:hover {
   color: #bb0a21;
 }
-.song-title-header {
-  grid-column: 1/1;
-}
-.song-artist-header {
-  grid-column: 2/2;
-}
-.song-album-header {
-  grid-column: 3/3;
+
+.dropbtn {
+  color: white;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
 }
 
-.song-list-options {
-  display: flex;
-  padding-right: 2em;
-  grid-column: 4/4;
-  margin-left: auto;
-  justify-content: flex-end;
+.dropdown {
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: white;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  direction: rtl;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
 }

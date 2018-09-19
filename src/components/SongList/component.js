@@ -10,8 +10,8 @@ class SongList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      downSelectorPos: 0,
-      upSelectorPos: 0,
+      downSelectorPos: null,
+      upSelectorPos: null,
       itemHeight: 24
     };
     this.rowRenderer = this.rowRenderer.bind(this);
@@ -22,31 +22,26 @@ class SongList extends Component {
     this.makeQueueFromSelectors = this.makeQueueFromSelectors.bind(this);
     this.forceUpdate = this.forceUpdate.bind(this);
     this.addSelectedToQueue = this.addSelectedToQueue.bind(this);
+    this.clearSelection = this.clearSelection.bind(this);
   }
 
   render() {
     const selectionMade =
+      this.state.upSelectorPos &&
+      this.state.downSelectorPos &&
       this.state.upSelectorPos !== this.state.downSelectorPos;
     return (
       <div id="song-list-container">
-        <div className="song-header-container song-list-header">
-          <SongListOptions
-            update={this.forceUpdate}
-            isLibrary={this.props.isLibrary}
-            playlistId={this.props.playlistId}
-            isUnified={this.props.isUnified}
-          />
-          {selectionMade && (
-            <div className="selected-buttons">
-              <button className="btn" onClick={this.addSelectedToQueue}>
-                <i className={'fa fa-plus'} aria-hidden="true" />
-              </button>
-              <button className="btn" onClick={this.makeQueueFromSelectors}>
-                <i className={'fa fa-file'} aria-hidden="true" />
-              </button>
-            </div>
-          )}
-        </div>
+        <SongListOptions
+          update={this.forceUpdate}
+          isLibrary={this.props.isLibrary}
+          playlistId={this.props.playlistId}
+          isUnified={this.props.isUnified}
+          addSelected={this.addSelectedToQueue}
+          makeQueue={this.makeQueueFromSelectors}
+          clearSelection={this.clearSelection}
+          selectionMade={selectionMade}
+        />
         <div className="song-list">
           <AutoSizer>
             {({ height, width }) => (
@@ -117,6 +112,14 @@ class SongList extends Component {
 
   addSelectedToQueue() {
     this.state.selected.map(t => this.props.addSongToQueue(t));
+  }
+
+  clearSelection() {
+    this.setState({
+      upSelectorPos: null,
+      downSelectorPos: null
+    });
+    this.forceUpdate();
   }
   addSelectedToQueue() {
     this.addSelectedToQueue();

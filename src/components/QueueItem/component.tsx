@@ -25,8 +25,8 @@ export default class QueueItem extends React.Component<IProps> {
         id={`queue-item-${index}`}
         className={
           index === this.props.position
-            ? 'user-song-item active'
-            : 'user-song-item'
+            ? 'user-queue-item active'
+            : 'user-queue-item'
         }
       >
         <button className="play-song btn" onClick={this.handleUpdate}>

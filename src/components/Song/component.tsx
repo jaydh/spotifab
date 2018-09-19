@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './Song.css';
 
 interface IProps {
   index: number;
@@ -28,29 +29,17 @@ export default class extends React.Component<IProps, IState> {
   public render() {
     const { song, selected, makeNewQueueAndPlay } = this.props;
     return (
-      <div
-        className={
-          selected ? 'user-song-item selected-user-song-item' : 'user-song-item'
-        }
+      <span
+        className={selected ? 'user-song-item selected' : 'user-song-item'}
         onDoubleClick={this.handleDouble}
       >
         <button className="play-song btn" onClick={makeNewQueueAndPlay}>
           <i className={`fas fa-play-circle play-btn`} aria-hidden="true" />
         </button>
-        <div className="song-title">
-          <p>
-            {song.youtube && <i className="fab fa-youtube" />} {song.track.name}
-          </p>
-        </div>
-
-        <div className="song-artist">
-          <p>{song.track.artists ? song.track.artists[0].name : ''}</p>
-        </div>
-
-        <div className="song-album">
-          <p>{song.track.album ? song.track.album.name : ''}</p>
-        </div>
-        <div className="song-buttons">
+        <p className="song-name">
+          {song.youtube && <i className="fab fa-youtube" />} {song.track.name}
+        </p>
+        <span className="song-buttons">
           {this.state.showOptions ? (
             <React.Fragment>
               <button className="btn" onClick={this.handleRemove(song)}>
@@ -71,8 +60,13 @@ export default class extends React.Component<IProps, IState> {
           <button className="btn" onClick={this.props.updateUp}>
             <i className={'fa fa-angle-up'} aria-hidden="true" />
           </button>
-        </div>
-      </div>
+        </span>
+
+        <p className="song-item-details">
+          {song.track.artists && song.track.artists[0].name + ' - '}
+          {song.track.album && song.track.album.name}
+        </p>
+      </span>
     );
   }
   private toggleShow() {

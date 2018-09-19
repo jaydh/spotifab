@@ -1,0 +1,65 @@
+.song-name {
+  text-align: left;
+}
+
+.song-item-details {
+  text-align: right;
+  margin-left: auto;
+  order: 2;
+}
+
+.user-song-item {
+  display: flex;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #252627;
+  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-queue-item {
+  display: flex;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+
+.user-song-item:hover {
+  color: #252627;
+  background: #4b88a2;
+}
+
+.active {
+  color: #252627;
+  background: #4b88a2;
+}
+
+.selected {
+  color: #252627;
+  background: #4b88a2;
+}
+
+.user-song-item:hover > .song-buttons,
+.user-song-item:hover > .play-song {
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+  opacity: 1;
+}
+
+.song-buttons {
+  order: 2;
+  align-self: center;
+  opacity: 0;
+}
+.play-song {
+  opacity: 0;
+}
+.play-song .fa:hover {
+  color: #fff;
+  opacity: 100;
+}

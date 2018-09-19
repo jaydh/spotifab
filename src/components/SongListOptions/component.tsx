@@ -11,6 +11,10 @@ interface IProps {
   isUnified: boolean;
   update: any;
   convertPlaylistToUnified: (name: string) => void;
+  selectionMade: boolean;
+  addSelected: () => void;
+  makeQueue: () => void;
+  clearSelection: () => void;
 }
 
 export default class extends React.Component<IProps> {
@@ -35,7 +39,7 @@ export default class extends React.Component<IProps> {
     );
 
     return (
-      <React.Fragment>
+      <div className="song-list-options-container">
         {!this.props.isLibrary &&
           !this.props.isUnified && (
             <button
@@ -45,49 +49,73 @@ export default class extends React.Component<IProps> {
               Convert to unified
             </button>
           )}
-        <div
-          onClick={this.setName}
-          className={`${
-            current === 'name' ? 'activeSort' : ''
-          } song-title-header`}
-        >
-          <p>
-            {this.props.pending && <i className="fa fa-sync fa-spin" />} Title{current ===
-              'name' && icon}
-          </p>
-        </div>
-        <div
-          onClick={this.setArtist}
-          className={`${
-            current === 'artist' ? 'activeSort' : ''
-          } song-artist-header`}
-        >
-          <p>
-            Artist
-            {current === 'artist' && icon}
-          </p>
-        </div>
-        <div
-          onClick={this.setAlbum}
-          className={`${
-            current === 'album' ? 'activeSort' : ''
-          } song-album-header`}
-        >
-          <p>
-            Album
-            {current === 'album' && icon}
-          </p>
-        </div>
-        <div
-          className={`${
-            current === 'added' ? 'activeSort' : ''
-          } song-list-options`}
-        >
-          <i onClick={this.setAdded} className="fa fa-calendar" />
-          {current === 'added' && icon}
+        <div className="song-list-options">
+          {this.props.selectionMade && (
+            <div className="selected-buttons">
+              <button className="btn" onClick={this.props.clearSelection}>
+                <i className={'fa fa-trash'} aria-hidden="true" />
+              </button>
+              <button className="btn" onClick={this.props.addSelected}>
+                <i className={'fa fa-plus'} aria-hidden="true" />
+              </button>
+              <button className="btn" onClick={this.props.makeQueue}>
+                <i className={'fa fa-file'} aria-hidden="true" />
+              </button>
+            </div>
+          )}
+
           <Filter />
+          <div className="dropdown">
+            <button className="dropbtn">
+              sort
+              <i className="fa fa-sort" />
+            </button>
+            <div className="dropdown-content">
+              <div
+                onClick={this.setName}
+                className={`${
+                  current === 'name' ? 'activeSort' : ''
+                } song-title-header`}
+              >
+                <p>
+                  {this.props.pending && <i className="fa fa-sync fa-spin" />}{' '}
+                  Title{current === 'name' && icon}
+                </p>
+              </div>
+              <div
+                onClick={this.setArtist}
+                className={`${
+                  current === 'artist' ? 'activeSort' : ''
+                } song-artist-header`}
+              >
+                <p>
+                  Artist
+                  {current === 'artist' && icon}
+                </p>
+              </div>
+              <div
+                onClick={this.setAlbum}
+                className={`${
+                  current === 'album' ? 'activeSort' : ''
+                } song-album-header`}
+              >
+                <p>
+                  Album
+                  {current === 'album' && icon}
+                </p>
+              </div>
+              <div
+                className={`${
+                  current === 'added' ? 'activeSort' : ''
+                } song-list-options`}
+              >
+                <i onClick={this.setAdded} className="fa fa-calendar" />
+                {current === 'added' && icon}
+              </div>
+            </div>
+          </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
   private setName() {

@@ -4,9 +4,9 @@ input[type='text'] {
 }
 
 input[type='text']:focus {
-  width: 80%;
+  width: 6em;
 }
 
 input[type='text'] {
-  width: 50%;
+  width: 3em;
 }
