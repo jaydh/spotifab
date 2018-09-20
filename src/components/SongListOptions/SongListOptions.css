@@ -1,15 +1,3 @@
-.song-title-header p,
-.song-artist-header p,
-.song-album-header p,
-.song-length-header p,
-.song-list-header p {
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: bold;
-  color: #252627;
-  height: 2em;
-}
-
 .song-list-options-container {
   display: flex;
   border-bottom: 1px solid #666;
@@ -21,18 +9,9 @@
   margin-right: 4%;
 }
 
-.activeSort,
-.activeSort p,
-.song-title-header p:hover,
-.song-artist-header p:hover,
-.song-album-header p:hover,
-.song-list-options i:hover {
-  color: #bb0a21;
-}
 
 .dropbtn {
   color: white;
-  font-size: 14px;
   border: none;
   cursor: pointer;
 }
@@ -68,5 +47,4 @@
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
-  background-color: #3e8e41;
 }

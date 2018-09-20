@@ -133,13 +133,13 @@ export default class SongProgress extends React.Component<IProps, IState> {
           : (await (window as any).player.getCurrentState())
             ? (await (window as any).player.getCurrentState()).position
             : 0;
-        if (position && duration_ms - position < 300) {
+        if (position && duration_ms - position < 1000) {
           this.props.nextSong();
         }
         this.setState({
           position
         });
       }
-    }, 50) as any;
+    }, 200) as any;
   }
 }

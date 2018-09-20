@@ -35,7 +35,7 @@ class SongList extends React.Component<IProps, IState> {
     this.makeNewQueue = this.makeNewQueue.bind(this);
     this.makeNewQueueAndPlay = this.makeNewQueueAndPlay.bind(this);
     this.makeQueueFromSelectors = this.makeQueueFromSelectors.bind(this);
-    this.forceUpdate = this.forceUpdate.bind(this);
+    this.updateGrid = this.updateGrid.bind(this);
     this.addSelectedToQueue = this.addSelectedToQueue.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
   }
@@ -48,7 +48,7 @@ class SongList extends React.Component<IProps, IState> {
     return (
       <div id="song-list-container">
         <SongListOptions
-          update={this.forceUpdate}
+          update={this.updateGrid}
           isLibrary={this.props.isLibrary}
           playlistId={this.props.playlistId}
           isUnified={this.props.isUnified}
@@ -99,7 +99,7 @@ class SongList extends React.Component<IProps, IState> {
     this.setState({
       downSelectorPos: index
     });
-    this.forceUpdateGrid();
+    this.updateGrid();
   };
 
   private updateUp = index => () => {
@@ -107,7 +107,7 @@ class SongList extends React.Component<IProps, IState> {
       this.setState({
         upSelectorPos: index + 1
       });
-      this.forceUpdateGrid();
+      this.updateGrid();
     }
   };
 
@@ -139,10 +139,10 @@ class SongList extends React.Component<IProps, IState> {
       upSelectorPos: undefined,
       downSelectorPos: undefined
     });
-    this.forceUpdateGrid();
+    this.updateGrid();
   }
 
-  private forceUpdateGrid() {
+  private updateGrid() {
     (this.refs as any).forceUpdateGrid();
   }
 }

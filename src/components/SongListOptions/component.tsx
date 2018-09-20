@@ -153,7 +153,6 @@ export default class extends React.Component<IProps> {
     this.props.update();
   }
   private convert = name => () => {
-    console.log('22');
     this.props.convertPlaylistToUnified(name);
   };
 }
