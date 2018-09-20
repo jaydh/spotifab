@@ -1,18 +1,33 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import './SongList.css';
-import { List } from 'immutable';
-import { List as VirtualList, AutoSizer } from 'react-virtualized';
-import SongListOptions from '../SongListOptions';
-import Song from '../Song';
+import { List } from "immutable";
+import * as React from "react";
+import { AutoSizer, List as VirtualList } from "react-virtualized";
+import Song from "../Song";
+import SongListOptions from "../SongListOptions";
+import "./SongList.css";
 
-class SongList extends Component {
+interface IProps {
+  isLibrary: boolean;
+  playlistId: string;
+  isUnified: boolean;
+  songs: List<any>;
+  makeNewQueue: (songs: List<any>) => void;
+  addSongToQueue: (song) => void;
+  play: () => void;
+}
+interface IState {
+  downSelectorPos?: number;
+  upSelectorPos?: number;
+  itemHeight: number;
+  selected?: List<any>;
+}
+class SongList extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
-      downSelectorPos: null,
-      upSelectorPos: null,
-      itemHeight: 24
+      downSelectorPos: undefined,
+      upSelectorPos: undefined,
+      itemHeight: 24,
+      selected: undefined
     };
     this.rowRenderer = this.rowRenderer.bind(this);
     this.updateDown = this.updateDown.bind(this);
@@ -25,7 +40,7 @@ class SongList extends Component {
     this.clearSelection = this.clearSelection.bind(this);
   }
 
-  render() {
+  public render() {
     const selectionMade =
       this.state.upSelectorPos &&
       this.state.downSelectorPos &&
@@ -59,11 +74,14 @@ class SongList extends Component {
       </div>
     );
   }
-  rowRenderer(options) {
+  private rowRenderer(options) {
     const { index, key, style } = options;
     const song = this.props.songs.get(index);
     const selected =
-      index < this.state.upSelectorPos && index >= this.state.downSelectorPos;
+      this.state.upSelectorPos &&
+      this.state.downSelectorPos &&
+      index < this.state.upSelectorPos &&
+      index >= this.state.downSelectorPos;
     return (
       <div key={key} style={style}>
         <Song
@@ -77,28 +95,28 @@ class SongList extends Component {
       </div>
     );
   }
-  updateDown = index => () => {
+  private updateDown = index => () => {
     this.setState({
       downSelectorPos: index
     });
-    this.refs.forceUpdateGrid();
+    this.forceUpdateGrid();
   };
 
-  updateUp = index => () => {
+  private updateUp = index => () => {
     {
       this.setState({
         upSelectorPos: index + 1
       });
-      this.refs.forceUpdateGrid();
+      this.forceUpdateGrid();
     }
   };
 
-  makeNewQueue(i, j) {
-    let end = i < j ? j : this.props.songs.size;
-    const songs = this.props.songs.slice(i, end + 1);
+  private makeNewQueue(i, j) {
+    const end = i < j ? j : this.props.songs.size;
+    const songs = this.props.songs.slice(i, end + 1).toList();
     this.props.makeNewQueue(songs);
   }
-  makeNewQueueAndPlay = index => () => {
+  private makeNewQueueAndPlay = index => () => {
     this.makeNewQueue(
       index,
       this.state.upSelectorPos === 0 ? index + 200 : this.state.upSelectorPos
@@ -106,40 +124,26 @@ class SongList extends Component {
     this.props.play();
   };
 
-  makeQueueFromSelectors() {
+  private makeQueueFromSelectors() {
     this.makeNewQueue(this.state.downSelectorPos, this.state.upSelectorPos);
   }
 
-  addSelectedToQueue() {
-    this.state.selected.map(t => this.props.addSongToQueue(t));
+  private addSelectedToQueue() {
+    if (this.state.selected) {
+      this.state.selected.map(t => this.props.addSongToQueue(t));
+    }
   }
 
-  clearSelection() {
+  private clearSelection() {
     this.setState({
-      upSelectorPos: null,
-      downSelectorPos: null
+      upSelectorPos: undefined,
+      downSelectorPos: undefined
     });
-    this.forceUpdate();
-  }
-  addSelectedToQueue() {
-    this.addSelectedToQueue();
-  }
-  forceUpdate() {
-    this.refs.forceUpdateGrid();
+    this.forceUpdateGrid();
   }
 
-  onDragEnd(result) {
-    const { source, destination } = result;
-
-    // dropped outside the list
-    if (!destination) {
-      return;
-    }
-
-    if (source.droppableId !== destination.droppableId) {
-      const song = this.props.songs.get(result.source.index);
-      this.props.insertSongInQueue(song, result.destination.index);
-    }
+  private forceUpdateGrid() {
+    (this.refs as any).forceUpdateGrid();
   }
 }
 

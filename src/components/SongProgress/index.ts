@@ -1,18 +1,22 @@
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { nextSong, removeSongFromQueue } from "../../actions/queueActions";
 import { seek } from "../../actions/songActions";
 import SongProgress from "./component";
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch, getState) =>
   bindActionCreators(
     {
-      seek
+      nextSong,
+      seek,
+      removeSongFromQueue
     },
     dispatch
   );
 
 const mapStateToProps = state => {
   return {
+    nextTrackPosition: state.queue.position + 1,
     playing: state.player.playing,
     ready: state.player.spotifyReady && state.player.youtubeReady,
     currentTrack: state.queue.queue.isEmpty()

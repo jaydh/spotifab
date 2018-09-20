@@ -1,5 +1,5 @@
-import * as React from 'react';
-import './Song.css';
+import * as React from "react";
+import "./Song.css";
 
 interface IProps {
   index: number;
@@ -11,6 +11,7 @@ interface IProps {
   addSongToQueue: (song: string) => void;
   removeSpotifySong: (song) => void;
   removeYoutubeSong: (song) => void;
+  addToNext: () => void;
 }
 
 interface IState {
@@ -30,7 +31,7 @@ export default class extends React.Component<IProps, IState> {
     const { song, selected, makeNewQueueAndPlay } = this.props;
     return (
       <span
-        className={selected ? 'user-song-item selected' : 'user-song-item'}
+        className={selected ? "user-song-item selected" : "user-song-item"}
         onDoubleClick={this.handleDouble}
       >
         <button className="play-song btn" onClick={makeNewQueueAndPlay}>
@@ -41,29 +42,39 @@ export default class extends React.Component<IProps, IState> {
         </p>
         <span className="song-buttons">
           {this.state.showOptions ? (
-            <React.Fragment>
+            <span onMouseLeave={this.toggleShow}>
               <button className="btn" onClick={this.handleRemove(song)}>
                 <i className="fa fa-trash" />
               </button>
-            </React.Fragment>
+              <button className="btn" onClick={this.handleAdd(song)}>
+                <i className={"fa fa-plus"} aria-hidden="true" />
+              </button>
+              <button
+                className="btn playlist-action"
+                onClick={this.props.addToNext}
+              >
+                <i className="fa fas-external-square-ink-alt">1</i>{" "}
+              </button>
+            </span>
           ) : (
-            <button className="btn playlist-action" onClick={this.toggleShow}>
+            <button
+              className="btn playlist-action"
+              onMouseEnter={this.toggleShow}
+            >
               <i className="fa fa-ellipsis-h" />
             </button>
           )}
-          <button className="btn" onClick={this.handleAdd(song)}>
-            <i className={'fa fa-plus'} aria-hidden="true" />
-          </button>
+
           <button className="btn" onClick={this.props.updateDown}>
-            <i className={'fa fa-angle-down'} aria-hidden="true" />
+            <i className={"fa fa-angle-down"} aria-hidden="true" />
           </button>
           <button className="btn" onClick={this.props.updateUp}>
-            <i className={'fa fa-angle-up'} aria-hidden="true" />
+            <i className={"fa fa-angle-up"} aria-hidden="true" />
           </button>
         </span>
 
         <p className="song-item-details">
-          {song.track.artists && song.track.artists[0].name + ' - '}
+          {song.track.artists && song.track.artists[0].name + " - "}
           {song.track.album && song.track.album.name}
         </p>
       </span>

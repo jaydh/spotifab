@@ -57,7 +57,7 @@ class SongControls extends React.Component<IProps> {
               ? "playback-btn forward btn"
               : "playback-btn forward fa-disabled btn"
           }
-          onClick={this.props.nextTrack}
+          onClick={this.nextSong}
           disabled={!ready}
         >
           <i className="fa fa-sm fa-step-forward forward" aria-hidden="true" />

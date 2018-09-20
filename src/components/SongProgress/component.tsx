@@ -13,11 +13,13 @@ interface IProps {
   nextSong: () => void;
   prevSong: () => void;
   togglePlay: () => void;
+  seek: (t: number) => void;
+  removeSongFromQueue: (position: number) => void;
+  nextTrackPosition: number;
   playing: boolean;
   currentTrack: any;
   nextTrack: any;
   ready: boolean;
-  seek: (t: number) => void;
 }
 
 export default class SongProgress extends React.Component<IProps, IState> {
@@ -30,6 +32,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
     };
     this.handleHover = this.handleHover.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.removeNext = this.removeNext.bind(this);
   }
   public async componentDidMount() {
     this.calculateTime();
@@ -59,9 +62,15 @@ export default class SongProgress extends React.Component<IProps, IState> {
           <p>{this.millisToMinutesAndSeconds(duration_ms)}</p>
           <div className="progress-right">
             {this.props.nextTrack && (
-              <i className="fa fa-chevron-right">
-                {this.props.nextTrack.track.name}
-              </i>
+              <>
+                <button className="btn next-song" onClick={this.props.nextSong}>
+                  <i className="fa fa-sm fa-chevron-right" />{" "}
+                  {this.props.nextTrack.track.name}
+                </button>{" "}
+                <button className="btn" onClick={this.removeNext}>
+                  <i className="fa fa-sm fa-minus" />
+                </button>
+              </>
             )}
             <VolumeControls />
           </div>
@@ -101,6 +110,10 @@ export default class SongProgress extends React.Component<IProps, IState> {
         seekString: this.millisToMinutesAndSeconds(duration_ms * percentage)
       });
     }
+  }
+
+  private removeNext() {
+    this.props.removeSongFromQueue(this.props.nextTrackPosition);
   }
 
   private millisToMinutesAndSeconds(millis: number) {

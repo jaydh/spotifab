@@ -17,6 +17,7 @@ const mapStateToProps = state => {
   return {
     currentTrack: state.queue.queue.get(state.queue.position),
     ready: state.player.spotifyReady && state.player.youtubeReady,
+    playing: state.player.playing
   };
 };
 
