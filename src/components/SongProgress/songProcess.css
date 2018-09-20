@@ -14,3 +14,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.progress-right {
+  display: flex;
+  position: absolute;
+  right: 1em;
+}

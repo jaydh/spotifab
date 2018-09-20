@@ -1,5 +1,5 @@
 h1 {
-  font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   font-size: 24px;
   font-style: normal;
   font-variant: normal;
@@ -7,7 +7,7 @@ h1 {
   line-height: 26.4px;
 }
 h3 {
-  font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
   font-style: normal;
   font-variant: normal;
@@ -15,14 +15,14 @@ h3 {
   line-height: 15.4px;
 }
 p {
-  font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
   font-variant: normal;
   font-weight: 400;
   line-height: 20px;
 }
 blockquote {
-  font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   font-size: 21px;
   font-style: normal;
   font-variant: normal;
@@ -30,7 +30,7 @@ blockquote {
   line-height: 30px;
 }
 pre {
-  font-family: 'IBM Plex Sans Condensed', 'Helvetica Neue', Arial, sans-serif;
+  font-family: "IBM Plex Sans Condensed", "Helvetica Neue", Arial, sans-serif;
   font-size: 13px;
   font-style: normal;
   font-variant: normal;
@@ -50,21 +50,6 @@ h3 {
   animation: octocat-wave 560ms ease-in-out;
 }
 
-@keyframes octocat-wave {
-  0%,
-  100% {
-    transform: rotate(0);
-  }
-  20%,
-  60% {
-    transform: rotate(-25deg);
-  }
-  40%,
-  80% {
-    transform: rotate(10deg);
-  }
-}
-
 body {
   background: #fff9fb;
   color: #252627;
@@ -77,6 +62,7 @@ body {
   margin-left: auto; /* 1 */
   display: grid;
   height: 100vh;
+  width: 99vw;
   grid-template-columns: 100%;
   grid-template-rows: 2em auto 50px;
   overflow-y: hideen;

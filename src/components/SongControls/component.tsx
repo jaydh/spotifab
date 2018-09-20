@@ -1,81 +1,79 @@
-import * as React from 'react';
-import './SongControls.css';
+import * as React from "react";
+import "./SongControls.css";
 
 interface IProps {
+  nextSong: () => void;
+  prevSong: () => void;
+  togglePlay: () => void;
+  playing: boolean;
   currentTrack: any;
+  nextTrack: any;
+  ready: boolean;
+  seek: (t: number) => void;
 }
 
-interface IState {
-  showYT: boolean;
-}
-class SongControls extends React.Component<IProps, IState> {
+class SongControls extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      showYT: false
-    };
-    this.toggleYoutube = this.toggleYoutube.bind(this);
+    this.togglePlay = this.togglePlay.bind(this);
+    this.nextSong = this.nextSong.bind(this);
+    this.prevSong = this.prevSong.bind(this);
   }
-  public componentWillReceiveProps(nextProps) {
-    if (nextProps.currentTrack && !nextProps.currentTrack.youtube) {
-      this.setState({ showYT: false });
-      document.getElementById('ytPlayer')!.style.display = 'none';
-    }
-  }
+
   public render() {
-    let image = '';
-    if (this.props.currentTrack) {
-      image = this.props.currentTrack.track.album
-        ? this.props.currentTrack.track.album.images[1].url
-        : `http://img.youtube.com/vi/${
-            this.props.currentTrack.track.id
-          }/hqdefault.jpg`;
-    }
+    const { ready } = this.props;
     return (
-      <div
-        style={{
-          backgroundImage: this.state.showYT ? '' : `url(${image})`,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          width: `${
-            window.matchMedia('(min-width: 400px)').matches
-          }?'30vw':'80vw'`,
-          height: '20vh'
-        }}
-      >
-        {this.props.currentTrack &&
-          this.props.currentTrack.youtube && (
-            <button className="btn">
-              <i className="fab fa-youtube" onClick={this.toggleYoutube} />
-            </button>
-          )}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
+      <>
+        <button
+          onClick={this.prevSong}
+          className={
+            ready
+              ? "playback-btn reverse btn"
+              : "playback-btn reverse fa-disabled btn"
+          }
+          disabled={!ready}
         >
-          <div
-            id="ytPlayer"
-            style={{
-              display: 'none',
-              padding: '20px',
-              margin: 'auto',
-              maxHeight: '75%',
-              height: 'auto'
-            }}
+          <i className="fa fa-sm fa-step-backward reverse" aria-hidden="true" />
+        </button>
+        <button
+          onClick={this.togglePlay}
+          className={
+            ready
+              ? "playback-btn play btn"
+              : "plackback-btn play fa-disabled btn"
+          }
+          disabled={!ready}
+        >
+          <i
+            className={
+              this.props.playing ? "fa fa-2x fa-pause" : "fa fa-2x fa-play"
+            }
+            aria-hidden="true"
           />
-        </div>
-      </div>
+        </button>
+        <button
+          className={
+            ready
+              ? "playback-btn forward btn"
+              : "playback-btn forward fa-disabled btn"
+          }
+          onClick={this.props.nextTrack}
+          disabled={!ready}
+        >
+          <i className="fa fa-sm fa-step-forward forward" aria-hidden="true" />
+        </button>
+      </>
     );
   }
-  private toggleYoutube() {
-    document.getElementById('ytPlayer')!.style.display = this.state.showYT
-      ? 'none'
-      : 'flex';
-    this.setState({ showYT: !this.state.showYT });
+  private nextSong() {
+    this.props.nextSong();
+  }
+  private prevSong() {
+    this.props.prevSong();
+  }
+
+  private togglePlay() {
+    this.props.togglePlay();
   }
 }
 export default SongControls;

@@ -1,0 +1,34 @@
+.song-details {
+  position: absolute;
+  z-index: 1000;
+}
+.song-details .song-name {
+  color: #fff;
+  font-size: 14px;
+}
+
+.song-details .artist-name {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.forward,
+.reverse,
+.play {
+  padding: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 1000;
+}
+.playback-btn:hover {
+  opacity: 0.9;
+}
+.playback-btn:action {
+  -webkit-box-shadow: inset 1px 1px 10px #333;
+  -moz-box-shadow: inset 1px 1px 10px #333;
+  box-shadow: inset 1px 1px 10px #333;
+}
+
+.playback-controls {
+  border-top: 2px outset white;
+}
