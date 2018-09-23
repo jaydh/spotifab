@@ -1,11 +1,11 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { addSongToNext, addSongToQueue } from "../../actions/queueActions";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addSongToNext, addSongToQueue } from '../../actions/queueActions';
 import {
   removeSpotifySong,
   removeYoutubeSong
-} from "../../actions/songActions";
-import SongList from "./component";
+} from '../../actions/songActions';
+import SongList from './component';
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return bindActionCreators(
@@ -18,7 +18,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     dispatch
   );
 };
+
+const mapStateToProps = state => {
+  return {
+    sort: state.ui.sort
+  };
+};
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SongList);

@@ -1,6 +1,5 @@
-import * as React from "react";
-import SongControls from "../SongControls";
-import "./SongControls.css";
+import * as React from 'react';
+import './SongControls.css';
 
 interface IProps {
   currentTrack: any;
@@ -20,11 +19,11 @@ class CurrentArt extends React.Component<IProps, IState> {
   public componentWillReceiveProps(nextProps) {
     if (nextProps.currentTrack && !nextProps.currentTrack.youtube) {
       this.setState({ showYT: false });
-      document.getElementById("ytPlayer")!.style.display = "none";
+      document.getElementById('ytPlayer')!.style.display = 'none';
     }
   }
   public render() {
-    let image = "";
+    let image = '';
     if (this.props.currentTrack) {
       image = this.props.currentTrack.track.album
         ? this.props.currentTrack.track.album.images[1].url
@@ -35,14 +34,14 @@ class CurrentArt extends React.Component<IProps, IState> {
     return (
       <div
         style={{
-          backgroundImage: this.state.showYT ? "" : `url(${image})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: this.state.showYT ? '' : `url(${image})`,
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           width: `${
-            window.matchMedia("(min-width: 400px)").matches
+            window.matchMedia('(min-width: 400px)').matches
           }?'30vw':'80vw'`,
-          height: "20vh"
+          height: '20vh'
         }}
       >
         {this.props.currentTrack &&
@@ -53,22 +52,19 @@ class CurrentArt extends React.Component<IProps, IState> {
           )}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
         >
-          <div style={{ alignSelf: "flex-end", maxWidth: "50%" }}>
-            <SongControls />
-          </div>
           <div
             id="ytPlayer"
             style={{
-              display: "none",
-              padding: "20px",
-              margin: "auto",
-              maxHeight: "75%",
-              height: "auto"
+              display: 'none',
+              padding: '20px',
+              margin: 'auto',
+              maxHeight: '75%',
+              height: 'auto'
             }}
           />
         </div>
@@ -76,9 +72,9 @@ class CurrentArt extends React.Component<IProps, IState> {
     );
   }
   private toggleYoutube() {
-    document.getElementById("ytPlayer")!.style.display = this.state.showYT
-      ? "none"
-      : "flex";
+    document.getElementById('ytPlayer')!.style.display = this.state.showYT
+      ? 'none'
+      : 'flex';
     this.setState({ showYT: !this.state.showYT });
   }
 }

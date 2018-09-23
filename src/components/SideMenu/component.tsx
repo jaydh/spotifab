@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { push as Menu } from 'react-burger-menu';
+import { reveal as Menu } from 'react-burger-menu';
 import { NavLink } from 'react-router-dom';
 import { auth } from '../../index';
 import AddYoutube from '../AddYoutube';

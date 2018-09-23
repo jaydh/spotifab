@@ -1,5 +1,6 @@
-import * as React from "react";
-import "./Song.css";
+import { parse } from 'date-fns';
+import * as React from 'react';
+import './Song.css';
 
 interface IProps {
   index: number;
@@ -12,26 +13,73 @@ interface IProps {
   removeSpotifySong: (song) => void;
   removeYoutubeSong: (song) => void;
   addToNext: () => void;
+  sort: string;
 }
 
 interface IState {
   showOptions: boolean;
+  hovered: boolean;
 }
 
 export default class extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
-      showOptions: false
+      showOptions: false,
+      hovered: false
     };
     this.toggleShow = this.toggleShow.bind(this);
     this.handleDouble = this.handleDouble.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
   }
   public render() {
-    const { song, selected, makeNewQueueAndPlay } = this.props;
+    const { song, selected, makeNewQueueAndPlay, sort } = this.props;
+    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
+    const sortString = (s => {
+      switch (s) {
+        case 'artist':
+          return song.track.artists && song.track.artists[0].name;
+        case 'album':
+          return song.track.album && song.track.album.name;
+        case 'added':
+          return parse(song.added_at).toLocaleDateString();
+        default:
+          return '';
+      }
+    })(currentSort);
+
+    const detailString = (s => {
+      switch (s) {
+        case 'artist':
+          return (
+            song.track.album &&
+            song.track.album.name + ' - ' + song.track.artists &&
+            song.track.artists[0].name
+          );
+        case 'album':
+          return (
+            song.track.artists &&
+            song.track.artists[0].name + ' - ' + song.track.album &&
+            song.track.album.name
+          );
+        case 'added':
+          return (
+            song.track.artists &&
+            song.track.artists[0].name + ' - ' + song.track.album &&
+            song.track.album.name +
+              ' - ' +
+              parse(song.added_at).toLocaleDateString()
+          );
+        default:
+          return '';
+      }
+    })(currentSort);
+
     return (
       <span
-        className={selected ? "user-song-item selected" : "user-song-item"}
+        onMouseEnter={this.toggleHover}
+        onMouseLeave={this.toggleHover}
+        className={selected ? 'user-song-item selected' : 'user-song-item'}
         onDoubleClick={this.handleDouble}
       >
         <button className="play-song btn" onClick={makeNewQueueAndPlay}>
@@ -47,13 +95,13 @@ export default class extends React.Component<IProps, IState> {
                 <i className="fa fa-trash" />
               </button>
               <button className="btn" onClick={this.handleAdd(song)}>
-                <i className={"fa fa-plus"} aria-hidden="true" />
+                <i className={'fa fa-plus'} aria-hidden="true" />
               </button>
               <button
                 className="btn playlist-action"
                 onClick={this.props.addToNext}
               >
-                <i className="fa fas-external-square-ink-alt">1</i>{" "}
+                <i className="fa fas-external-square-ink-alt">1</i>{' '}
               </button>
             </span>
           ) : (
@@ -66,16 +114,15 @@ export default class extends React.Component<IProps, IState> {
           )}
 
           <button className="btn" onClick={this.props.updateDown}>
-            <i className={"fa fa-angle-down"} aria-hidden="true" />
+            <i className={'fa fa-angle-down'} aria-hidden="true" />
           </button>
           <button className="btn" onClick={this.props.updateUp}>
-            <i className={"fa fa-angle-up"} aria-hidden="true" />
+            <i className={'fa fa-angle-up'} aria-hidden="true" />
           </button>
         </span>
 
         <p className="song-item-details">
-          {song.track.artists && song.track.artists[0].name + " - "}
-          {song.track.album && song.track.album.name}
+          {this.state.hovered ? detailString : sortString}
         </p>
       </span>
     );
@@ -97,5 +144,9 @@ export default class extends React.Component<IProps, IState> {
   };
   private handleDouble() {
     this.props.makeNewQueueAndPlay(this.props.index);
+  }
+
+  private toggleHover() {
+    this.setState({ hovered: !this.state.hovered });
   }
 }

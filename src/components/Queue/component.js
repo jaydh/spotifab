@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import "./Queue.css";
-import CurrentArt from "../CurrentArt";
-import { List, AutoSizer } from "react-virtualized";
-import QueueItem from "../QueueItem";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { initYoutube } from "../../helpers/initPlaybackAPIs";
-import { scaleRotate as Menu } from "react-burger-menu";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './Queue.css';
+import CurrentArt from '../CurrentArt';
+import { List, AutoSizer } from 'react-virtualized';
+import QueueItem from '../QueueItem';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { initYoutube } from '../../helpers/initPlaybackAPIs';
+import { stack as Menu } from 'react-burger-menu';
 
 export default class SongList extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export default class SongList extends Component {
     this.state = {
       showPlaylist: false,
       itemHeight: 30,
-      newPlaylistName: ""
+      newPlaylistName: ''
     };
     this.handleSumbit = this.handleSumbit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -35,9 +35,9 @@ export default class SongList extends Component {
       );
       if (current) {
         current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "nearest"
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
         });
       }
     }
@@ -68,14 +68,15 @@ export default class SongList extends Component {
       <Menu
         right={true}
         width={`${
-          window.matchMedia("(max-width: 700px)").matches ? "99vw" : "35vw"
+          window.matchMedia('(max-width: 700px)').matches ? '99vw' : '15vw'
         }`}
         styles={styles}
-        pageWrapId={"page-wrap"}
-        outerContainerId={"app-container"}
+        pageWrapId={'page-wrap'}
+        outerContainerId={'app-container'}
+        noOverlay={true}
         customBurgerIcon={
           <React.Fragment>
-            <i style={{ color: "#BB0A21" }} className="fas fa-list-ol fa-lg" />
+            <i style={{ color: '#BB0A21' }} className="fas fa-list-ol fa-lg" />
           </React.Fragment>
         }
       >
@@ -83,14 +84,14 @@ export default class SongList extends Component {
           <div className="queue-header">
             <div className="queue-left song-list-header">
               Queue
-              {"    "}
+              {'    '}
               <span className="queue-buttons">
                 <button className="btn" onClick={this.handleShuffle}>
                   <i className="fa fa-random" aria-hidden={true} />
                 </button>
                 <button
                   onClick={this.props.toggleRepeat}
-                  className={"btn" + (this.props.repeat ? "active" : "")}
+                  className={'btn' + (this.props.repeat ? 'active' : '')}
                 >
                   <i className="fa fa-redo" aria-hidden={true} />
                 </button>
@@ -116,13 +117,13 @@ export default class SongList extends Component {
                   >
                     <i className="fa fa-external-link-alt" aria-hidden={true} />
                   </button>
-                )}{" "}
+                )}{' '}
               </span>
             </div>
           </div>
         </React.Fragment>
         <DragDropContext onDragEnd={this.handleDragStop}>
-          <Droppable droppableId={"queue-droppbale"}>
+          <Droppable droppableId={'queue-droppbale'}>
             {(provided, snapshot) => (
               <div
                 className="queue"
@@ -180,36 +181,36 @@ export default class SongList extends Component {
 
 const styles = {
   bmBurgerButton: {
-    position: "fixed",
-    left: "98%",
-    top: "2em"
+    position: 'fixed',
+    left: '98%',
+    top: '2em'
   },
   bmBurgerBars: {
-    background: "#BB0A21"
+    background: '#BB0A21'
   },
   bmCrossButton: {
-    height: "24px",
-    width: "24px"
+    height: '24px',
+    width: '24px'
   },
   bmCross: {
-    background: "white"
+    background: 'white'
   },
   bmMenu: {
-    background: "#202020",
-    padding: "2.5em 1.5em 0",
-    fontSize: "1.15em",
-    opacity: "0.90"
+    background: '#202020',
+    padding: '2.5em 1.5em 0',
+    fontSize: '1.15em',
+    opacity: '0.90'
   },
   bmMorphShape: {
-    fill: "#252627"
+    fill: '#252627'
   },
   bmItemList: {
-    color: "#252627"
+    color: '#252627'
   },
   bmItem: {
-    display: "inline-block"
+    display: 'inline-block'
   },
   bmOverlay: {
-    background: "rgba(0, 0, 0, 0.3)"
+    background: 'rgba(0, 0, 0, 0.3)'
   }
 };
