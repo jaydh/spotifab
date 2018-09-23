@@ -1,27 +1,3 @@
-.song-details {
-  position: absolute;
-  z-index: 1000;
-}
-.song-details .song-name {
-  color: #fff;
-  font-size: 14px;
-}
-
-.song-details .artist-name {
-  color: #aaa;
-  font-size: 12px;
-}
-
-.forward,
-.reverse,
-.play {
-  padding: 0 5px;
-  cursor: pointer;
-  border-radius: 5px;
-  z-index: 1000;
-  overflow: hidden;
-  text-overflow: hidden;
-}
 .playback-btn:hover {
   opacity: 0.9;
 }
@@ -37,28 +13,29 @@
 
 .play {
   flex: 0 1 auto;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  justify-self: center;
 }
-.reverse {
-  margin-right: auto;
-}
+
 .forward {
-  margin-left: auto;
+  right: 0;
 }
+
+.reverse > button {
+  text-align: rtl;
+}
+
 .forward,
 .reverse {
   flex: 0 1 auto;
-  max-width: 4em;
+  flex-basis: 2em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  -webkit-transition: width 0.4s ease-in-out;
-  transition: width 0.4s ease-in-out;
 }
 
 .forward:hover,
 .reverse:hover {
-  max-width: 30em;
+  flex-basis: 5em;
+  -webkit-transition: flex-basis 0.5s ease-in-out;
+  transition: flex-basis 0.5s ease-in-out;
 }

@@ -1,7 +1,3 @@
-.song-details {
-  position: absolute;
-  z-index: 1000;
-}
 .song-details .song-name {
   color: #fff;
   font-size: 14px;
