@@ -23,19 +23,17 @@
 .queue {
   overflow-x: hidden;
   overflow-y: auto;
-  min-height: 70vh;
+  min-height: 85vh;
   min-width: 100%;
 }
 
 .queue-header {
-  display: grid;
-  grid-template-columns: 60% auto;
+  display: flex;
   border-bottom: 1px solid #666;
   grid-row: 1/1;
   align-content: center;
 }
 .queue-left {
-  grid-column: 1;
   text-transform: uppercase;
   font-size: 12px;
   color: #ccc;
@@ -43,4 +41,7 @@
 }
 .album-art .btn:hover {
   background-color: black;
+}
+
+.queue-buttons {
 }

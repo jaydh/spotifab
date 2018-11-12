@@ -5,11 +5,9 @@
   "dependencies": {
     "@firebase/app-types": "^0.3.2",
     "@ibm/plex": "^1.1.6",
+    "@material-ui/core": "^3.4.0",
     "@types/react": "^16.4.11",
     "date-fns": "^1.29.0",
-    "electron-is-dev": "^0.3.0",
-    "electron-widevinecdm": "5.0.2",
-    "electron-window-state": "^4.1.1",
     "firebase": "^5.4.0",
     "firebase-admin": "^6.0.0",
     "firebaseui": "^3.3.0",
@@ -24,6 +22,7 @@
     "react-beautiful-dnd": "^9.0.0",
     "react-burger-menu": "^2.5.2",
     "react-dom": "^16.4.2",
+    "react-rangeslider": "^2.2.0",
     "react-redux": "^5.0.7",
     "react-router": "^4.4.0-alpha.1",
     "react-router-dom": "^4.4.0-alpha.1",
@@ -32,7 +31,6 @@
     "redux-debounced": "^0.5.0",
     "redux-devtools-extension": "^2.13.5",
     "redux-persist": "^5.10.0",
-    "redux-persist-electron-storage": "^1.1.2",
     "redux-persist-transform-immutable": "^5.0.0",
     "redux-thunk": "^2.3.0",
     "string-hash": "^1.1.3"
@@ -40,38 +38,16 @@
   "homepage": "https://bard.jaydanhoward.com",
   "scripts": {
     "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "build": "react-scripts-ts",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject",
-    "electron": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --linux --mac",
-    "postinstall": "electron-builder install-app-deps"
+    "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
     "@types/node": "^10.7.1",
     "@types/redux": "^3.6.0",
-    "electron": "1.7.12",
-    "electron-builder": "^20.28.1",
-    "electron-rebuild": "^1.8.2",
     "react-scripts-ts": "^2.17.0",
     "react-snapshot": "^1.3.0",
     "typescript": "^3.0.1"
-  },
-  "main": "src/electron-starter.js",
-  "build": {
-    "appId": "spotifab",
-    "win": {
-      "target": "nsis"
-    },
-    "linux": {
-      "target": [
-        "AppImage"
-      ]
-    },
-    "directories": {
-      "buildResources": "public"
-    }
   }
 }

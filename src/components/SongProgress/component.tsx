@@ -1,8 +1,10 @@
-import { Line } from "rc-progress";
-import * as React from "react";
-import SongControls from "../SongControls";
-import VolumeControls from "../VolumeControls";
-import "./songProcess.css";
+import { Line } from 'rc-progress';
+import * as React from 'react';
+import SongControls from '../SongControls';
+import VolumeControls from '../VolumeControls';
+import './songProcess.css';
+
+import AppBar from '@material-ui/core/AppBar';
 
 interface IState {
   position: number;
@@ -15,12 +17,10 @@ interface IProps {
   togglePlay: () => void;
   seek: (t: number) => void;
   removeSongFromQueue: (position: number) => void;
-  nextTrackPosition: number;
   playing: boolean;
   currentTrack: any;
-  nextTrack: any;
-  prevTrack: any;
   ready: boolean;
+  classes: any;
 }
 
 export default class SongProgress extends React.Component<IProps, IState> {
@@ -29,7 +29,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
     this.state = {
       position: 0,
       seekTime: 0,
-      seekString: "0:00"
+      seekString: '0:00'
     };
     this.handleHover = this.handleHover.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -43,20 +43,22 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { currentTrack } = this.props;
+    const { currentTrack, classes } = this.props;
     const { duration_ms } = currentTrack ? currentTrack.track : 0;
     return (
       <div id="song-progress-container">
-        <div className="song-controls-container">
-          <div className="progress-left">
-            <p>{this.millisToMinutesAndSeconds(this.state.position)}</p>
+        <AppBar position="fixed" color="primary" className={classes.appBar}>
+          <div className="song-controls-container">
+            <div className="progress-left">
+              <p>{this.millisToMinutesAndSeconds(this.state.position)}</p>
+            </div>
+            <SongControls />
+            <div className="progress-right">
+              <p>{this.millisToMinutesAndSeconds(duration_ms)}</p>
+              <VolumeControls />
+            </div>{' '}
           </div>
-          <SongControls />
-          <div className="progress-right">
-            <p>{this.millisToMinutesAndSeconds(duration_ms)}</p>
-            <VolumeControls />
-          </div>
-        </div>
+        </AppBar>
 
         <div id="line-container">
           <Line
@@ -81,7 +83,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   private handleHover(e: any) {
-    const t = document.getElementById("line-container");
+    const t = document.getElementById('line-container');
     const percentage = e.clientX / t!.scrollWidth;
     const { currentTrack } = this.props;
 
@@ -97,13 +99,13 @@ export default class SongProgress extends React.Component<IProps, IState> {
   private millisToMinutesAndSeconds(millis: number) {
     const minutes = Math.round(millis / 60000);
     const seconds = Math.round((millis % 60000) / 1000);
-    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
 
   private calculateTime() {
     (this as any).intervalId = setInterval(async () => {
       const { currentTrack, ready } = this.props;
-      
+
       if (currentTrack && ready) {
         const { duration_ms } = currentTrack.track;
         const position = currentTrack.youtube

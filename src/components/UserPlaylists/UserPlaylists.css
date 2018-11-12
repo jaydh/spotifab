@@ -1,6 +1,5 @@
 .user-playlist-container {
   color: rgb(179, 179, 179);
-  margin: 0;
 }
 
 .playlists {
@@ -25,7 +24,6 @@
 }
 
 .user-playlist-link {
-  width: 75%;
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -44,30 +42,14 @@
 .user-playlist-item:hover {
   color: #fff;
 }
-.user-playlist-item:hover > .playlist-action-container {
-  opacity: 100;
-  color: #fff;
-}
 
-.user-playlist-container .active {
-  margin-left: -3px;
-}
-
-.user-playlist-container .active:before {
-  content: '';
-  border-left: 3px solid #1db954;
-  position: relative;
-  left: -18px;
+.user-playlist-container .active-playlist {
+  border-left: 10px solid #1db954;
 }
 
 .playlist-action-container {
-  display: flex;
-  width: 40%;
-  opacity: 0;
   margin-left: auto;
-  justify-content: flex-end;
-}
-.playist-action {
-  margin-left: auto;
-  justify-content: flex-end;
+  overflow: hidden;
+  white-space: nowrap;
+  max-height: 2rem;
 }

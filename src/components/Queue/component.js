@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './Queue.css';
-import CurrentArt from '../CurrentArt';
 import { List, AutoSizer } from 'react-virtualized';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -85,40 +84,6 @@ export default class SongList extends Component {
             <div className="queue-left song-list-header">
               Queue
               {'    '}
-              <span className="queue-buttons">
-                <button className="btn" onClick={this.handleShuffle}>
-                  <i className="fa fa-random" aria-hidden={true} />
-                </button>
-                <button
-                  onClick={this.props.toggleRepeat}
-                  className={'btn' + (this.props.repeat ? 'active' : '')}
-                >
-                  <i className="fa fa-redo" aria-hidden={true} />
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    this.props.clearSongQueue();
-                  }}
-                >
-                  <i className="fa fa-trash" aria-hidden={true} />
-                </button>
-                {this.state.showPlaylist ? (
-                  <form onSubmit={this.handleSumbit}>
-                    <input
-                      onChange={this.handleChange}
-                      placeholder="Playlist name"
-                    />
-                  </form>
-                ) : (
-                  <button
-                    className="btn"
-                    onClick={() => this.setState({ showPlaylist: true })}
-                  >
-                    <i className="fa fa-external-link-alt" aria-hidden={true} />
-                  </button>
-                )}{' '}
-              </span>
             </div>
           </div>
         </React.Fragment>
@@ -146,7 +111,37 @@ export default class SongList extends Component {
             )}
           </Droppable>
         </DragDropContext>
-        <CurrentArt />
+        <span className="queue-buttons">
+          <button className="btn" onClick={this.handleShuffle}>
+            <i className="fa fa-random" aria-hidden={true} />
+          </button>
+          <button
+            onClick={this.props.toggleRepeat}
+            className={'btn' + (this.props.repeat ? 'active' : '')}
+          >
+            <i className="fa fa-redo" aria-hidden={true} />
+          </button>
+          <button
+            className="btn"
+            onClick={() => {
+              this.props.clearSongQueue();
+            }}
+          >
+            <i className="fa fa-trash" aria-hidden={true} />
+          </button>
+          {this.state.showPlaylist ? (
+            <form onSubmit={this.handleSumbit}>
+              <input onChange={this.handleChange} placeholder="Playlist name" />
+            </form>
+          ) : (
+            <button
+              className="btn"
+              onClick={() => this.setState({ showPlaylist: true })}
+            >
+              <i className="fa fa-external-link-alt" aria-hidden={true} />
+            </button>
+          )}{' '}
+        </span>
       </Menu>
     );
   }

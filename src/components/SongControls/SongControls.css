@@ -7,35 +7,30 @@
   box-shadow: inset 1px 1px 10px #333;
 }
 
-.playback-controls {
-  border-top: 2px outset white;
-}
-
-.play {
-  flex: 0 1 auto;
-  justify-self: center;
-}
-
-.forward {
-  right: 0;
-}
-
-.reverse > button {
-  text-align: rtl;
-}
-
-.forward,
-.reverse {
-  flex: 0 1 auto;
-  flex-basis: 2em;
-  white-space: nowrap;
+.playback-btn {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.play-button {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  max-height: 3rem;
+}
+
+.forward,
+.reverse {
+  max-width: 4rem;
+  overflow: hidden;
+  white-space: nowrap;
+  max-height: 2rem;
+  align-self: center;
+}
+
 .forward:hover,
 .reverse:hover {
-  flex-basis: 5em;
-  -webkit-transition: flex-basis 0.5s ease-in-out;
-  transition: flex-basis 0.5s ease-in-out;
+  max-width: 20vw;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }

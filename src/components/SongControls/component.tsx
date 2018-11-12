@@ -1,5 +1,5 @@
-import * as React from "react";
-import "./SongControls.css";
+import * as React from 'react';
+import './SongControls.css';
 
 interface IProps {
   nextSong: () => void;
@@ -42,14 +42,16 @@ class SongControls extends React.Component<IProps, IState> {
         <div className="reverse">
           <button
             onClick={this.prevSong}
+            onMouseEnter={this.toggleLeft(true)}
+            onMouseLeave={this.toggleLeft(false)}
             className={
-              ready ? "playback-btn btn" : "playback-btn fa-disabled btn"
+              ready ? 'playback-btn btn' : 'playback-btn fa-disabled btn'
             }
             disabled={!ready}
           >
             {this.props.prevTrack && (
               <>
-                {this.props.prevTrack.track.name}
+                {this.state.showLeft && this.props.prevTrack.track.name}
                 <i
                   className="fa fa-sm fa-step-backward reverse"
                   aria-hidden="true"
@@ -58,30 +60,32 @@ class SongControls extends React.Component<IProps, IState> {
             )}
           </button>
         </div>
-        {this.props.currentTrack && this.props.currentTrack.track.name}
         <button
           onClick={this.togglePlay}
           className={
             ready
-              ? "playback-btn play btn"
-              : "plackback-btn play fa-disabled btn"
+              ? 'playback-btn btn play-button'
+              : 'plackback-btn fa-disabled btn play-button'
           }
           disabled={!ready}
         >
           <i
             className={
-              this.props.playing ? "fa fa-2x fa-pause" : "fa fa-2x fa-play"
+              this.props.playing
+                ? 'play-i fa fa-2x fa-pause'
+                : 'play-i fa fa-2x fa-play'
             }
             aria-hidden="true"
           />
         </button>
-        {this.props.currentTrack &&
-          this.props.currentTrack.track.artists &&
-          this.props.currentTrack.track.artists[0].name}
-        <div className="forward">
+        <div
+          className="forward"
+          onMouseEnter={this.toggleRight(true)}
+          onMouseLeave={this.toggleRight(false)}
+        >
           <button
             className={
-              ready ? "playback-btn  btn" : "playback-btn fa-disabled btn"
+              ready ? 'playback-btn  btn' : 'playback-btn fa-disabled btn'
             }
             onClick={this.nextSong}
             disabled={!ready}
@@ -92,7 +96,7 @@ class SongControls extends React.Component<IProps, IState> {
                   className="fa fa-sm fa-step-forward forward"
                   aria-hidden="true"
                 />
-                {this.props.nextTrack.track.name}
+                {this.state.showRight && this.props.nextTrack.track.name}
               </>
             )}
           </button>

@@ -36,7 +36,6 @@ export const initYoutube = () => {
       window.ytPlayer.cueVideoById(current.track.id);
     }
     store.dispatch({ type: 'YOUTUBE_READY' });
-
   }
 
   function onPlayerStateChange(event) {

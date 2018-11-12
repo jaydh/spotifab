@@ -7,6 +7,7 @@
   outline: none;
   opacity: 1;
   grid-column: 2;
+  width: 100%;
 }
 
 input[type='range']::-moz-range-track {
@@ -26,7 +27,7 @@ input[type='range']::-moz-range-track {
 }
 .volume-container {
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 25px auto;
   align-content: center;
 }
 

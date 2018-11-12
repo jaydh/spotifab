@@ -58,14 +58,10 @@ export class Playlist extends React.Component {
       unfollowCount: 0
     };
     this.toggleShow = this.toggleShow.bind(this);
-    this.hideMenu = this.hideMenu.bind(this);
     this.handleUnfollow = this.handleUnfollow.bind(this);
   }
   toggleShow() {
     this.setState({ showMenu: !this.state.showMenu });
-  }
-  hideMenu() {
-    this.setState({ showMenu: true });
   }
   handleUnfollow = playlist => () => {
     if (this.state.unfollowCount > 2) {
@@ -84,14 +80,18 @@ export class Playlist extends React.Component {
           to={`/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
             playlist.owner.id
           }/${playlist.id}`}
-          activeClassName="active side-menu-item"
+          activeClassName="active-playlist"
           className="user-playlist-link"
         >
           {playlist.spotify && <i className="fab fa-spotify" />}
           {playlist.name}
         </NavLink>{' '}
-        <div className="playlist-action-container">
-          {this.state.showMenu && (
+        <div
+          className="playlist-action-container"
+          onMouseEnter={this.toggleShow}
+          onMouseLeave={this.toggleShow}
+        >
+          {this.state.showMenu ? (
             <button
               className="btn playlist-action"
               onClick={this.handleUnfollow(playlist)}
@@ -106,14 +106,13 @@ export class Playlist extends React.Component {
               )}
               <i className="fa fa-trash" aria-hidden={true} />
             </button>
+          ) : (
+            <React.Fragment>
+              <button className="btn playlist-action" onClick={this.toggleShow}>
+                <i className="fa fa-ellipsis-v" />
+              </button>
+            </React.Fragment>
           )}
-          <button
-            className="btn playlist-action"
-            onMouseEnter={this.hideMenu}
-            onClick={this.toggleShow}
-          >
-            <i className="fa fa-ellipsis-v" />
-          </button>
         </div>
       </div>
     );

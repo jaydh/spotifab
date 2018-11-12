@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './VolumeControls.css';
+import Slider from 'react-rangeslider';
 
 class VolumeControls extends Component {
   updateVolume = e => {
@@ -11,6 +12,7 @@ class VolumeControls extends Component {
   render() {
     return (
       <div className="volume-container">
+        <Slider value={this.props.volume} onChange={this.updateVolume} />
         <button className="mute" onClick={this.props.toggleMute}>
           <i
             className={
