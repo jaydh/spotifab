@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { initYoutube } from '../../helpers/initPlaybackAPIs';
 import './SongControls.css';
 
 interface IProps {
@@ -26,6 +27,10 @@ class CurrentArt extends React.Component<IProps, IState> {
     }
   }
 
+  public componentDidMount() {
+    initYoutube()
+  }
+
   public render() {
     console.log(this.props);
     let image = '';
@@ -33,27 +38,27 @@ class CurrentArt extends React.Component<IProps, IState> {
       image = this.props.currentTrack.track.album
         ? this.props.currentTrack.track.album.images[1].url
         : `http://img.youtube.com/vi/${
-            this.props.currentTrack.track.id
-          }/hqdefault.jpg`;
+        this.props.currentTrack.track.id
+        }/hqdefault.jpg`;
     }
     console.log(image);
     return (
       <React.Fragment>
+        <div
+          id="ytPlayer"
+          style={{
+            display: 'none',
+            margin: 'auto',
+            maxHeight: !this.state.maximizeYT ? '20px' : '200px',
+            height: !this.state.maximizeYT ? 'auto' : '200px',
+            maxWidth: !this.state.maximizeYT ? '20px' : '200px'
+          }}
+        />
+
         <div className="responsive">
           {!this.state.showYT && <img src={image} className="responsive-img" />}
-          <div className="responsive-yt">
-            <div
-              id="ytPlayer"
-              style={{
-                display: 'none',
-                margin: 'auto',
-                maxHeight: !this.state.maximizeYT ? '20px' : '200px',
-                height: !this.state.maximizeYT ? 'auto' : '200px',
-                maxWidth: !this.state.maximizeYT ? '20px' : '200px'
-              }}
-            />
-          </div>
         </div>
+
         {this.props.currentTrack &&
           this.props.currentTrack.youtube && (
             <button className="btn">

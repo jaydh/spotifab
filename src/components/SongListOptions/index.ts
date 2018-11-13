@@ -11,7 +11,6 @@ const mapDispatch = dispatch => {
 const mapStateToProps = state => {
   return {
     pending: !state.synced.songsSynced,
-    currentSort: state.ui.sort
   };
 };
 

@@ -1,10 +1,17 @@
 import { Line } from 'rc-progress';
 import * as React from 'react';
+import CurrentArt from '../CurrentArt';
 import SongControls from '../SongControls';
 import VolumeControls from '../VolumeControls';
 import './songProcess.css';
 
 import AppBar from '@material-ui/core/AppBar';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 interface IState {
   position: number;
@@ -48,32 +55,44 @@ export default class SongProgress extends React.Component<IProps, IState> {
     return (
       <div id="song-progress-container">
         <AppBar position="fixed" color="primary" className={classes.appBar}>
-          <div className="song-controls-container">
-            <div className="progress-left">
-              <p>{this.millisToMinutesAndSeconds(this.state.position)}</p>
-            </div>
-            <SongControls />
-            <div className="progress-right">
-              <p>{this.millisToMinutesAndSeconds(duration_ms)}</p>
-              <VolumeControls />
-            </div>{' '}
-          </div>
+          <ExpansionPanel>
+            <ExpansionPanelSummary expandIcon={ExpandMoreIcon}>
+              <Typography className="progress-left">
+                {this.millisToMinutesAndSeconds(this.state.position)}
+              </Typography>
+              <Typography className="progress-right">
+                {this.millisToMinutesAndSeconds(duration_ms)}
+              </Typography>{' '}
+              <div id="line-container">
+                <Line
+                  percent={
+                    !isNaN(this.state.position / duration_ms)
+                      ? (this.state.position / duration_ms) * 100
+                      : 0
+                  }
+                  strokeWidth="0.6"
+                  trailWidth="0.3"
+                  strokeColor="#252627"
+                  onClick={this.handleClick}
+                  onMouseMove={this.handleHover}
+                />
+              </div>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container={true} alignItems="center" justify="center">
+                <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+                  <CurrentArt />
+                </Grid>
+                <Grid item={true} xs={6} sm={6} md={6} lg={6}>
+                  <SongControls />
+                </Grid>
+                <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+                  <VolumeControls />
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         </AppBar>
-
-        <div id="line-container">
-          <Line
-            percent={
-              !isNaN(this.state.position / duration_ms)
-                ? (this.state.position / duration_ms) * 100
-                : 0
-            }
-            strokeWidth="0.6"
-            trailWidth="0.3"
-            strokeColor="#252627"
-            onClick={this.handleClick}
-            onMouseMove={this.handleHover}
-          />
-        </div>
       </div>
     );
   }
@@ -111,8 +130,8 @@ export default class SongProgress extends React.Component<IProps, IState> {
         const position = currentTrack.youtube
           ? (await (window as any).ytPlayer.getCurrentTime()) * 1000
           : (await (window as any).player.getCurrentState())
-            ? (await (window as any).player.getCurrentState()).position
-            : 0;
+          ? (await (window as any).player.getCurrentState()).position
+          : 0;
         if (position && duration_ms - position < 1000) {
           this.props.nextSong();
         }

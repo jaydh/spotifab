@@ -88,6 +88,8 @@ export const initSpotify = () => {
     // Connect to the player!
     player.connect();
   };
+  console.log('hu')
+  ////console.log('hu')
   runSpotifyScript();
 };
 export default () => {

@@ -1,6 +1,15 @@
 import * as React from 'react';
 import './SongControls.css';
 
+import Action from '@material-ui/core/ExpansionPanelActions';
+import IconButton from '@material-ui/core/IconButton';
+import Toolbar from '@material-ui/core/Toolbar';
+import Trash from '@material-ui/icons/Delete';
+import Forward from '@material-ui/icons/FastForward';
+import Rewind from '@material-ui/icons/FastRewind';
+import Pause from '@material-ui/icons/Pause';
+import Play from '@material-ui/icons/PlayArrow';
+
 interface IProps {
   nextSong: () => void;
   prevSong: () => void;
@@ -38,75 +47,40 @@ class SongControls extends React.Component<IProps, IState> {
   public render() {
     const { ready } = this.props;
     return (
-      <>
-        <div className="reverse">
-          <button
+      <Toolbar>
+        <Action>
+          <IconButton
             onClick={this.prevSong}
             onMouseEnter={this.toggleLeft(true)}
             onMouseLeave={this.toggleLeft(false)}
-            className={
-              ready ? 'playback-btn btn' : 'playback-btn fa-disabled btn'
-            }
             disabled={!ready}
           >
-            {this.props.prevTrack && (
-              <>
-                {this.state.showLeft && this.props.prevTrack.track.name}
-                <i
-                  className="fa fa-sm fa-step-backward reverse"
-                  aria-hidden="true"
-                />
-              </>
-            )}
-          </button>
-        </div>
-        <button
-          onClick={this.togglePlay}
-          className={
-            ready
-              ? 'playback-btn btn play-button'
-              : 'plackback-btn fa-disabled btn play-button'
-          }
-          disabled={!ready}
-        >
-          <i
-            className={
-              this.props.playing
-                ? 'play-i fa fa-2x fa-pause'
-                : 'play-i fa fa-2x fa-play'
-            }
-            aria-hidden="true"
-          />
-        </button>
-        <div
-          className="forward"
-          onMouseEnter={this.toggleRight(true)}
-          onMouseLeave={this.toggleRight(false)}
-        >
-          <button
-            className={
-              ready ? 'playback-btn  btn' : 'playback-btn fa-disabled btn'
-            }
+            {this.state.showLeft && this.props.prevTrack.track.name}
+            <Rewind />
+          </IconButton>
+        </Action>
+        <Action>
+          <IconButton onClick={this.togglePlay} disabled={!ready}>
+            {this.props.playing ? <Pause /> : <Play />}
+          </IconButton>
+        </Action>
+        <Action>
+          <IconButton
             onClick={this.nextSong}
+            onMouseEnter={this.toggleRight(true)}
+            onMouseLeave={this.toggleRight(false)}
             disabled={!ready}
           >
-            {this.props.nextTrack && (
-              <>
-                <i
-                  className="fa fa-sm fa-step-forward forward"
-                  aria-hidden="true"
-                />
-                {this.state.showRight && this.props.nextTrack.track.name}
-              </>
-            )}
-          </button>
+            <Forward />
+            {this.state.showRight && this.props.nextTrack.track.name}
+          </IconButton>
           {this.state.showRight && (
-            <button className="btn" onClick={this.removeNext}>
-              <i className="fa fa-sm fa-minus" />
-            </button>
+            <IconButton onClick={this.removeNext}>
+              <Trash />
+            </IconButton>
           )}
-        </div>
-      </>
+        </Action>
+      </Toolbar>
     );
   }
   private nextSong() {
@@ -125,11 +99,11 @@ class SongControls extends React.Component<IProps, IState> {
   }
 
   private toggleLeft = value => () => {
-    this.setState({ showLeft: value });
+    this.setState({ showLeft: this.props.prevTrack && value });
   };
 
   private toggleRight = value => () => {
-    this.setState({ showRight: value });
+    this.setState({ showRight: this.props.nextTrack && value });
   };
 }
 export default SongControls;

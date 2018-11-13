@@ -1,22 +1,13 @@
 export const updateVolume = volume => {
   return async dispatch => {
-    const thunk = window.player
-      .setVolume(volume)
-      .then(() => window.ytPlayer.setVolume(volume * 100))
-      .then(() =>
-        dispatch({
-          type: 'UPDATE_VOLUME',
-          volume
-        })
-      );
+    dispatch({
+      type: 'UPDATE_VOLUME',
+      volume
+    });
+    return window.player
+      .setVolume(volume / 100)
+      .then(() => window.ytPlayer.setVolume(volume));
   };
-  thunk.meta = {
-    debounce: {
-      time: '500',
-      key: Math.random()
-    }
-  };
-  return thunk;
 };
 
 export const toggleMute = () => {

@@ -5,6 +5,8 @@ import Song from '../Song';
 import SongListOptions from '../SongListOptions';
 import './SongList.css';
 
+import MaterialList from '@material-ui/core/List';
+
 interface IProps {
   isLibrary: boolean;
   playlistId: string;
@@ -63,7 +65,7 @@ class SongList extends React.Component<IProps, IState> {
           clearSelection={this.clearSelection}
           selectionMade={selectionMade}
         />
-        <div className="song-list">
+        <MaterialList className="song-list">
           <AutoSizer>
             {({ height, width }) => (
               <VirtualList
@@ -76,7 +78,7 @@ class SongList extends React.Component<IProps, IState> {
               />
             )}
           </AutoSizer>
-        </div>
+        </MaterialList>
       </div>
     );
   }

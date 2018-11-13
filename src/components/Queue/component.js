@@ -4,8 +4,15 @@ import './Queue.css';
 import { List, AutoSizer } from 'react-virtualized';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { initYoutube } from '../../helpers/initPlaybackAPIs';
 import { stack as Menu } from 'react-burger-menu';
+
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import MaterialList from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Delete from '@material-ui/icons/Delete';
+import Repeat from '@material-ui/icons/Repeat';
+import Shuffle from '@material-ui/icons/Shuffle';
 
 export default class SongList extends Component {
   constructor(props) {
@@ -22,11 +29,6 @@ export default class SongList extends Component {
     this.rowRenderer = this.rowRenderer.bind(this);
   }
 
-  componentDidMount() {
-    if (!this.props.youtubeReady) {
-      initYoutube();
-    }
-  }
   componentDidUpdate(prevProps) {
     if (this.props.position !== prevProps.position) {
       const current = document.getElementById(
@@ -79,69 +81,66 @@ export default class SongList extends Component {
           </React.Fragment>
         }
       >
-        <React.Fragment>
+        <MaterialList>
           <div className="queue-header">
-            <div className="queue-left song-list-header">
-              Queue
-              {'    '}
-            </div>
-          </div>
-        </React.Fragment>
-        <DragDropContext onDragEnd={this.handleDragStop}>
-          <Droppable droppableId={'queue-droppbale'}>
-            {(provided, snapshot) => (
-              <div
-                className="queue"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <AutoSizer>
-                  {({ height, width }) => (
-                    <List
-                      ref={ref => (this.refs = ref)}
-                      rowCount={this.props.songs.size}
-                      rowRenderer={this.rowRenderer}
-                      rowHeight={this.state.itemHeight}
-                      width={width}
-                      height={height}
-                    />
-                  )}
-                </AutoSizer>
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <span className="queue-buttons">
-          <button className="btn" onClick={this.handleShuffle}>
-            <i className="fa fa-random" aria-hidden={true} />
-          </button>
-          <button
-            onClick={this.props.toggleRepeat}
-            className={'btn' + (this.props.repeat ? 'active' : '')}
-          >
-            <i className="fa fa-redo" aria-hidden={true} />
-          </button>
-          <button
-            className="btn"
-            onClick={() => {
-              this.props.clearSongQueue();
-            }}
-          >
-            <i className="fa fa-trash" aria-hidden={true} />
-          </button>
-          {this.state.showPlaylist ? (
-            <form onSubmit={this.handleSumbit}>
-              <input onChange={this.handleChange} placeholder="Playlist name" />
-            </form>
-          ) : (
-            <button
-              className="btn"
-              onClick={() => this.setState({ showPlaylist: true })}
+            <Typography>Queue</Typography>
+            <Button variant="fab" onClick={this.handleShuffle} mini={true}>
+              <Shuffle />
+            </Button>
+            <Button variant="fab" onClick={this.props.toggleRepeat} mini={true}>
+              <Repeat />{' '}
+            </Button>
+            <Button
+              variant="fab"
+              onClick={() => {
+                this.props.clearSongQueue();
+              }}
+              mini={true}
             >
-              <i className="fa fa-external-link-alt" aria-hidden={true} />
-            </button>
-          )}{' '}
-        </span>
+              <Delete />
+            </Button>
+            {this.state.showPlaylist ? (
+              <form onSubmit={this.handleSumbit}>
+                <input
+                  onChange={this.handleChange}
+                  placeholder="Playlist name"
+                />
+              </form>
+            ) : (
+              <button
+                className="btn"
+                onClick={() => this.setState({ showPlaylist: true })}
+              >
+                <i className="fa fa-external-link-alt" aria-hidden={true} />
+              </button>
+            )}{' '}
+          </div>
+          <Divider />
+          <DragDropContext onDragEnd={this.handleDragStop}>
+            <Droppable droppableId={'queue-droppbale'}>
+              {(provided, snapshot) => (
+                <div
+                  className="queue"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <AutoSizer>
+                    {({ height, width }) => (
+                      <List
+                        ref={ref => (this.refs = ref)}
+                        rowCount={this.props.songs.size}
+                        rowRenderer={this.rowRenderer}
+                        rowHeight={this.state.itemHeight}
+                        width={width}
+                        height={height}
+                      />
+                    )}
+                  </AutoSizer>
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </MaterialList>
       </Menu>
     );
   }
@@ -177,15 +176,15 @@ export default class SongList extends Component {
 const styles = {
   bmBurgerButton: {
     position: 'fixed',
-    left: '98%',
-    top: '2em'
+    left: '97%',
+    top: '45px'
   },
   bmBurgerBars: {
     background: '#BB0A21'
   },
   bmCrossButton: {
-    height: '24px',
-    width: '24px'
+    height: '16px',
+    width: '16px'
   },
   bmCross: {
     background: 'white'

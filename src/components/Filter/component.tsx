@@ -1,6 +1,10 @@
 import * as React from 'react';
 import './Filter.css';
 
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FilterIcon from '@material-ui/icons/FilterList';
+
 interface IProps {
   setFilter: (t: string) => void;
 }
@@ -21,12 +25,20 @@ export default class Filter extends React.Component<IProps, IState> {
     return (
       <div className="filter">
         <form onSubmit={this.handleChange}>
-          <input
-            type="text"
-            placeholder="filter"
+          <Input
             onChange={this.handleChange}
+            value={this.state.value}
+            margin="dense"
+            placeholder="Filter"
+            endAdornment={
+              <InputAdornment position="end">
+                <FilterIcon fontSize="small" />
+              </InputAdornment>
+            }
+            inputProps={{
+              'aria-label': 'Save article'
+            }}
           />
-          <i className="fa fa-search" />
         </form>
       </div>
     );
