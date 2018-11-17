@@ -1,4 +1,5 @@
 import * as React from 'react';
+import initApis from '../../helpers/initPlaybackAPIs';
 import asyncComponent from '../AsyncComponent';
 
 const SongList = asyncComponent(() => import('../SongList'));
@@ -30,6 +31,7 @@ export default class SongMain extends React.Component<IProps, IState> {
   }
   public componentDidMount() {
     this.handleFetch(this.props);
+    initApis();
   }
   public componentDidUpdate(prevProps) {
     this.handleFetch(this.props, prevProps);

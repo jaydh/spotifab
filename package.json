@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "dependencies": {
     "@firebase/app-types": "^0.3.2",
+    "@fortawesome/fontawesome-free-brands": "^5.0.13",
+    "@fortawesome/fontawesome-svg-core": "^1.2.8",
+    "@fortawesome/free-solid-svg-icons": "^5.5.0",
+    "@fortawesome/react-fontawesome": "^0.1.3",
     "@ibm/plex": "^1.1.6",
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",

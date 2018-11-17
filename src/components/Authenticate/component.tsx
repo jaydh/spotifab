@@ -1,8 +1,9 @@
 import * as firebase from 'firebase';
-import * as querystring from 'querystring';
 import * as React from 'react';
-import { NavLink, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { ui } from '../../index';
+
+import Button from '@material-ui/core/Button';
 
 interface IProps {
   setAuthCode: (t: string) => void;
@@ -29,7 +30,7 @@ export default class Authenticat extends React.Component<IProps> {
     if (code.length > 0) {
       this.props.setAuthCode(code);
     }
-    if (!this.props.signedIn && !this.props.validToken) {
+    if (!this.props.signedIn) {
       const uiConfig = {
         callbacks: {
           signInSuccessWithAuthResult: (authResult, redirectUrl) => {
@@ -57,38 +58,17 @@ export default class Authenticat extends React.Component<IProps> {
           height: '400px'
         }}
       >
-        {this.props.signedIn ? (
-          <React.Fragment>
-            <div style={{ margin: 'auto', width: '100px' }}>
-              {this.props.refetching && (
-                <React.Fragment>
-                  Connecting...
-                  <i className="fa fa-refresh fa-spin" />
-                </React.Fragment>
-              )}
-              <br />
-              Signed in{' '}
-              <button className="btn">
-                <a href={this.redirect()}> Connect with Spotify</a>
-              </button>
-              {this.props.signedIn && (
-                <button className="btn">
-                  <NavLink to="/library">Continue</NavLink>
-                </button>
-              )}
-            </div>
-          </React.Fragment>
-        ) : (
+        {!this.props.signedIn ? (
           <React.Fragment>
             <div id="firebaseui-auth-container" />
             <div id="loader">Loading...</div>
-            <button className="btn" onClick={this.signInAnonymously}>
+            <Button className="btn" onClick={this.signInAnonymously}>
               Sign in anonymously
-            </button>
+            </Button>
           </React.Fragment>
+        ) : (
+          <Redirect to="/library" />
         )}
-        {this.props.signedIn &&
-          this.props.validToken && <Redirect to="/library" />}
       </div>
     );
   }
@@ -101,20 +81,5 @@ export default class Authenticat extends React.Component<IProps> {
         // Handle Errors here.
         // ...
       });
-  }
-
-  private redirect() {
-    const scopes =
-      'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
-    const callback = `https://${window.location.host}/authenticate/`;
-    const url =
-      'https://accounts.spotify.com/authorize/?' +
-      querystring.stringify({
-        response_type: 'code',
-        client_id: '6d46aac55bb24239af40209109ca5cb2',
-        scope: scopes,
-        redirect_uri: callback
-      });
-    return url;
   }
 }

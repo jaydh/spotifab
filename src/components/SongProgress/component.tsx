@@ -11,7 +11,6 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 interface IState {
   position: number;
@@ -56,7 +55,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
       <div id="song-progress-container">
         <AppBar position="fixed" color="primary" className={classes.appBar}>
           <ExpansionPanel>
-            <ExpansionPanelSummary expandIcon={ExpandMoreIcon}>
+            <ExpansionPanelSummary>
               <Typography className="progress-left">
                 {this.millisToMinutesAndSeconds(this.state.position)}
               </Typography>

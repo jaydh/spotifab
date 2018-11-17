@@ -3,6 +3,11 @@ import './UserPlaylists.css';
 import { NavLink } from 'react-router-dom';
 import { isTokenTimeValid } from '../../helpers/validateToken';
 import { ConnectedPlaylist } from './index';
+import Button from '@material-ui/core/Button';
+import Plus from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
+import More from '@material-ui/icons/MoreHoriz';
+import Minus from '@material-ui/icons/Remove';
 
 class UserPlaylists extends Component {
   constructor(props) {
@@ -22,14 +27,12 @@ class UserPlaylists extends Component {
   render() {
     return (
       <div className="user-playlist-container">
-        <div className="user-playlist-link" onClick={this.toggleShowPlaylist}>
+        <div className="user-playlist-link">
           <h3 className="user-playlist-header">
-            Playlists{' '}
-            <i
-              className={`fa ${
-                this.state.showPlaylist ? 'fa-minus' : 'fa-plus'
-              }`}
-            />
+            Playlists
+            <Button onClick={this.toggleShowPlaylist}>
+              {this.state.showPlaylist ? <Minus /> : <Plus />}
+            </Button>
           </h3>
         </div>
         <div className="playlists">
@@ -92,7 +95,7 @@ export class Playlist extends React.Component {
           onMouseLeave={this.toggleShow}
         >
           {this.state.showMenu ? (
-            <button
+            <Button
               className="btn playlist-action"
               onClick={this.handleUnfollow(playlist)}
               style={{ color: this.state.unfollowCount > 0 ? 'red' : '' }}
@@ -104,13 +107,13 @@ export class Playlist extends React.Component {
               ) : (
                 ''
               )}
-              <i className="fa fa-trash" aria-hidden={true} />
-            </button>
+              <Delete />
+            </Button>
           ) : (
             <React.Fragment>
-              <button className="btn playlist-action" onClick={this.toggleShow}>
-                <i className="fa fa-ellipsis-v" />
-              </button>
+              <Button className="btn playlist-action" onClick={this.toggleShow}>
+                <More />
+              </Button>
             </React.Fragment>
           )}
         </div>

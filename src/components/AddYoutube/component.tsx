@@ -1,3 +1,9 @@
+import {
+  faSpotify as Spotify,
+  faYoutube
+} from '@fortawesome/fontawesome-free-brands';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Button from '@material-ui/core/Button';
 import { List } from 'immutable';
 import * as React from 'react';
 import { youtubeAPI } from '../../../src/apiKeys';
@@ -38,9 +44,9 @@ export default class Filter extends React.Component<IProps, IState> {
   public render() {
     return (
       <div className="add-container">
-        <button className="btn" onClick={this.toggleShowSpotify}>
-          <i className="fab fa-spotify" /> <i className="fa fa-plus" />
-        </button>
+        <Button className="btn" onClick={this.toggleShowSpotify}>
+          <FontAwesomeIcon icon={Spotify} />
+        </Button>
         {this.state.showSpotify && (
           <form onSubmit={this.onSpotifySubmit}>
             <input
@@ -70,9 +76,9 @@ export default class Filter extends React.Component<IProps, IState> {
           </form>
         )}
 
-        <button className="btn" onClick={this.toggleShow}>
-          <i className="fab fa-youtube" /> <i className="fa fa-plus" />
-        </button>
+        <Button className="btn" onClick={this.toggleShow}>
+          <FontAwesomeIcon icon={faYoutube} />
+        </Button>
         {this.state.show && (
           <form onSubmit={this.onSubmit}>
             <input

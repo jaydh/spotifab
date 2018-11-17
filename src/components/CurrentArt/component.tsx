@@ -28,20 +28,18 @@ class CurrentArt extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    initYoutube()
+    initYoutube();
   }
 
   public render() {
-    console.log(this.props);
     let image = '';
     if (this.props.currentTrack) {
       image = this.props.currentTrack.track.album
         ? this.props.currentTrack.track.album.images[1].url
         : `http://img.youtube.com/vi/${
-        this.props.currentTrack.track.id
-        }/hqdefault.jpg`;
+            this.props.currentTrack.track.id
+          }/hqdefault.jpg`;
     }
-    console.log(image);
     return (
       <React.Fragment>
         <div
@@ -59,12 +57,11 @@ class CurrentArt extends React.Component<IProps, IState> {
           {!this.state.showYT && <img src={image} className="responsive-img" />}
         </div>
 
-        {this.props.currentTrack &&
-          this.props.currentTrack.youtube && (
-            <button className="btn">
-              <i className="fab fa-youtube" onClick={this.toggleYoutube} />
-            </button>
-          )}
+        {this.props.currentTrack && this.props.currentTrack.youtube && (
+          <button className="btn">
+            <i className="fab fa-youtube" onClick={this.toggleYoutube} />
+          </button>
+        )}
       </React.Fragment>
     );
   }

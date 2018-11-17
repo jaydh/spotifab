@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import Button from '@material-ui/core/Button';
+import Play from '@material-ui/icons/PlayCircleOutline';
+
 interface IProps {
   itemHeight: number;
   song: any;
@@ -29,9 +32,9 @@ export default class QueueItem extends React.Component<IProps> {
             : 'user-queue-item'
         }
       >
-        <button className="play-song btn" onClick={this.handleUpdate}>
-          <i className="fas fa-play-circle play-btn" aria-hidden="true" />
-        </button>
+        <Button className="play-song btn" onClick={this.handleUpdate}>
+          <Play />
+        </Button>
         <div className="song-title">
           <p>
             {song.youtube && <i className="fab fa-youtube" />}

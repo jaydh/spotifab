@@ -12,14 +12,21 @@ export default class SideMenu extends React.Component {
       <Menu
         styles={styles}
         width={`${
-          window.matchMedia("(max-width: 700px)").matches
-            ? '99vw' : '35vw'}`}
+          window.matchMedia('(max-width: 700px)').matches ? '99vw' : '35vw'
+        }`}
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
       >
         <div className="menu-header">
           <UserDetails />
           <AddYoutube />
+          <NavLink
+            to="/services"
+            activeClassName={'active side-menu-item'}
+            className="user-playlist-link"
+          >
+            Connected Services
+          </NavLink>
         </div>
         <div className="menu-middle">
           <NavLink
@@ -106,4 +113,4 @@ const styles = {
   bmOverlay: {
     background: 'rgba(0, 0, 0, 0.3)'
   }
-}
+};

@@ -1,11 +1,29 @@
+import { fromJS } from 'immutable';
+
+interface IServices {
+  spotify: boolean;
+  youtube: boolean;
+  soundcloud: boolean;
+}
 export const userReducer = (
   state = {
     signedIn: false,
+    enabledServices: fromJS({
+      spotify: false,
+      youtube: true,
+      soundcloud: false
+    } as IServices).toMap(),
     spotifySignedIn: false
   },
   action
 ) => {
   switch (action.type) {
+    case 'TOGGLE_SERVICE':
+      const draft = state.enabledServices;
+      return {
+        ...state,
+        enabledServices: draft.set(action.service, !draft.get(action.service))
+      };
     case 'FETCH_USER_SUCCESS':
       return {
         ...state,
