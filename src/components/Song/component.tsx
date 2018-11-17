@@ -2,6 +2,16 @@ import { parse } from 'date-fns';
 import * as React from 'react';
 import './Song.css';
 
+import { faYoutube } from '@fortawesome/fontawesome-free-brands';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import Button from '@material-ui/core/Button';
+import Delete from '@material-ui/icons/Delete';
+import More from '@material-ui/icons/MoreHoriz';
+import Next from '@material-ui/icons/NavigateNext';
+import Play from '@material-ui/icons/PlayArrow';
+import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
+
 interface IProps {
   index: number;
   song: any;
@@ -13,9 +23,6 @@ interface IProps {
   addToNext: () => void;
   sort: string;
 }
-
-import Button from '@material-ui/core/Button';
-import Play from '@material-ui/icons/PlayArrow';
 
 interface IState {
   showOptions: boolean;
@@ -87,31 +94,32 @@ export default class extends React.Component<IProps, IState> {
           <Play />
         </Button>
         <p className="song-name">
-          {song.youtube && <i className="fab fa-youtube" />} {song.track.name}
+          {song.youtube && <FontAwesomeIcon icon={faYoutube} />}{' '}
+          {song.track.name}
         </p>
         <span className="song-buttons">
           {this.state.showOptions ? (
             <span onMouseLeave={this.toggleShow}>
-              <button className="btn" onClick={this.handleRemove(song)}>
-                <i className="fa fa-trash" />
-              </button>
-              <button className="btn" onClick={this.handleAdd(song)}>
-                <i className={'fa fa-plus'} aria-hidden="true" />
-              </button>
-              <button
+              <Button className="btn" onClick={this.handleRemove(song)}>
+                <Delete />
+              </Button>
+              <Button className="btn" onClick={this.handleAdd(song)}>
+                <PlaylistAdd />
+              </Button>
+              <Button
                 className="btn playlist-action"
                 onClick={this.props.addToNext}
               >
-                <i className="fa fas-external-square-ink-alt">1</i>{' '}
-              </button>
+                <Next />
+              </Button>
             </span>
           ) : (
-            <button
+            <Button
               className="btn playlist-action"
               onMouseEnter={this.toggleShow}
             >
-              <i className="fa fa-ellipsis-h" />
-            </button>
+              <More />
+            </Button>
           )}
         </span>
         <p className="song-item-details">

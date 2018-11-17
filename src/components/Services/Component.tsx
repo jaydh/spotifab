@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import * as querystring from 'querystring';
 import * as React from 'react';
 import SideMenu from '../SideMenu';
@@ -8,8 +9,9 @@ import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
 
+
 interface IProps {
-  services: { youtube: boolean; spotify: boolean; soundcloud: boolean };
+  services: Map<string, boolean>;
   onToggle: (service: string) => () => void;
   spotifyValid: true;
 }
@@ -17,7 +19,7 @@ interface IProps {
 export default class Services extends React.Component<IProps> {
   public render() {
     const { services, onToggle, spotifyValid } = this.props;
-    const { youtube, spotify, soundcloud } = services;
+    const { youtube, spotify, soundcloud } = services.toJS();
     return (
       <>
         <SideMenu />

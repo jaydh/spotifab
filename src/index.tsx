@@ -17,6 +17,7 @@ import { listenForToken } from './actions/tokenActions';
 import { firebaseConf } from './apiKeys';
 import App from './App';
 import reducers from './reducers';
+import { unregister } from './registerServiceWorker';
 
 declare module 'redux' {
   export type GenericStoreEnhancer = any;
@@ -61,3 +62,5 @@ ReactDOM.render(
   </BrowserRouter>,
   document.getElementById('root')
 );
+
+unregister();
