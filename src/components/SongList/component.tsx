@@ -101,8 +101,6 @@ class SongList extends React.Component<IProps, IState> {
           index={index}
           song={song}
           makeNewQueueAndPlay={this.makeNewQueueAndPlay(index)}
-          updateDown={this.updateDown(index)}
-          updateUp={this.updateUp(index)}
           selected={selected}
         />
       </div>

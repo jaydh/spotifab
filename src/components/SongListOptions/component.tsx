@@ -3,7 +3,11 @@ import Filter from '../Filter';
 import Sort from '../Sort';
 import './SongListOptions.css';
 
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Clear from '@material-ui/icons/DeleteSweep';
+import Add from '@material-ui/icons/PlaylistAdd';
+import AddCheck from '@material-ui/icons/PlaylistAddCheck';
 
 interface IProps {
   pending: boolean;
@@ -26,26 +30,45 @@ export default class extends React.Component<IProps> {
   public render() {
     return (
       <div className="song-list-options-container">
-        {!this.props.isLibrary && !this.props.isUnified && (
-          <button className="btn" onClick={this.convert(this.props.playlistId)}>
-            Convert to unified
-          </button>
-        )}
-        <div className="song-list-options">
-          {this.props.selectionMade && (
-            <div className="selected-buttons">
-              <button className="btn" onClick={this.props.clearSelection}>
-                <i className={'fa fa-trash'} aria-hidden="true" />
-              </button>
-              <button className="btn" onClick={this.props.addSelected}>
-                <i className={'fa fa-plus'} aria-hidden="true" />
-              </button>
-              <button className="btn" onClick={this.props.makeQueue}>
-                <i className={'fa fa-file'} aria-hidden="true" />
-              </button>
-            </div>
+        {!this.props.isLibrary &&
+          !this.props.isUnified && (
+            <button
+              className="btn"
+              onClick={this.convert(this.props.playlistId)}
+            >
+              Convert to unified
+            </button>
           )}
+        <div className="song-list-options">
           <Grid container={true} spacing={24} alignItems="center">
+            {this.props.selectionMade && (
+              <>
+                <Grid item={true}>
+                  <Button
+                    variant="fab"
+                    mini={true}
+                    onClick={this.props.clearSelection}
+                  >
+                    <Clear />
+                  </Button>
+                  <Button
+                    variant="fab"
+                    mini={true}
+                    onClick={this.props.addSelected}
+                  >
+                    <Add />
+                  </Button>
+                  <Button
+                    variant="fab"
+                    mini={true}
+                    onClick={this.props.makeQueue}
+                  >
+                    <AddCheck />
+                  </Button>
+                </Grid>
+              </>
+            )}
+
             <Grid item={true}>
               <Filter />
             </Grid>

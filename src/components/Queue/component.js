@@ -11,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import MaterialList from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Delete from '@material-ui/icons/Delete';
+import Playlist from '@material-ui/icons/PlaylistPlay';
 import Repeat from '@material-ui/icons/Repeat';
 import Shuffle from '@material-ui/icons/Shuffle';
 
@@ -75,11 +76,7 @@ export default class SongList extends Component {
         pageWrapId={'page-wrap'}
         outerContainerId={'app-container'}
         noOverlay={true}
-        customBurgerIcon={
-          <React.Fragment>
-            <i style={{ color: '#BB0A21' }} className="fas fa-list-ol fa-lg" />
-          </React.Fragment>
-        }
+        customBurgerIcon={<Playlist fontSize="small" />}
       >
         <MaterialList>
           <div className="queue-header">
@@ -177,14 +174,14 @@ const styles = {
   bmBurgerButton: {
     position: 'fixed',
     left: '97%',
-    top: '45px'
+    top: '18px'
   },
   bmBurgerBars: {
     background: '#BB0A21'
   },
   bmCrossButton: {
-    height: '16px',
-    width: '16px'
+    height: '2px',
+    width: '2px'
   },
   bmCross: {
     background: 'white'

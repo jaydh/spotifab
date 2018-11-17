@@ -7,14 +7,15 @@ interface IProps {
   song: any;
   makeNewQueueAndPlay: (index) => void;
   selected: boolean;
-  updateDown: () => void;
-  updateUp: () => void;
   addSongToQueue: (song: string) => void;
   removeSpotifySong: (song) => void;
   removeYoutubeSong: (song) => void;
   addToNext: () => void;
   sort: string;
 }
+
+import Button from '@material-ui/core/Button';
+import Play from '@material-ui/icons/PlayArrow';
 
 interface IState {
   showOptions: boolean;
@@ -82,9 +83,9 @@ export default class extends React.Component<IProps, IState> {
         className={selected ? 'user-song-item selected' : 'user-song-item'}
         onDoubleClick={this.handleDouble}
       >
-        <button className="play-song btn" onClick={makeNewQueueAndPlay}>
-          <i className={`fas fa-play-circle play-btn`} aria-hidden="true" />
-        </button>
+        <Button className="play-song btn" onClick={makeNewQueueAndPlay}>
+          <Play />
+        </Button>
         <p className="song-name">
           {song.youtube && <i className="fab fa-youtube" />} {song.track.name}
         </p>
@@ -112,15 +113,7 @@ export default class extends React.Component<IProps, IState> {
               <i className="fa fa-ellipsis-h" />
             </button>
           )}
-
-          <button className="btn" onClick={this.props.updateDown}>
-            <i className={'fa fa-angle-down'} aria-hidden="true" />
-          </button>
-          <button className="btn" onClick={this.props.updateUp}>
-            <i className={'fa fa-angle-up'} aria-hidden="true" />
-          </button>
         </span>
-
         <p className="song-item-details">
           {this.state.hovered ? detailString : sortString}
         </p>
