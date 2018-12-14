@@ -1,116 +1,166 @@
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import * as React from 'react';
-import { reveal as Menu } from 'react-burger-menu';
 import { NavLink } from 'react-router-dom';
 import { auth } from '../../index';
 import AddYoutube from '../AddYoutube';
 import UserDetails from '../UserDetails';
 import UserPlaylists from '../UserPlaylists';
 import './SideMenu.css';
-export default class SideMenu extends React.Component {
+
+interface IProps {
+  classes: any;
+  open: boolean;
+  handleClose: () => void;
+  location: any;
+  history: any;
+}
+
+interface IState {
+  open: boolean;
+  tabValue: string;
+}
+
+class SideMenu extends React.Component<IProps, IState> {
+  public constructor(props: IProps) {
+    super(props);
+    this.state = {
+      open: false,
+      tabValue: props.location.pathname.substring(1)
+    };
+    this.handleHistoryPush = this.handleHistoryPush.bind(this);
+  }
   public render() {
+    const { classes, open, handleClose, location } = this.props;
+    const { tabValue } = this.state;
+    const path = location.pathname.substring(1);
+    const useTab =
+      path === 'library' || path === 'new' || path === 'recent' ? true : false;
     return (
-      <Menu
-        styles={styles}
-        width={`${
-          window.matchMedia('(max-width: 700px)').matches ? '99vw' : '35vw'
-        }`}
-        pageWrapId={'page-wrap'}
-        outerContainerId={'app-container'}
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper
+        }}
       >
-        <div className="menu-header">
+        <div className={classes.drawerHeader}>
           <UserDetails />
-          <AddYoutube />
-          <NavLink
-            to="/services"
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-          >
-            Connected Services
-          </NavLink>
+          <IconButton onClick={handleClose}>
+            <ChevronLeftIcon />
+          </IconButton>
         </div>
-        <div className="menu-middle">
-          <NavLink
-            to="/library"
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-          >
-            Library
-          </NavLink>
-          <NavLink
-            to="/recent"
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-          >
-            Recently Played
-          </NavLink>
-          <NavLink
-            to="/new"
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-          >
-            New Albums
-          </NavLink>
-          <br />
-          <UserPlaylists />
-        </div>
-        <div className="bottom">
-          <NavLink
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-            to="/Downloads"
-          >
-            Downloads
-          </NavLink>
-          <NavLink
-            activeClassName={'active side-menu-item'}
-            className="user-playlist-link"
-            to="/authenticate"
-            onClick={this.signOut}
-          >
-            Logout
-          </NavLink>
-        </div>
-      </Menu>
+        <Divider />
+        <AddYoutube />
+
+        <Tabs
+          value={useTab ? tabValue : false}
+          indicatorColor="primary"
+          textColor="primary"
+          fullWidth={true}
+        >
+          <Tab
+            value="library"
+            label="Library"
+            onClick={this.handleHistoryPush('/library')}
+          />
+          <Tab
+            value="recent"
+            label="Recently Played"
+            onClick={this.handleHistoryPush('/recent')}
+          />
+          <Tab
+            value="new"
+            label="New Ablums"
+            onClick={this.handleHistoryPush('/new')}
+          />
+        </Tabs>
+
+        <Divider />
+        <UserPlaylists />
+        <NavLink to="/Downloads">Downloads</NavLink>
+        <Divider />
+        <NavLink to="/authenticate" onClick={this.signOut}>
+          Logout
+        </NavLink>
+      </Drawer>
     );
   }
+
   private signOut() {
     auth.signOut();
   }
+
+  private handleHistoryPush = (value: string) => () => {
+    this.props.history.push(value);
+    this.setState({ tabValue: value.substring(1) });
+  };
 }
-const styles = {
-  bmBurgerButton: {
-    position: 'fixed',
-    width: '16px',
-    height: '10px',
-    left: '16px',
-    top: '45px'
+
+const drawerWidth = 500;
+
+const styles = theme => ({
+  root: {
+    display: 'flex'
   },
-  bmBurgerBars: {
-    background: '#4b88a2'
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
-  bmCrossButton: {
-    height: '24px',
-    width: '24px'
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
-  bmCross: {
-    background: '#bdc3c7'
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 20
   },
-  bmMenu: {
-    background: '#373a47',
-    padding: '2.5em 1.5em 0',
-    fontSize: '1.15em'
+  hide: {
+    display: 'none'
   },
-  bmMorphShape: {
-    fill: '#373a47'
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0
   },
-  bmItemList: {
-    color: '#b8b7ad',
-    padding: '0.8em'
+  drawerPaper: {
+    width: drawerWidth
   },
-  bmItem: {
-    display: 'inline-block'
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end'
   },
-  bmOverlay: {
-    background: 'rgba(0, 0, 0, 0.3)'
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginLeft: -drawerWidth
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: 0
   }
-};
+});
+
+export default withStyles(styles)(SideMenu);

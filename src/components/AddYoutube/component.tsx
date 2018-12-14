@@ -9,6 +9,8 @@ import * as React from 'react';
 import { youtubeAPI } from '../../../src/apiKeys';
 import './Add.css';
 
+import { NavLink } from 'react-router-dom';
+
 interface IProps {
   addYoutubeSong: (t: string) => void;
   addSpotifySong: (t: string) => void;
@@ -107,6 +109,9 @@ export default class Filter extends React.Component<IProps, IState> {
             )}
           </form>
         )}
+        <NavLink to="/services" activeClassName={'active'}>
+          Connected Services
+        </NavLink>
       </div>
     );
   }

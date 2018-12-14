@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Play from '@material-ui/icons/PlayCircleOutline';
 
 interface IProps {
@@ -22,31 +24,33 @@ export default class QueueItem extends React.Component<IProps> {
     this.handleRemove = this.handleRemove.bind(this);
   }
   public render() {
-    const { song, index } = this.props;
+    const { song } = this.props;
     return (
-      <div
-        id={`queue-item-${index}`}
-        className={
-          index === this.props.position
-            ? 'user-queue-item active'
-            : 'user-queue-item'
-        }
+      <ListItem
+        style={{
+          width: '300px',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}
       >
-        <Button className="play-song btn" onClick={this.handleUpdate}>
+        <Button
+          size="small"
+          className="play-song btn"
+          onClick={this.handleUpdate}
+        >
           <Play />
         </Button>
-        <div className="song-title">
-          <p>
-            {song.youtube && <i className="fab fa-youtube" />}
-            {song.track.name}
-          </p>
-        </div>
+        <ListItemText
+          primary={song.track.name}
+          primaryTypographyProps={{ variant: 'body1' }}
+        />
         <div className="song-buttons">
           <button className="btn" onClick={this.handleRemove}>
             <i className="fa fa-trash" aria-hidden="true" />
           </button>
         </div>
-      </div>
+      </ListItem>
     );
   }
   private handleUpdate() {

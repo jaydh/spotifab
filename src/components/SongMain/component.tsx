@@ -4,8 +4,6 @@ import asyncComponent from '../AsyncComponent';
 
 const SongList = asyncComponent(() => import('../SongList'));
 const SongProgress = asyncComponent(() => import('../SongProgress'));
-const Queue = asyncComponent(() => import('../Queue'));
-const SideMenu = asyncComponent(() => import('../SideMenu'));
 
 interface IProps {
   fetchSongs: () => void;
@@ -39,8 +37,6 @@ export default class SongMain extends React.Component<IProps, IState> {
   public render() {
     return (
       <React.Fragment>
-        <SideMenu />
-        <Queue />
         <main id="page-wrap" className="main-view">
           <SongList
             isLibrary={this.props.location.pathname === '/library'}

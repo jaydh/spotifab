@@ -6,16 +6,24 @@ import { ConnectedPlaylist } from './index';
 import Button from '@material-ui/core/Button';
 import Plus from '@material-ui/icons/Add';
 import Delete from '@material-ui/icons/Delete';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import More from '@material-ui/icons/MoreHoriz';
 import Minus from '@material-ui/icons/Remove';
+import Warning from '@material-ui/icons/Warning';
 
 class UserPlaylists extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPlaylist: true
+      showPlaylist: true,
+      selectedId: undefined
     };
     this.toggleShowPlaylist = this.toggleShowPlaylist.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
   componentDidUpdate(prevProps) {
     if (!this.props.synced && isTokenTimeValid(this.props.tokenTime)) {
@@ -25,28 +33,42 @@ class UserPlaylists extends Component {
   }
 
   render() {
+    const isPlaylist = this.props.location.pathname.startsWith('/playlist');
     return (
-      <div className="user-playlist-container">
-        <div className="user-playlist-link">
-          <h3 className="user-playlist-header">
-            Playlists
-            <Button onClick={this.toggleShowPlaylist}>
-              {this.state.showPlaylist ? <Minus /> : <Plus />}
-            </Button>
-          </h3>
-        </div>
-        <div className="playlists">
-          {this.state.showPlaylist &&
-            this.props.playlistMenu &&
-            this.props.unifiedMenu
-              .concat(this.props.playlistMenu)
-              .map(playlist => (
-                <ConnectedPlaylist key={playlist.id} playlist={playlist} />
-              ))}
-        </div>
-      </div>
+      <React.Fragment>
+        <Button onClick={this.toggleShowPlaylist}>
+          <Typography variant="subheading">Playlists</Typography>{' '}
+          {this.state.showPlaylist ? <Minus /> : <Plus />}
+        </Button>
+        {this.state.showPlaylist && (
+          <List>
+            {this.props.playlistMenu &&
+              this.props.unifiedMenu
+                .concat(this.props.playlistMenu)
+                .map(playlist => (
+                  <ConnectedPlaylist
+                    key={playlist.id}
+                    playlist={playlist}
+                    selected={
+                      isPlaylist ? this.state.selectedId === playlist.id : false
+                    }
+                    selectHandler={this.handleSelect(playlist)}
+                  />
+                ))}
+          </List>
+        )}
+      </React.Fragment>
     );
   }
+
+  handleSelect = playlist => event => {
+    this.setState({ selectedId: playlist.id });
+    this.props.history.push(
+      `/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
+        playlist.owner.id
+      }/${playlist.id}`
+    );
+  };
 
   toggleShowPlaylist() {
     this.setState({ showPlaylist: !this.state.showPlaylist });
@@ -66,6 +88,7 @@ export class Playlist extends React.Component {
   toggleShow() {
     this.setState({ showMenu: !this.state.showMenu });
   }
+
   handleUnfollow = playlist => () => {
     if (this.state.unfollowCount > 2) {
       playlist.unified
@@ -76,34 +99,20 @@ export class Playlist extends React.Component {
   };
 
   render() {
-    const { playlist } = this.props;
+    const { playlist, selected, selectHandler } = this.props;
     return (
-      <div className={'user-playlist-item'}>
-        <NavLink
-          to={`/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
-            playlist.owner.id
-          }/${playlist.id}`}
-          activeClassName="active-playlist"
-          className="user-playlist-link"
-        >
-          {playlist.spotify && <i className="fab fa-spotify" />}
-          {playlist.name}
-        </NavLink>{' '}
-        <div
-          className="playlist-action-container"
-          onMouseEnter={this.toggleShow}
-          onMouseLeave={this.toggleShow}
-        >
+      <ListItem button={true} selected={selected} onClick={selectHandler}>
+        <ListItemText primary={playlist.name} />
+        <div onMouseEnter={this.toggleShow} onMouseLeave={this.toggleShow}>
           {this.state.showMenu ? (
             <Button
-              className="btn playlist-action"
               onClick={this.handleUnfollow(playlist)}
               style={{ color: this.state.unfollowCount > 0 ? 'red' : '' }}
             >
               {this.state.unfollowCount > 0 && this.state.unfollowCount < 3 ? (
-                <i className="fa fa-warning" aria-hidden={true}>
-                  {4 - this.state.unfollowCount}
-                </i>
+                <React.Fragment>
+                  <Warning /> {4 - this.state.unfollowCount}
+                </React.Fragment>
               ) : (
                 ''
               )}
@@ -111,13 +120,13 @@ export class Playlist extends React.Component {
             </Button>
           ) : (
             <React.Fragment>
-              <Button className="btn playlist-action" onClick={this.toggleShow}>
+              <Button onClick={this.toggleShow}>
                 <More />
               </Button>
             </React.Fragment>
           )}
         </div>
-      </div>
+      </ListItem>
     );
   }
 }

@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { fetchSongs, fetchRecentlyPlayed } from '../../actions/songActions';
 import { fetchAlbums } from '../../actions/albumActions';
 import { fetchFeatured } from '../../actions/browseActions';
+import { withRouter } from 'react-router';
 
 const mapStateToProps = state => {
   return {
@@ -18,4 +19,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SideMenu);
+)(withRouter(SideMenu));

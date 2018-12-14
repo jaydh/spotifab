@@ -7,6 +7,7 @@ import {
   fetchUnifiedPlaylistMenu,
   unfollowPlaylist
 } from '../../actions/playlistActions';
+import { withRouter } from 'react-router';
 
 const mapStateToProps = state => {
   return {
@@ -40,7 +41,7 @@ const mapDispatchToProps2 = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserPlaylists);
+)(withRouter(UserPlaylists));
 
 export const ConnectedPlaylist = connect(
   null,

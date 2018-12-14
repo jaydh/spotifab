@@ -1,18 +1,8 @@
-.user-details-container {
-  display: grid;
-  grid-template-columns: 40% auto;
-  background: rgb(24, 24, 24);
-  padding: 20px;
-}
-
 .user-image {
   border-radius: 50%;
   height: 50px;
-  grid-column: 1;
 }
 
 .user-name {
-  color: #fff;
   font-size: 14px;
-  grid-column: 2;
 }

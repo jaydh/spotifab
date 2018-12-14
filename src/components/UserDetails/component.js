@@ -1,3 +1,4 @@
+import Avatar from '@material-ui/core/Avatar';
 import React from 'react';
 import './UserDetails.css';
 
@@ -7,19 +8,10 @@ export default class UserDetails extends React.Component {
   }
   render() {
     return (
-      <div className="user-details-container">
-        {this.props.displayName &&
-          this.props.userImage && (
-            <React.Fragment>
-              <img
-                alt="user"
-                className="user-image"
-                src={this.props.userImage}
-              />
-              <p className="user-name">{this.props.displayName}</p>
-            </React.Fragment>
-          )}
-      </div>
+      <span>
+        <Avatar alt="user" className="user-image" src={this.props.userImage} />
+        {this.props.displayName}{' '}
+      </span>
     );
   }
 }
