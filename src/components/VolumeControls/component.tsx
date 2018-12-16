@@ -2,8 +2,10 @@ import * as React from 'react';
 
 import './VolumeControls.css';
 
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
+import Mute from '@material-ui/icons/VolumeOff';
+import VolumeUp from '@material-ui/icons/VolumeUp';
 import Slider from '@material-ui/lab/Slider';
 
 interface IProps {
@@ -21,21 +23,13 @@ class VolumeControls extends React.Component<IProps> {
   }
 
   public render() {
-    const { classes } = this.props;
+    const { classes, muted } = this.props;
     return (
       <div className={classes.root}>
-        <Button
-          variant="fab"
-          mini={true}
+        <IconButton
+          children={muted ? <Mute /> : <VolumeUp />}
           onClick={this.props.toggleMute}
-        >
-          <i
-            className={
-              this.props.muted ? 'fa fa-volume-off' : 'fa fa-volume-up'
-            }
-            aria-hidden="true"
-          />
-        </Button>
+        />
         <Slider
           className={classes.slider}
           value={this.props.volume}
