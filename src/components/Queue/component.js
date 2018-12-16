@@ -46,13 +46,6 @@ class Queue extends Component {
         });
       }
     }
-    if (
-      !this.props.songs.isEmpty() &&
-      !prevProps.songs.isEmpty() &&
-      this.props.songs.get(0).track.id !== prevProps.songs.get(0).track.id
-    ) {
-      this.refs.forceUpdateGrid();
-    }
   }
 
   render() {
