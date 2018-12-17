@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { parse } from 'date-fns';
-import { database, app } from '../index';
+import { database, app } from '../firebase';
 import hash from 'string-hash';
 import { youtubeAPI } from '../../src/apiKeys';
 

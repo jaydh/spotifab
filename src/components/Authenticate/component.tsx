@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
-import { ui } from '../../index';
+import { ui } from '../../firebase';
 
 import Button from '@material-ui/core/Button';
 

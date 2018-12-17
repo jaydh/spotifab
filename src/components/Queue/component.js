@@ -11,7 +11,6 @@ import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
 import Repeat from '@material-ui/icons/Repeat';
 import Shuffle from '@material-ui/icons/Shuffle';
 import React, { Component } from 'react';
-import { AutoSizer, List } from 'react-virtualized';
 import QueueItem from '../QueueItem';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './Queue.css';

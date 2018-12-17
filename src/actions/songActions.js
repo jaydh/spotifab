@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { youtubeAPI } from '../../src/apiKeys';
-import { database, app } from '../index';
+import { database, app } from '../firebase';
 import { play } from './queueActions';
 import { parse, toSeconds } from 'iso8601-duration';
 

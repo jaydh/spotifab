@@ -1,8 +1,9 @@
 import { List } from 'immutable';
 import * as React from 'react';
 import { AutoSizer, List as VirtualList } from 'react-virtualized';
+import asyncComponent from '../AsyncComponent.js';
 import Song from '../Song';
-import SongListOptions from '../SongListOptions';
+const SongListOptions = asyncComponent(() => import('../SongListOptions'));
 import './SongList.css';
 
 import MaterialList from '@material-ui/core/List';
@@ -30,7 +31,7 @@ class SongList extends React.Component<IProps, IState> {
     this.state = {
       downSelectorPos: undefined,
       upSelectorPos: undefined,
-      itemHeight: 24,
+      itemHeight: 40,
       selected: undefined,
       mouseDownIndex: undefined,
       mouseUpIndex: undefined

@@ -7,7 +7,7 @@ import Tabs from '@material-ui/core/Tabs';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import { auth } from '../../index';
+import { auth } from '../../firebase';
 import AddYoutube from '../AddYoutube';
 import UserDetails from '../UserDetails';
 import UserPlaylists from '../UserPlaylists';

@@ -141,3 +141,52 @@ export default class SongProgress extends React.Component<IProps, IState> {
     }, 50) as any;
   }
 }
+
+// tslint:disable:max-classes-per-file
+class Container extends React.Component {
+  public render() {
+    return (
+      <div id="song-progress-container">
+        <AppBar position="fixed" color="primary" className={classes.appBar}>
+          <ExpansionPanel>
+            <ExpansionPanelSummary>
+              <Typography className="progress-left">
+                {this.millisToMinutesAndSeconds(this.state.position)}
+              </Typography>
+              <Typography className="progress-right">
+                {this.millisToMinutesAndSeconds(duration_ms)}
+              </Typography>{' '}
+              <div id="line-container">
+                <Line
+                  percent={
+                    !isNaN(this.state.position / duration_ms)
+                      ? (this.state.position / duration_ms) * 100
+                      : 0
+                  }
+                  strokeWidth="0.6"
+                  trailWidth="0.3"
+                  strokeColor="#252627"
+                  onClick={this.handleClick}
+                  onMouseMove={this.handleHover}
+                />
+              </div>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Grid container={true} alignItems="center" justify="center">
+                <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+                  <CurrentArt />
+                </Grid>
+                <Grid item={true} xs={6} sm={6} md={6} lg={6}>
+                  <SongControls />
+                </Grid>
+                <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+                  <VolumeControls />
+                </Grid>
+              </Grid>
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </AppBar>
+      </div>
+    );
+  }
+}

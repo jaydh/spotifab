@@ -1,4 +1,4 @@
-import { database, app } from '../index';
+import { database, app } from '../firebase';
 import { initSpotify } from '../helpers/initPlaybackAPIs';
 import runSpotifyScript from '../lib/spotifySDK';
 import { addMinutes, isBefore, parse } from 'date-fns';

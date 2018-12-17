@@ -1,16 +1,21 @@
-import { parse } from 'date-fns';
-import * as React from 'react';
-import './Song.css';
-
-import { faYoutube } from '@fortawesome/fontawesome-free-brands';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import Button from '@material-ui/core/Button';
+import {
+  Button,
+  Fade,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  withStyles
+} from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
 import More from '@material-ui/icons/MoreHoriz';
 import Next from '@material-ui/icons/NavigateNext';
 import Play from '@material-ui/icons/PlayArrow';
 import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
+import { parse } from 'date-fns';
+import { Spotify, Youtube } from 'mdi-material-ui';
+import * as React from 'react';
+import './Song.css';
 
 interface IProps {
   index: number;
@@ -22,6 +27,7 @@ interface IProps {
   removeYoutubeSong: (song) => void;
   addToNext: () => void;
   sort: string;
+  classes: any;
 }
 
 interface IState {
@@ -29,7 +35,7 @@ interface IState {
   hovered: boolean;
 }
 
-export default class extends React.Component<IProps, IState> {
+class Song extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,93 +45,64 @@ export default class extends React.Component<IProps, IState> {
     this.toggleShow = this.toggleShow.bind(this);
     this.handleDouble = this.handleDouble.bind(this);
     this.toggleHover = this.toggleHover.bind(this);
+    this.getDetailString = this.getDetailString.bind(this);
+    this.getSortString = this.getSortString.bind(this);
   }
   public render() {
-    const { song, selected, makeNewQueueAndPlay, sort } = this.props;
-    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
-    const sortString = (s => {
-      switch (s) {
-        case 'artist':
-          return song.track.artists && song.track.artists[0].name;
-        case 'album':
-          return song.track.album && song.track.album.name;
-        case 'added':
-          return parse(song.added_at).toLocaleDateString();
-        default:
-          return '';
-      }
-    })(currentSort);
-
-    const detailString = (s => {
-      switch (s) {
-        case 'artist':
-          return (
-            song.track.album &&
-            song.track.album.name + ' - ' + song.track.artists &&
-            song.track.artists[0].name
-          );
-        case 'album':
-          return (
-            song.track.artists &&
-            song.track.artists[0].name + ' - ' + song.track.album &&
-            song.track.album.name
-          );
-        case 'added':
-          return (
-            song.track.artists &&
-            song.track.artists[0].name + ' - ' + song.track.album &&
-            song.track.album.name +
-              ' - ' +
-              parse(song.added_at).toLocaleDateString()
-          );
-        default:
-          return '';
-      }
-    })(currentSort);
+    const { song, classes, makeNewQueueAndPlay, selected } = this.props;
+    const { hovered } = this.state;
+    const sortString = this.getSortString();
+    const detailString = this.getDetailString();
 
     return (
-      <span
+      <ListItem
+        className={classes.root}
         onMouseEnter={this.toggleHover}
         onMouseLeave={this.toggleHover}
-        className={selected ? 'user-song-item selected' : 'user-song-item'}
         onDoubleClick={this.handleDouble}
+        selected={selected}
       >
-        <Button className="play-song btn" onClick={makeNewQueueAndPlay}>
-          <Play />
-        </Button>
-        <p className="song-name">
-          {song.youtube && <FontAwesomeIcon icon={faYoutube} />}{' '}
-          {song.track.name}
-        </p>
-        <span className="song-buttons">
+        <ListItemIcon
+          children={
+            <Fade in={hovered}>
+              <Button onClick={makeNewQueueAndPlay}>
+                <Play />
+              </Button>
+            </Fade>
+          }
+        />
+        <ListItemIcon
+          className={classes.icon}
+          children={<Fade in={hovered}>{song.youtube ? <Youtube /> : <Spotify />}</Fade>}
+        />
+        <ListItemText primary={song.track.name} />
+        <ListItemSecondaryAction className="song-buttons">
           {this.state.showOptions ? (
-            <span onMouseLeave={this.toggleShow}>
-              <Button className="btn" onClick={this.handleRemove(song)}>
+            <>
+              <Button onClick={this.handleRemove(song)}>
                 <Delete />
               </Button>
-              <Button className="btn" onClick={this.handleAdd(song)}>
+              <Button onClick={this.handleAdd(song)}>
                 <PlaylistAdd />
               </Button>
-              <Button
-                className="btn playlist-action"
-                onClick={this.props.addToNext}
-              >
+              <Button onClick={this.props.addToNext}>
                 <Next />
               </Button>
-            </span>
+              <Button onClick={this.toggleShow}>
+                <More />
+              </Button>
+            </>
           ) : (
-            <Button
-              className="btn playlist-action"
-              onMouseEnter={this.toggleShow}
-            >
+            <Button onClick={this.toggleShow}>
               <More />
             </Button>
           )}
-        </span>
-        <p className="song-item-details">
-          {this.state.hovered ? detailString : sortString}
-        </p>
-      </span>
+        </ListItemSecondaryAction>
+        <ListItemText
+          className="song-item-details"
+          primary={this.state.hovered ? detailString : sortString}
+        />
+      </ListItem>
     );
   }
   private toggleShow() {
@@ -150,4 +127,61 @@ export default class extends React.Component<IProps, IState> {
   private toggleHover() {
     this.setState({ hovered: !this.state.hovered });
   }
+
+  private getDetailString() {
+    const { song, sort } = this.props;
+    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
+
+    switch (currentSort) {
+      case 'artist':
+        return (
+          song.track.album &&
+          song.track.album.name + ' - ' + song.track.artists &&
+          song.track.artists[0].name
+        );
+      case 'album':
+        return (
+          song.track.artists &&
+          song.track.artists[0].name + ' - ' + song.track.album &&
+          song.track.album.name
+        );
+      case 'added':
+        return (
+          song.track.artists &&
+          song.track.artists[0].name + ' - ' + song.track.album &&
+          song.track.album.name +
+            ' - ' +
+            parse(song.added_at).toLocaleDateString()
+        );
+      default:
+        return '';
+    }
+  }
+
+  private getSortString() {
+    const { song, sort } = this.props;
+    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
+
+    switch (currentSort) {
+      case 'artist':
+        return song.track.artists && song.track.artists[0].name;
+      case 'album':
+        return song.track.album && song.track.album.name;
+      case 'added':
+        return parse(song.added_at).toLocaleDateString();
+      default:
+        return '';
+    }
+  }
 }
+
+const styles = {
+  icon: {
+    margin: 0
+  },
+  root: {
+    height: 40
+  }
+};
+
+export default withStyles(styles)(Song);

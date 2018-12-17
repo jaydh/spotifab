@@ -1,20 +1,16 @@
-import {
-  faSpotify as Spotify,
-  faYoutube
-} from '@fortawesome/fontawesome-free-brands';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
+import Settings from '@material-ui/icons/Settings';
 import { List } from 'immutable';
+import { Spotify, Youtube } from 'mdi-material-ui';
 import * as React from 'react';
 import { youtubeAPI } from '../../../src/apiKeys';
 import './Add.css';
-
-import { NavLink } from 'react-router-dom';
 
 interface IProps {
   addYoutubeSong: (t: string) => void;
   addSpotifySong: (t: string) => void;
   accessToken: string;
+  history: any;
 }
 interface IState {
   value: string;
@@ -41,13 +37,14 @@ export default class Filter extends React.Component<IProps, IState> {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleSpotifyAdd = this.handleSpotifyAdd.bind(this);
     this.toggleShowSpotify = this.toggleShowSpotify.bind(this);
+    this.handleSettingsClick = this.handleSettingsClick.bind(this);
   }
 
   public render() {
     return (
       <div className="add-container">
         <Button className="btn" onClick={this.toggleShowSpotify}>
-          <FontAwesomeIcon icon={Spotify} />
+          <Spotify />
         </Button>
         {this.state.showSpotify && (
           <form onSubmit={this.onSpotifySubmit}>
@@ -79,7 +76,7 @@ export default class Filter extends React.Component<IProps, IState> {
         )}
 
         <Button className="btn" onClick={this.toggleShow}>
-          <FontAwesomeIcon icon={faYoutube} />
+          <Youtube />
         </Button>
         {this.state.show && (
           <form onSubmit={this.onSubmit}>
@@ -109,9 +106,9 @@ export default class Filter extends React.Component<IProps, IState> {
             )}
           </form>
         )}
-        <NavLink to="/services" activeClassName={'active'}>
-          Connected Services
-        </NavLink>
+        <Button onClick={this.handleSettingsClick}>
+          <Settings />
+        </Button>
       </div>
     );
   }
@@ -121,6 +118,9 @@ export default class Filter extends React.Component<IProps, IState> {
   }
   private toggleShowSpotify() {
     this.setState({ showSpotify: !this.state.showSpotify });
+  }
+  private handleSettingsClick() {
+    this.props.history.push('/services');
   }
 
   private handleChange(e: any) {
