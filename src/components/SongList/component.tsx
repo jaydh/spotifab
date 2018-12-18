@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import * as React from 'react';
 import { AutoSizer, List as VirtualList } from 'react-virtualized';
 import asyncComponent from '../AsyncComponent.js';
-import Song from '../Song';
+const Song = asyncComponent(() => import('../Song'));
 const SongListOptions = asyncComponent(() => import('../SongListOptions'));
 import { List as MaterialList } from '@material-ui/core';
 
