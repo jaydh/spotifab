@@ -3,7 +3,6 @@ import initApis from '../../helpers/initPlaybackAPIs';
 import asyncComponent from '../AsyncComponent';
 
 const SongList = asyncComponent(() => import('../SongList'));
-const SongProgress = asyncComponent(() => import('../SongProgress'));
 
 interface IProps {
   fetchSongs: () => void;
@@ -43,7 +42,6 @@ export default class SongMain extends React.Component<IProps, IState> {
             playlistId={this.state.playlistId}
             isUnified={this.state.isUnified}
           />
-          <SongProgress />
         </main>
       </React.Fragment>
     );

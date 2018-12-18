@@ -17,6 +17,7 @@ import './SongListOptions.css';
 
 const Queue = asyncComponent(() => import('../Queue'));
 const SideMenu = asyncComponent(() => import('../SideMenu'));
+const SongProgress = asyncComponent(() => import('../SongProgress'));
 
 interface IProps {
   pending: boolean;
@@ -55,55 +56,70 @@ class SongListOptions extends React.Component<IProps, IState> {
       <div className="song-list-options-container">
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar disableGutters={!open}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleSideOpen}
-              className={classes.menuButton}
+            <Grid
+              container={true}
+              spacing={24}
+              alignItems="center"
+              justify="space-between"
             >
-              <MenuIcon />
-            </IconButton>
-            <div className="song-list-options">
-              <Grid container={true} spacing={24} alignItems="center">
+              <Grid item={true}>
+                <span>
+                  <IconButton
+                    color="inherit"
+                    aria-label="Open drawer"
+                    onClick={this.handleSideOpen}
+                    className={classes.menuButton}
+                    children={<MenuIcon />}
+                  />
+                  <Filter />
+                </span>
+              </Grid>
+              <Grid
+                item={true}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '40vw'
+                }}
+              >
+                <SongProgress />
+              </Grid>
+              <Grid item={true}>
                 {this.props.selectionMade && (
                   <>
-                    <Grid item={true}>
-                      <Button onClick={this.props.clearSelection}>
-                        <Clear />
-                      </Button>
-                      <Button onClick={this.props.addSelected}>
-                        <Add />
-                      </Button>
-                      <Button onClick={this.props.makeQueue}>
-                        <AddCheck />
-                      </Button>
-                    </Grid>
+                    <Button onClick={this.props.clearSelection}>
+                      <Clear />
+                    </Button>
+                    <Button onClick={this.props.addSelected}>
+                      <Add />
+                    </Button>
+                    <Button onClick={this.props.makeQueue}>
+                      <AddCheck />
+                    </Button>
                   </>
                 )}
-
-                <Grid item={true}>
-                  <Filter />
-                </Grid>
-                <Grid item={true}>
-                  <Sort update={this.props.update} />
-                </Grid>
+                <Sort update={this.props.update} />
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleQueueOpen}
+                  className={classes.menuButton}
+                  children={<QueueIcon />}
+                />
               </Grid>
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleQueueOpen}
-                className={classes.menuButton}
-              >
-                <QueueIcon />
-              </IconButton>
-            </div>
+            </Grid>
           </Toolbar>
         </AppBar>
-        {!this.props.isLibrary && !this.props.isUnified && (
-          <button className="btn" onClick={this.convert(this.props.playlistId)}>
-            Convert to unified
-          </button>
-        )}
+        {!this.props.isLibrary &&
+          !this.props.isUnified && (
+            <button
+              className="btn"
+              onClick={this.convert(this.props.playlistId)}
+            >
+              Convert to unified
+            </button>
+          )}
         <SideMenu
           open={this.state.sideMenuOpen}
           handleClose={this.handleSideClose}

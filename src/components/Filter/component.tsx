@@ -23,24 +23,22 @@ export default class Filter extends React.Component<IProps, IState> {
 
   public render() {
     return (
-      <div className="filter">
-        <form onSubmit={this.handleChange}>
-          <Input
-            onChange={this.handleChange}
-            value={this.state.value}
-            margin="dense"
-            placeholder="Filter"
-            endAdornment={
-              <InputAdornment position="end">
-                <FilterIcon fontSize="small" />
-              </InputAdornment>
-            }
-            inputProps={{
-              'aria-label': 'Save article'
-            }}
-          />
-        </form>
-      </div>
+      <form onSubmit={this.handleChange}>
+        <Input
+          onChange={this.handleChange}
+          value={this.state.value}
+          margin="dense"
+          placeholder="Filter"
+          endAdornment={
+            <InputAdornment position="end">
+              <FilterIcon fontSize="small" />
+            </InputAdornment>
+          }
+          inputProps={{
+            'aria-label': 'Save article'
+          }}
+        />
+      </form>
     );
   }
   private handleChange(e: any) {
