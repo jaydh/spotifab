@@ -32,6 +32,7 @@ class VolumeControls extends React.Component<IProps> {
         />
         <Slider
           className={classes.slider}
+          color="secondary"
           value={this.props.volume}
           aria-labelledby="volume"
           onChange={this.updateVolume}
@@ -46,9 +47,7 @@ class VolumeControls extends React.Component<IProps> {
 
 const styles = {
   root: { alignItems: 'center', display: 'flex', width: 160 },
-  slider: {
-    padding: '22px 0px'
-  }
+  slider: { backgroundColor: 'white', color: 'white', padding: '22px 0px' }
 };
 
 export default withStyles(styles)(VolumeControls);

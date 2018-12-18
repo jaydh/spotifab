@@ -11,8 +11,11 @@ import AddCheck from '@material-ui/icons/PlaylistAddCheck';
 import QueueIcon from '@material-ui/icons/QueueMusic';
 import * as React from 'react';
 import asyncComponent from '../AsyncComponent';
+import CurrentArt from '../CurrentArt';
 import Filter from '../Filter';
+import SongControls from '../SongControls';
 import Sort from '../Sort';
+import Volume from '../VolumeControls';
 import './SongListOptions.css';
 
 const Queue = asyncComponent(() => import('../Queue'));
@@ -53,17 +56,17 @@ class SongListOptions extends React.Component<IProps, IState> {
   public render() {
     const { classes } = this.props;
     return (
-      <div className="song-list-options-container">
-        <AppBar position="fixed" className={classes.appBar}>
+      <>
+        <AppBar position="relative" className={classes.appBar}>
           <Toolbar disableGutters={!open}>
             <Grid
               container={true}
-              spacing={24}
+              spacing={40}
               alignItems="center"
               justify="space-between"
             >
-              <Grid item={true}>
-                <span>
+              <Grid item={true} container={true} xs={4} sm={4} md={4} lg={4}>
+                <Grid item={true}>
                   <IconButton
                     color="inherit"
                     aria-label="Open drawer"
@@ -71,23 +74,34 @@ class SongListOptions extends React.Component<IProps, IState> {
                     className={classes.menuButton}
                     children={<MenuIcon />}
                   />
-                  <Filter />
-                </span>
+                </Grid>
+                <Grid item={true} children={<Volume />} />
+              </Grid>
+              <Grid
+                xs={4}
+                sm={4}
+                md={4}
+                lg={4}
+                item={true}
+                container={true}
+                alignItems="center"
+                justify="center"
+              >
+                <SongControls />
+                <SongProgress />
               </Grid>
               <Grid
                 item={true}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '40vw'
-                }}
+                container={true}
+                justify="flex-end"
+                alignItems="center"
+                xs={4}
+                sm={4}
+                md={4}
+                lg={4}
               >
-                <SongProgress />
-              </Grid>
-              <Grid item={true}>
                 {this.props.selectionMade && (
-                  <>
+                  <Grid item={true}>
                     <Button onClick={this.props.clearSelection}>
                       <Clear />
                     </Button>
@@ -97,29 +111,35 @@ class SongListOptions extends React.Component<IProps, IState> {
                     <Button onClick={this.props.makeQueue}>
                       <AddCheck />
                     </Button>
-                  </>
+                  </Grid>
                 )}
-                <Sort update={this.props.update} />
-                <IconButton
-                  color="inherit"
-                  aria-label="Open drawer"
-                  onClick={this.handleQueueOpen}
-                  className={classes.menuButton}
-                  children={<QueueIcon />}
+                <Grid item={true} children={<Filter />} />
+                <Grid
+                  item={true}
+                  children={<Sort update={this.props.update} />}
+                />
+                <Grid
+                  item={true}
+                  children={
+                    <IconButton
+                      color="inherit"
+                      aria-label="Open drawer"
+                      onClick={this.handleQueueOpen}
+                      className={classes.menuButton}
+                      children={<QueueIcon />}
+                    />
+                  }
                 />
               </Grid>
             </Grid>
           </Toolbar>
+          <CurrentArt />
         </AppBar>
-        {!this.props.isLibrary &&
-          !this.props.isUnified && (
-            <button
-              className="btn"
-              onClick={this.convert(this.props.playlistId)}
-            >
-              Convert to unified
-            </button>
-          )}
+        {!this.props.isLibrary && !this.props.isUnified && (
+          <button className="btn" onClick={this.convert(this.props.playlistId)}>
+            Convert to unified
+          </button>
+        )}
         <SideMenu
           open={this.state.sideMenuOpen}
           handleClose={this.handleSideClose}
@@ -128,7 +148,7 @@ class SongListOptions extends React.Component<IProps, IState> {
           open={this.state.queueOpen}
           handleClose={this.handleQueueClose}
         />
-      </div>
+      </>
     );
   }
   private convert = name => () => {

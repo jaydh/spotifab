@@ -1,9 +1,8 @@
 import * as React from 'react';
 import './SongControls.css';
 
-import Action from '@material-ui/core/ExpansionPanelActions';
+import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
 import Trash from '@material-ui/icons/Delete';
 import Forward from '@material-ui/icons/FastForward';
 import Rewind from '@material-ui/icons/FastRewind';
@@ -47,40 +46,34 @@ class SongControls extends React.Component<IProps, IState> {
   public render() {
     const { ready } = this.props;
     return (
-      <Toolbar>
-        <Action>
-          <IconButton
-            onClick={this.prevSong}
-            onMouseEnter={this.toggleLeft(true)}
-            onMouseLeave={this.toggleLeft(false)}
-            disabled={!ready}
-          >
-            {this.state.showLeft && this.props.prevTrack.track.name}
-            <Rewind />
+      <Grid container={true} justify="center" alignItems="center">
+        <IconButton
+          onClick={this.prevSong}
+          onMouseEnter={this.toggleLeft(true)}
+          onMouseLeave={this.toggleLeft(false)}
+          disabled={!ready}
+        >
+          {false && this.props.prevTrack.track.name}
+          <Rewind />
+        </IconButton>
+        <IconButton onClick={this.togglePlay} disabled={!ready}>
+          {this.props.playing ? <Pause /> : <Play />}
+        </IconButton>
+        <IconButton
+          onClick={this.nextSong}
+          onMouseEnter={this.toggleRight(true)}
+          onMouseLeave={this.toggleRight(false)}
+          disabled={!ready}
+        >
+          <Forward />
+          {false && this.props.nextTrack.track.name}
+        </IconButton>
+        {false && (
+          <IconButton onClick={this.removeNext}>
+            <Trash />
           </IconButton>
-        </Action>
-        <Action>
-          <IconButton onClick={this.togglePlay} disabled={!ready}>
-            {this.props.playing ? <Pause /> : <Play />}
-          </IconButton>
-        </Action>
-        <Action>
-          <IconButton
-            onClick={this.nextSong}
-            onMouseEnter={this.toggleRight(true)}
-            onMouseLeave={this.toggleRight(false)}
-            disabled={!ready}
-          >
-            <Forward />
-            {this.state.showRight && this.props.nextTrack.track.name}
-          </IconButton>
-          {this.state.showRight && (
-            <IconButton onClick={this.removeNext}>
-              <Trash />
-            </IconButton>
-          )}
-        </Action>
-      </Toolbar>
+        )}
+      </Grid>
     );
   }
   private nextSong() {

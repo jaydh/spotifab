@@ -4,9 +4,7 @@ import { AutoSizer, List as VirtualList } from 'react-virtualized';
 import asyncComponent from '../AsyncComponent.js';
 import Song from '../Song';
 const SongListOptions = asyncComponent(() => import('../SongListOptions'));
-import './SongList.css';
-
-import MaterialList from '@material-ui/core/List';
+import { List as MaterialList } from '@material-ui/core';
 
 interface IProps {
   isLibrary: boolean;
@@ -31,7 +29,7 @@ class SongList extends React.Component<IProps, IState> {
     this.state = {
       downSelectorPos: undefined,
       upSelectorPos: undefined,
-      itemHeight: 40,
+      itemHeight: 32,
       selected: undefined,
       mouseDownIndex: undefined,
       mouseUpIndex: undefined
@@ -55,7 +53,7 @@ class SongList extends React.Component<IProps, IState> {
       this.state.downSelectorPos &&
       this.state.upSelectorPos !== this.state.downSelectorPos;
     return (
-      <div id="song-list-container">
+      <>
         <SongListOptions
           update={this.updateGrid}
           isLibrary={this.props.isLibrary}
@@ -66,9 +64,9 @@ class SongList extends React.Component<IProps, IState> {
           clearSelection={this.clearSelection}
           selectionMade={selectionMade}
         />
-        <MaterialList className="song-list">
-          <AutoSizer>
-            {({ height, width }) => (
+        <AutoSizer>
+          {({ height, width }) => (
+            <MaterialList style={{ height, width }}>
               <VirtualList
                 ref={ref => (this.refs = ref)}
                 rowCount={this.props.songs.size}
@@ -77,10 +75,10 @@ class SongList extends React.Component<IProps, IState> {
                 width={width}
                 height={height}
               />
-            )}
-          </AutoSizer>
-        </MaterialList>
-      </div>
+            </MaterialList>
+          )}
+        </AutoSizer>
+      </>
     );
   }
   private rowRenderer(options) {
@@ -185,5 +183,4 @@ class SongList extends React.Component<IProps, IState> {
     (this.refs as any).forceUpdateGrid();
   }
 }
-
 export default SongList;
