@@ -3,8 +3,6 @@ import userReducer from './userReducer';
 import queue from './queue';
 import playlistReducer from './playlistReducer';
 import songsReducer from './songsReducer';
-import albumsReducer from './albumsReducer';
-import browseReducer from './browseReducer';
 import player from './player';
 import token from './token';
 import { persistReducer } from 'redux-persist';
@@ -39,8 +37,6 @@ const appReducer = combineReducers({
   userReducer,
   playlistReducer,
   songsReducer,
-  albumsReducer,
-  browseReducer,
   player: persistReducer(playerConfig, player),
   queue,
   token,

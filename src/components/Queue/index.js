@@ -18,7 +18,7 @@ const mapStateToProps = state => {
   return {
     songs: state.queue.queue,
     position: state.queue.position,
-    repeat: state.player.repeat,
+    repeatOn: state.queue.repeat,
     youtubeReady: state.player.youtubeReady
   };
 };

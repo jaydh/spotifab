@@ -1,14 +1,13 @@
 import { Map } from 'immutable';
 import * as querystring from 'querystring';
 import * as React from 'react';
-import SideMenu from '../SideMenu';
+import MainBar from '../MainBar';
 
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
-
 
 interface IProps {
   services: Map<string, boolean>;
@@ -22,7 +21,7 @@ export default class Services extends React.Component<IProps> {
     const { youtube, spotify, soundcloud } = services.toJS();
     return (
       <>
-        <SideMenu />
+        <MainBar />
         <Grid container={true} justify="center" alignItems="center">
           <Button>
             <a href={this.redirect()}>Connect Spotify</a>

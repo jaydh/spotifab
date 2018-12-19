@@ -31,8 +31,9 @@ class VolumeControls extends React.Component<IProps> {
           onClick={this.props.toggleMute}
         />
         <Slider
-          className={classes.slider}
           color="secondary"
+          className={classes.slider}
+          step={1}
           value={this.props.volume}
           aria-labelledby="volume"
           onChange={this.updateVolume}
@@ -46,8 +47,8 @@ class VolumeControls extends React.Component<IProps> {
 }
 
 const styles = {
-  root: { alignItems: 'center', display: 'flex', width: 160 },
-  slider: { backgroundColor: 'white', color: 'white', padding: '22px 0px' }
+  root: { alignItems: 'center', display: 'flex', width: 80 },
+  slider: { padding: '20px 0px' }
 };
 
 export default withStyles(styles)(VolumeControls);

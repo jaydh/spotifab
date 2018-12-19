@@ -1,13 +1,15 @@
 import { store } from '../index';
 import { updatePlayer, nextSong } from '../actions/queueActions';
-import runYoutubeScript from '../lib/youtubeAPI';
-import runSpotifyScript from '../lib/spotifySDK';
 
 export const initYoutube = () => {
   const { enabledServices } = store.getState().userReducer;
   const { youtubeReady } = store.getState().player;
   const { youtube } = enabledServices.toJS();
   if (youtube && !youtubeReady) {
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     window.onYouTubeIframeAPIReady = () => {
       window.ytPlayer = new YT.Player('ytPlayer', {
         height: '500',
@@ -43,7 +45,6 @@ export const initYoutube = () => {
     function onPlayerStateChange(event) {
       store.dispatch(updatePlayer(event.data));
     }
-    runYoutubeScript();
   }
 };
 
@@ -52,6 +53,11 @@ export const initSpotify = () => {
   const { spotifyReady } = store.getState().player;
   const { spotify } = enabledServices.toJS();
   if (spotify && !spotifyReady) {
+    const tag = document.createElement('script');
+    tag.src = 'https://sdk.scdn.co/spotify-player.js';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new Spotify.Player({
         name: 'bard',
@@ -95,10 +101,6 @@ export const initSpotify = () => {
       // Connect to the player!
       player.connect();
     };
-    runSpotifyScript();
   }
 };
 
-export default () => {
-  initSpotify();
-};

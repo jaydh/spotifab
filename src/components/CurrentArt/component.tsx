@@ -2,8 +2,10 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
+  Fade,
   Grid,
-  Typography
+  Typography,
+  withStyles
 } from '@material-ui/core';
 import { ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
@@ -12,21 +14,25 @@ import './SongControls.css';
 
 interface IProps {
   currentTrack: any;
+  classes: any;
 }
 
 interface IState {
   showYT: boolean;
+  expanded: boolean;
   maximizeYT: boolean;
 }
 class CurrentArt extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
+      expanded: false,
       showYT: false,
       maximizeYT: false
     };
     this.toggleYoutube = this.toggleYoutube.bind(this);
     this.toggleMaxYT = this.toggleMaxYT.bind(this);
+    this.toggleExpand = this.toggleExpand.bind(this);
   }
   public componentWillReceiveProps(nextProps) {
     if (nextProps.currentTrack && !nextProps.currentTrack.youtube) {
@@ -40,8 +46,10 @@ class CurrentArt extends React.Component<IProps, IState> {
   }
 
   public render() {
+    const { classes, currentTrack } = this.props;
+    const { expanded } = this.state;
     let image = '';
-    if (this.props.currentTrack) {
+    if (currentTrack) {
       image = this.props.currentTrack.track.album
         ? this.props.currentTrack.track.album.images[1].url
         : `http://img.youtube.com/vi/${
@@ -49,44 +57,55 @@ class CurrentArt extends React.Component<IProps, IState> {
           }/hqdefault.jpg`;
     }
     return (
-      <ExpansionPanel>
-        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-          {this.props.currentTrack && (
-            <>
-              <Typography variant="subtitle2">
-                {this.props.currentTrack.track.name}{' '}
-              </Typography>
-              <Typography variant="body1">
-                {this.props.currentTrack.track.artists &&
-                  this.props.currentTrack.track.artists[0].name}
-              </Typography>
-            </>
-          )}
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Grid container={true} alignItems="center" justify="center">
-            <Grid item={true} xs={3} sm={3} md={3} lg={3}>
-              <>
-                <div
-                  id="ytPlayer"
-                  style={{
-                    display: 'none',
-                    margin: 'auto',
-                    maxHeight: !this.state.maximizeYT ? '20px' : '200px',
-                    height: !this.state.maximizeYT ? 'auto' : '200px',
-                    maxWidth: !this.state.maximizeYT ? '20px' : '200px'
-                  }}
-                />
-                <div className="responsive">
-                  {!this.state.showYT && (
-                    <img src={image} className="responsive-img" />
-                  )}
-                </div>
-              </>
+      <Fade in={currentTrack}>
+        <ExpansionPanel
+          className={classes.root}
+          expanded={expanded}
+          onChange={this.toggleExpand}
+        >
+          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+            {currentTrack && (
+              <Grid container={true} alignItems="center">
+                {!this.state.showYT && (
+                  <img
+                    src={image}
+                    className={classes.image}
+                    style={{
+                      height: expanded ? '200px' : '24px',
+                      borderRadius: expanded ? '0%' : '50%'
+                    }}
+                  />
+                )}
+                <Typography className={classes.title} variant="subtitle2">
+                  {currentTrack.track.name}{' '}
+                </Typography>
+                <Typography variant="body1">
+                  {currentTrack.track.artists &&
+                    currentTrack.track.artists[0].name}
+                </Typography>
+              </Grid>
+            )}
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Grid container={true} alignItems="center" justify="center">
+              <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+                <>
+                  <div
+                    id="ytPlayer"
+                    style={{
+                      display: 'none',
+                      margin: 'auto',
+                      maxHeight: !this.state.maximizeYT ? '20px' : '200px',
+                      height: !this.state.maximizeYT ? 'auto' : '200px',
+                      maxWidth: !this.state.maximizeYT ? '20px' : '200px'
+                    }}
+                  />
+                </>
+              </Grid>
             </Grid>
-          </Grid>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Fade>
     );
   }
 
@@ -100,5 +119,14 @@ class CurrentArt extends React.Component<IProps, IState> {
   private toggleMaxYT() {
     this.setState({ maximizeYT: !this.state.maximizeYT });
   }
+  private toggleExpand() {
+    this.setState({ expanded: !this.state.expanded });
+  }
 }
-export default CurrentArt;
+
+const styles = {
+  image: { transition: 'all 0.5s ease' },
+  title: { padding: '0 2em' },
+  root: {}
+};
+export default withStyles(styles)(CurrentArt);

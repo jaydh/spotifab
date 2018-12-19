@@ -3,7 +3,7 @@ import * as React from 'react';
 import { AutoSizer, List as VirtualList } from 'react-virtualized';
 import asyncComponent from '../AsyncComponent.js';
 const Song = asyncComponent(() => import('../Song'));
-const SongListOptions = asyncComponent(() => import('../SongListOptions'));
+const MainBar = asyncComponent(() => import('../MainBar'));
 import { List as MaterialList } from '@material-ui/core';
 
 interface IProps {
@@ -54,8 +54,7 @@ class SongList extends React.Component<IProps, IState> {
       this.state.upSelectorPos !== this.state.downSelectorPos;
     return (
       <>
-        <SongListOptions
-          update={this.updateGrid}
+        <MainBar
           isLibrary={this.props.isLibrary}
           playlistId={this.props.playlistId}
           isUnified={this.props.isUnified}
@@ -63,6 +62,7 @@ class SongList extends React.Component<IProps, IState> {
           makeQueue={this.makeQueueFromSelectors}
           clearSelection={this.clearSelection}
           selectionMade={selectionMade}
+          update={this.updateGrid}
         />
         <AutoSizer>
           {({ height, width }) => (

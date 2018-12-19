@@ -14,7 +14,7 @@ const mapStateToProps = state => {
     user: state.userReducer.user,
     playlistMenu: state.playlistReducer.playlistMenu,
     unifiedMenu: state.playlistReducer.unifiedMenu,
-    synced: state.synced.playlistSynced,
+    synced: state.synced.playlistsSynced,
     tokenTime: state.token.time
   };
 };

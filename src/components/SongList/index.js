@@ -1,7 +1,6 @@
 import SongList from "./component";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchSongs } from "../../actions/songActions";
 import { play } from "../../actions/queueActions";
 import { addSongToLibrary } from "../../actions/userActions";
 import {

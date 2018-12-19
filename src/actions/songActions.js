@@ -46,7 +46,8 @@ export const fetchYoutubeSongs = () => {
         .collection('userData')
         .doc(user.uid)
         .collection('youtubeTracks');
-      return ref.get().then(querySnapshot => {
+      const youtubeTracks = await ref.get().then(querySnapshot => {
+        const data = [];
         querySnapshot.forEach(async doc => {
           const { id, name, added_at } = doc.data();
           let { durationMs } = doc.data();
@@ -69,15 +70,19 @@ export const fetchYoutubeSongs = () => {
             );
           }
 
-          dispatch({
-            type: 'ADD_YOUTUBE_TRACK',
-            id,
-            name,
+          data.push({
+            youtube: true,
             added_at,
-            durationMs: durationMs
+            track: {
+              id,
+              name,
+              durationMs: durationMs
+            }
           });
         });
+        return data;
       });
+      return dispatch({ type: 'FETCH_YOUTUBE_TRACKS_SUCCESS', youtubeTracks });
     }
   };
 };

@@ -1,12 +1,14 @@
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
+import {
+  Button,
+  Divider,
+  Drawer,
+  IconButton,
+  Tab,
+  Tabs,
+  withStyles
+} from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
 import { auth } from '../../firebase';
 import AddYoutube from '../AddYoutube';
 import UserDetails from '../UserDetails';
@@ -85,11 +87,8 @@ class SideMenu extends React.Component<IProps, IState> {
 
         <Divider />
         <UserPlaylists />
-        <NavLink to="/Downloads">Downloads</NavLink>
         <Divider />
-        <NavLink to="/authenticate" onClick={this.signOut}>
-          Logout
-        </NavLink>
+        <Button onClick={this.signOut}>Logout</Button>
       </Drawer>
     );
   }

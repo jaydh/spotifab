@@ -1,5 +1,4 @@
 import * as React from 'react';
-import initApis from '../../helpers/initPlaybackAPIs';
 import asyncComponent from '../AsyncComponent';
 
 const SongList = asyncComponent(() => import('../SongList'));
@@ -13,6 +12,9 @@ interface IProps {
   fetchRecent: () => void;
   location: any;
   match: any;
+  enqueueSnackbar: (t, options?) => void;
+  spotifyReady: boolean;
+  youtubeReady: boolean;
 }
 
 interface IState {
@@ -20,7 +22,7 @@ interface IState {
   isUnified?: boolean;
 }
 
-export default class SongMain extends React.Component<IProps, IState> {
+class SongMain extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = { playlistId: undefined, isUnified: undefined };
@@ -28,11 +30,31 @@ export default class SongMain extends React.Component<IProps, IState> {
   }
   public componentDidMount() {
     this.handleFetch(this.props);
-    initApis();
   }
-  public componentDidUpdate(prevProps) {
-    this.handleFetch(this.props, prevProps);
+  public componentDidUpdate(oldProps: IProps) {
+    this.handleFetch(this.props, oldProps);
+    const { enqueueSnackbar } = this.props;
+    const options = {
+      anchorOrigin: {
+        vertical: 'bottom',
+        horizontal: 'right'
+      },
+      variant: 'success'
+    };
+    if (
+      oldProps.spotifyReady !== this.props.spotifyReady &&
+      this.props.spotifyReady
+    ) {
+      enqueueSnackbar('Spotify playback ready', options);
+    }
+    if (
+      oldProps.youtubeReady !== this.props.youtubeReady &&
+      this.props.youtubeReady
+    ) {
+      enqueueSnackbar('Youtube playback ready', options);
+    }
   }
+
   public render() {
     return (
       <React.Fragment>
@@ -76,3 +98,5 @@ export default class SongMain extends React.Component<IProps, IState> {
     }
   }
 }
+
+export default SongMain;

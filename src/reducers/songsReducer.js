@@ -169,6 +169,9 @@ export const songsReducer = (state = defaultState, action) => {
           : state.youtubeTracks.push(track)
       };
     }
+    case 'FETCH_YOUTUBE_TRACKS_SUCCESS': {
+      return { ...state, youtubeTracks: List(action.youtubeTracks) };
+    }
 
     case 'PLAY':
       return {

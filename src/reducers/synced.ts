@@ -1,13 +1,13 @@
 export default (
   state = {
-    playlistSynced: false,
+    playlistsSynced: false,
     songsSynced: false
   },
   action
 ) => {
   switch (action.type) {
     case 'FETCH_PLAYLIST_MENU_SUCCESS': {
-      return { ...state, playlistSynced: true };
+      return { ...state, playlistsSynced: true };
     }
     case 'FETCH_SONGS_SUCCESS':
       return { ...state, songsSynced: true };
