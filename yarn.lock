@@ -5481,6 +5481,11 @@ normalize-url@^1.4.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
+notistack@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/notistack/-/notistack-0.4.1.tgz#1f1367a0f4d9542641aed300dd332985a1d0047a"
+  integrity sha512-o+cU7jGZW6fKtW0LRD9jHloC1h4heRgG0BIaWeWZ2nvZLbQVGKrpYmZmvdwATjUzu+bdMW+O3yaOrYTKHBL9hA==
+
 npm-bundled@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.3.tgz#7e71703d973af3370a9591bafe3a63aca0be2308"
