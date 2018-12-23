@@ -2,7 +2,6 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  Fade,
   Grid,
   Typography,
   withStyles
@@ -10,7 +9,6 @@ import {
 import { ExpandMore } from '@material-ui/icons';
 import * as React from 'react';
 import { initYoutube } from '../../helpers/initPlaybackAPIs';
-import './SongControls.css';
 
 interface IProps {
   currentTrack: any;
@@ -57,55 +55,53 @@ class CurrentArt extends React.Component<IProps, IState> {
           }/hqdefault.jpg`;
     }
     return (
-      <Fade in={currentTrack}>
-        <ExpansionPanel
-          className={classes.root}
-          expanded={expanded}
-          onChange={this.toggleExpand}
-        >
-          <ExpansionPanelSummary expandIcon={<ExpandMore />}>
-            {currentTrack && (
-              <Grid container={true} alignItems="center">
-                {!this.state.showYT && (
-                  <img
-                    src={image}
-                    className={classes.image}
-                    style={{
-                      height: expanded ? '200px' : '24px',
-                      borderRadius: expanded ? '0%' : '50%'
-                    }}
-                  />
-                )}
-                <Typography className={classes.title} variant="subtitle2">
-                  {currentTrack.track.name}{' '}
-                </Typography>
-                <Typography variant="body1">
-                  {currentTrack.track.artists &&
-                    currentTrack.track.artists[0].name}
-                </Typography>
-              </Grid>
-            )}
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Grid container={true} alignItems="center" justify="center">
-              <Grid item={true} xs={3} sm={3} md={3} lg={3}>
-                <>
-                  <div
-                    id="ytPlayer"
-                    style={{
-                      display: 'none',
-                      margin: 'auto',
-                      maxHeight: !this.state.maximizeYT ? '20px' : '200px',
-                      height: !this.state.maximizeYT ? 'auto' : '200px',
-                      maxWidth: !this.state.maximizeYT ? '20px' : '200px'
-                    }}
-                  />
-                </>
-              </Grid>
+      <ExpansionPanel
+        className={classes.root}
+        expanded={expanded}
+        onChange={this.toggleExpand}
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+          {currentTrack && (
+            <Grid container={true} alignItems="center">
+              {!this.state.showYT && (
+                <img
+                  src={image}
+                  className={classes.image}
+                  style={{
+                    height: expanded ? '200px' : '24px',
+                    borderRadius: expanded ? '0%' : '10%'
+                  }}
+                />
+              )}
+              <Typography className={classes.title} variant="subtitle2">
+                {currentTrack.track.name}{' '}
+              </Typography>
+              <Typography variant="body1">
+                {currentTrack.track.artists &&
+                  currentTrack.track.artists[0].name}
+              </Typography>
             </Grid>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </Fade>
+          )}
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid container={true} alignItems="center" justify="center">
+            <Grid item={true} xs={3} sm={3} md={3} lg={3}>
+              <>
+                <div
+                  id="ytPlayer"
+                  style={{
+                    display: 'none',
+                    margin: 'auto',
+                    maxHeight: !this.state.maximizeYT ? '20px' : '200px',
+                    height: !this.state.maximizeYT ? 'auto' : '200px',
+                    maxWidth: !this.state.maximizeYT ? '20px' : '200px'
+                  }}
+                />
+              </>
+            </Grid>
+          </Grid>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   }
 

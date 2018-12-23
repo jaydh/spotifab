@@ -16,6 +16,7 @@ export const updateCurrentTrack = track => {
     track
   };
 };
+
 export const addSongToQueue = song => {
   return {
     type: 'ADD_SONG_TO_QUEUE',

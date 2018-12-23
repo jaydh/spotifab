@@ -1,16 +1,15 @@
-import Button from '@material-ui/core/Button';
+import { Button, Collapse } from '@material-ui/core';
 import Settings from '@material-ui/icons/Settings';
 import { List } from 'immutable';
 import { Spotify, Youtube } from 'mdi-material-ui';
 import * as React from 'react';
 import { youtubeAPI } from '../../../src/apiKeys';
-import './Add.css';
+import Services from '../Services';
 
 interface IProps {
   addYoutubeSong: (t: string) => void;
   addSpotifySong: (t: string) => void;
   accessToken: string;
-  history: any;
 }
 interface IState {
   value: string;
@@ -18,12 +17,14 @@ interface IState {
   showSpotify: boolean;
   videos: List<any>;
   spotifySongs: List<any>;
+  showOptions: boolean;
 }
 
 export default class Filter extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
+      showOptions: false,
       value: '',
       show: false,
       showSpotify: false,
@@ -41,27 +42,33 @@ export default class Filter extends React.Component<IProps, IState> {
   }
 
   public render() {
+    const {
+      showSpotify,
+      showOptions,
+      spotifySongs,
+      videos,
+      show,
+      value
+    } = this.state;
     return (
       <div className="add-container">
         <Button className="btn" onClick={this.toggleShowSpotify}>
           <Spotify />
         </Button>
-        {this.state.showSpotify && (
+        {showSpotify && (
           <form onSubmit={this.onSpotifySubmit}>
             <input
-              placeholder={
-                this.state.value === '' ? 'Spotify search' : this.state.value
-              }
+              placeholder={value === '' ? 'Spotify search' : value}
               onChange={this.handleChange}
             />
-            {!this.state.spotifySongs.isEmpty() && (
+            {!spotifySongs.isEmpty() && (
               <div
                 style={{
                   height: '400px',
                   overflowY: 'auto'
                 }}
               >
-                {this.state.spotifySongs.map(t => (
+                {spotifySongs.map(t => (
                   <div
                     key={`youtube-${t.id}`}
                     className="user-playlist-item"
@@ -74,26 +81,23 @@ export default class Filter extends React.Component<IProps, IState> {
             )}
           </form>
         )}
-
         <Button className="btn" onClick={this.toggleShow}>
           <Youtube />
         </Button>
-        {this.state.show && (
+        {show && (
           <form onSubmit={this.onSubmit}>
             <input
-              placeholder={
-                this.state.value === '' ? 'Youtube search' : this.state.value
-              }
+              placeholder={value === '' ? 'Youtube search' : value}
               onChange={this.handleChange}
             />
-            {!this.state.videos.isEmpty() && (
+            {!videos.isEmpty() && (
               <div
                 style={{
                   height: '400px',
                   overflowY: 'auto'
                 }}
               >
-                {this.state.videos.map(t => (
+                {videos.map(t => (
                   <div
                     key={`youtube-${t.id.videoId}`}
                     className="user-playlist-item"
@@ -109,6 +113,7 @@ export default class Filter extends React.Component<IProps, IState> {
         <Button onClick={this.handleSettingsClick}>
           <Settings />
         </Button>
+        <Collapse in={showOptions} children={<Services />} />{' '}
       </div>
     );
   }
@@ -120,7 +125,7 @@ export default class Filter extends React.Component<IProps, IState> {
     this.setState({ showSpotify: !this.state.showSpotify });
   }
   private handleSettingsClick() {
-    this.props.history.push('/services');
+    this.setState({ showOptions: !this.state.showOptions });
   }
 
   private handleChange(e: any) {

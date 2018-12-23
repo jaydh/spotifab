@@ -1,7 +1,9 @@
+import 'firebase/firestore';
 import * as React from 'react';
-import asyncComponent from '../AsyncComponent';
+import loader from '../../helpers/loader';
+import SongList from '../SongList';
 
-const SongList = asyncComponent(() => import('../SongList'));
+const MainBar = loader(() => import('../MainBar'));
 
 interface IProps {
   fetchSongs: () => void;
@@ -27,7 +29,8 @@ class SongMain extends React.Component<IProps, IState> {
     super(props);
     this.state = { playlistId: undefined, isUnified: undefined };
     this.handleFetch = this.handleFetch.bind(this);
-  }
+
+      }
   public componentDidMount() {
     this.handleFetch(this.props);
   }
@@ -56,16 +59,12 @@ class SongMain extends React.Component<IProps, IState> {
   }
 
   public render() {
+    console.log('here')
     return (
-      <React.Fragment>
-        <main id="page-wrap" className="main-view">
-          <SongList
-            isLibrary={this.props.location.pathname === '/library'}
-            playlistId={this.state.playlistId}
-            isUnified={this.state.isUnified}
-          />
-        </main>
-      </React.Fragment>
+      <main id="page-wrap" className="main-view">
+        <MainBar />
+        <SongList isLibrary={this.props.location.pathname === '/library'} />
+      </main>
     );
   }
   private handleFetch(current: IProps, prev?: IProps) {

@@ -8,7 +8,6 @@ import {
   withStyles
 } from '@material-ui/core';
 import Delete from '@material-ui/icons/Delete';
-import More from '@material-ui/icons/MoreHoriz';
 import Next from '@material-ui/icons/NavigateNext';
 import Play from '@material-ui/icons/PlayArrow';
 import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
@@ -53,7 +52,6 @@ class Song extends React.Component<IProps, IState> {
     const { hovered } = this.state;
     const sortString = this.getSortString();
     const detailString = this.getDetailString();
-
     return (
       <ListItem
         className={classes.root}
@@ -71,36 +69,37 @@ class Song extends React.Component<IProps, IState> {
             </Fade>
           }
         />
+        <ListItemSecondaryAction
+          children={
+            <Fade in={hovered}>
+              <div>
+                <Button onClick={this.handleRemove(song)}>
+                  <Delete />
+                </Button>
+                <Button onClick={this.handleAdd(song)}>
+                  <PlaylistAdd />
+                </Button>
+                <Button onClick={this.props.addToNext}>
+                  <Next />
+                </Button>
+              </div>
+            </Fade>
+          }
+        />
+
         <ListItemIcon
           className={classes.icon}
-          children={<Fade in={hovered}>{song.youtube ? <Youtube /> : <Spotify />}</Fade>}
+          children={
+            <Fade in={hovered}>{song.youtube ? <Youtube /> : <Spotify />}</Fade>
+          }
         />
-        <ListItemText primary={song.track.name} />
-        <ListItemSecondaryAction className="song-buttons">
-          {this.state.showOptions ? (
-            <>
-              <Button onClick={this.handleRemove(song)}>
-                <Delete />
-              </Button>
-              <Button onClick={this.handleAdd(song)}>
-                <PlaylistAdd />
-              </Button>
-              <Button onClick={this.props.addToNext}>
-                <Next />
-              </Button>
-              <Button onClick={this.toggleShow}>
-                <More />
-              </Button>
-            </>
-          ) : (
-            <Button onClick={this.toggleShow}>
-              <More />
-            </Button>
-          )}
-        </ListItemSecondaryAction>
         <ListItemText
-          className="song-item-details"
-          primary={this.state.hovered ? detailString : sortString}
+          primary={song.track.name}
+          primaryTypographyProps={{ variant: 'subtitle1' }}
+          secondary={this.state.hovered ? detailString : sortString}
+          secondaryTypographyProps={{
+            variant: 'body2'
+          }}
         />
       </ListItem>
     );

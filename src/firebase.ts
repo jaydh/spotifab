@@ -1,7 +1,6 @@
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import * as firebaseui from 'firebaseui';
 import { listenForToken } from './actions/tokenActions';
 import { firebaseConf } from './apiKeys';
 import { store } from './index';
@@ -11,7 +10,6 @@ export const database = app.firestore();
 const settings = { timestampsInSnapshots: true };
 database.settings(settings);
 export const auth = firebase.auth();
-export const ui = new firebaseui.auth.AuthUI(app.auth());
 
 firebase.auth().onAuthStateChanged(user => {
   if (user) {
@@ -21,3 +19,7 @@ firebase.auth().onAuthStateChanged(user => {
     store.dispatch({ type: 'RESET' });
   }
 });
+
+export const provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+firebase.auth().useDeviceLanguage();

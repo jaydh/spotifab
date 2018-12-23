@@ -1,45 +1,39 @@
+import { List as MaterialList } from '@material-ui/core';
 import { List } from 'immutable';
 import * as React from 'react';
 import { AutoSizer, List as VirtualList } from 'react-virtualized';
-import asyncComponent from '../AsyncComponent.js';
-const Song = asyncComponent(() => import('../Song'));
-const MainBar = asyncComponent(() => import('../MainBar'));
-import { List as MaterialList } from '@material-ui/core';
+import Song from '../Song';
 
 interface IProps {
-  isLibrary: boolean;
-  playlistId: string;
-  isUnified: boolean;
+  currentTrack?: any;
   songs: List<any>;
   makeNewQueue: (songs: List<any>) => void;
   addSongToQueue: (song) => void;
   play: () => void;
+  upSelector?: number;
+  downSelector?: number;
+  setSongSelection: (
+    data: { up?: number; down?: number; selectedSongs?: List<any> }
+  ) => void;
+  sort: string;
 }
 interface IState {
-  downSelectorPos?: number;
-  upSelectorPos?: number;
   mouseDownIndex?: number;
   mouseUpIndex?: number;
   itemHeight: number;
-  selected?: List<any>;
 }
 class SongList extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
-      downSelectorPos: undefined,
-      upSelectorPos: undefined,
-      itemHeight: 32,
-      selected: undefined,
+      itemHeight: 50,
       mouseDownIndex: undefined,
       mouseUpIndex: undefined
     };
     this.rowRenderer = this.rowRenderer.bind(this);
-    this.updateDown = this.updateDown.bind(this);
-    this.updateUp = this.updateUp.bind(this);
+    this.updateSelection = this.updateSelection.bind(this);
     this.makeNewQueue = this.makeNewQueue.bind(this);
     this.makeNewQueueAndPlay = this.makeNewQueueAndPlay.bind(this);
-    this.makeQueueFromSelectors = this.makeQueueFromSelectors.bind(this);
     this.updateGrid = this.updateGrid.bind(this);
     this.addSelectedToQueue = this.addSelectedToQueue.bind(this);
     this.clearSelection = this.clearSelection.bind(this);
@@ -47,48 +41,44 @@ class SongList extends React.Component<IProps, IState> {
     this.handleClickUp = this.handleClickUp.bind(this);
   }
 
+  public componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.sort !== this.props.sort ||
+      prevProps.upSelector !== this.props.upSelector ||
+      prevProps.downSelector !== this.props.downSelector
+    ) {
+      this.updateGrid();
+    }
+  }
+
   public render() {
-    const selectionMade =
-      this.state.upSelectorPos &&
-      this.state.downSelectorPos &&
-      this.state.upSelectorPos !== this.state.downSelectorPos;
     return (
-      <>
-        <MainBar
-          isLibrary={this.props.isLibrary}
-          playlistId={this.props.playlistId}
-          isUnified={this.props.isUnified}
-          addSelected={this.addSelectedToQueue}
-          makeQueue={this.makeQueueFromSelectors}
-          clearSelection={this.clearSelection}
-          selectionMade={selectionMade}
-          update={this.updateGrid}
-        />
-        <AutoSizer>
-          {({ height, width }) => (
-            <MaterialList style={{ height, width }}>
-              <VirtualList
-                ref={ref => (this.refs = ref)}
-                rowCount={this.props.songs.size}
-                rowRenderer={this.rowRenderer}
-                rowHeight={this.state.itemHeight}
-                width={width}
-                height={height}
-              />
-            </MaterialList>
-          )}
-        </AutoSizer>
-      </>
+      <AutoSizer>
+        {({ height, width }) => (
+          <MaterialList style={{ height, width }}>
+            <VirtualList
+              ref={ref => (this.refs = ref)}
+              rowCount={this.props.songs.size}
+              rowRenderer={this.rowRenderer}
+              rowHeight={this.state.itemHeight}
+              width={width}
+              height={height}
+            />
+          </MaterialList>
+        )}
+      </AutoSizer>
     );
   }
   private rowRenderer(options) {
     const { index, key, style } = options;
-    const song = this.props.songs.get(index);
+    const { currentTrack, upSelector, downSelector, songs } = this.props;
+    const song = songs.get(index);
     const selected =
-      this.state.upSelectorPos &&
-      this.state.downSelectorPos &&
-      index < this.state.upSelectorPos &&
-      index >= this.state.downSelectorPos;
+      (currentTrack && currentTrack.id === song.track.id) ||
+      (upSelector &&
+        downSelector &&
+        index < upSelector &&
+        index >= downSelector);
     return (
       <div
         key={key}
@@ -117,33 +107,18 @@ class SongList extends React.Component<IProps, IState> {
       mouseUpIndex: index
     });
     if (this.state.mouseDownIndex) {
-      this.updateDown(Math.min(this.state.mouseDownIndex, index))();
-      this.updateUp(Math.max(this.state.mouseDownIndex, index))();
+      this.updateSelection(
+        Math.min(this.state.mouseDownIndex, index),
+        Math.max(this.state.mouseDownIndex, index)
+      );
     }
   };
 
-  private updateDown = index => () => {
-    this.setState({
-      downSelectorPos: index,
-      selected: this.props.songs
-        .slice(index, this.state.upSelectorPos ? this.state.upSelectorPos : 0)
-        .toList()
-    });
-    this.updateGrid();
-  };
-
-  private updateUp = index => () => {
+  private updateSelection = (down, up) => {
     {
-      this.setState({
-        upSelectorPos: index + 1,
-        selected: this.props.songs
-          .slice(
-            this.state.downSelectorPos ? this.state.downSelectorPos : 0,
-            index
-          )
-          .toList()
-      });
-      this.updateGrid();
+      const { songs } = this.props;
+      const selectedSongs = songs.slice(down, up).toList();
+      this.props.setSongSelection({ down, up, selectedSongs });
     }
   };
 
@@ -155,28 +130,20 @@ class SongList extends React.Component<IProps, IState> {
   private makeNewQueueAndPlay = index => () => {
     this.makeNewQueue(
       index,
-      this.state.upSelectorPos === 0 ? index + 200 : this.state.upSelectorPos
+      this.props.upSelector ? this.props.upSelector : index + 100
     );
     this.props.play();
   };
 
-  private makeQueueFromSelectors() {
-    this.makeNewQueue(this.state.downSelectorPos, this.state.upSelectorPos);
-  }
-
   private addSelectedToQueue() {
-    if (this.state.selected) {
-      this.state.selected.map(t => this.props.addSongToQueue(t));
-    }
+    const selected = this.props.songs
+      .slice(this.props.upSelector, this.props.downSelector)
+      .toList();
+    selected.map(t => this.props.addSongToQueue(t));
   }
 
   private clearSelection() {
-    this.setState({
-      upSelectorPos: undefined,
-      downSelectorPos: undefined,
-      selected: List()
-    });
-    this.updateGrid();
+    this.props.setSongSelection({ up: undefined, down: undefined });
   }
 
   private updateGrid() {

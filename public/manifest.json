@@ -1,6 +1,6 @@
 {
-  "short_name": "spoti",
-  "name": "bard",
+  "short_name": "bard",
+  "name": "bard - streaming multiplexer",
   "start_url": "./index.html",
   "display": "standalone",
   "theme_color": "#000000",

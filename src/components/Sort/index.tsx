@@ -107,7 +107,6 @@ class Sort extends React.Component<IProps, IState> {
     ) === 'desc'
       ? this.props.setSort('name-asc')
       : this.props.setSort('name-desc');
-    this.props.update();
   }
   private setArtist() {
     this.props.currentSort.substring(
@@ -115,7 +114,6 @@ class Sort extends React.Component<IProps, IState> {
     ) === 'desc'
       ? this.props.setSort('artist-asc')
       : this.props.setSort('artist-desc');
-    this.props.update();
   }
 
   private setAlbum() {
@@ -124,7 +122,6 @@ class Sort extends React.Component<IProps, IState> {
     ) === 'desc'
       ? this.props.setSort('album-asc')
       : this.props.setSort('album-desc');
-    this.props.update();
   }
 
   private setAdded() {
@@ -133,7 +130,6 @@ class Sort extends React.Component<IProps, IState> {
     ) === 'desc'
       ? this.props.setSort('added-asc')
       : this.props.setSort('added-desc');
-    this.props.update();
   }
 
   private handleToggle() {

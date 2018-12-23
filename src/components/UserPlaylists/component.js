@@ -3,7 +3,7 @@ import './UserPlaylists.css';
 import { NavLink } from 'react-router-dom';
 import { isTokenTimeValid } from '../../helpers/validateToken';
 import { ConnectedPlaylist } from './index';
-import Button from '@material-ui/core/Button';
+import { Button, Collapse } from '@material-ui/core';
 import Plus from '@material-ui/icons/Add';
 import Delete from '@material-ui/icons/Delete';
 import List from '@material-ui/core/List';
@@ -33,6 +33,7 @@ class UserPlaylists extends Component {
   }
 
   render() {
+    const { showPlaylist } = this.state;
     const isPlaylist = this.props.location.pathname.startsWith('/playlist');
     return (
       <React.Fragment>
@@ -40,7 +41,7 @@ class UserPlaylists extends Component {
           <Typography variant="subheading">Playlists</Typography>{' '}
           {this.state.showPlaylist ? <Minus /> : <Plus />}
         </Button>
-        {this.state.showPlaylist && (
+        <Collapse in={showPlaylist}>
           <List>
             {this.props.playlistMenu &&
               this.props.unifiedMenu
@@ -56,7 +57,7 @@ class UserPlaylists extends Component {
                   />
                 ))}
           </List>
-        )}
+        </Collapse>
       </React.Fragment>
     );
   }

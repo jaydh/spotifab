@@ -2,12 +2,6 @@
   text-align: left;
 }
 
-.song-item-details {
-  text-align: right;
-  margin-left: auto;
-  order: 2;
-}
-
 .user-song-item {
   display: flex;
   font-size: 14px;

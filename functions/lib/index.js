@@ -25,7 +25,7 @@ exports.getToken = functions.firestore
     .onCreate((change, context) => __awaiter(this, void 0, void 0, function* () {
     const code = change.data().auth_code;
     const host = change.data().host;
-    const redirect_uri = `https://${host}/authenticate/`;
+    const redirect_uri = host;
     const { id, secret } = yield (yield admin
         .firestore()
         .collection('client')
@@ -50,7 +50,7 @@ exports.getToken = functions.firestore
     return Promise.resolve();
 }));
 exports.refreshToken = functions.firestore
-    .document('tokens/{uid}')
+    .document('tokens/{uid}/refetch')
     .onWrite((change, context) => __awaiter(this, void 0, void 0, function* () {
     const oldFetch = change.before.data() ? change.before.data().refetch : null;
     const newFetch = change.after.data() ? change.after.data().refetch : null;

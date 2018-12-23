@@ -4,21 +4,23 @@ import { addMinutes, isBefore, parse } from 'date-fns';
 
 export const setAuthCode = authCode => {
   return (dispatch, getState) => {
+    database
+      .collection('client')
+      .doc('apiKey')
+      .get()
+      .then(doc => console.log(doc.data()));
     const ref = database
       .collection('tokens')
       .doc(getState().userReducer.firebaseUser.uid);
-    return ref.get().then(doc => {
-      dispatch({
-        type: 'REFETCH_TOKEN'
-      });
-
-      return doc.auth_code !== authCode
-        ? ref.set(
-            { auth_code: authCode, host: window.location.host },
-            { merge: true }
-          )
-        : Promise.resolve();
+    dispatch({
+      type: 'REFETCH_TOKEN'
     });
+    const isDev = window.location.host.startsWith('local');
+    const callback = isDev ? 'http://localhost:3000/' : 'https://bard.live/';
+
+    return ref
+      .set({ auth_code: authCode, host: callback })
+      .then(() => dispatch({ type: 'SET_AUTH_TOKEN_SUCCESS' }));
   };
 };
 

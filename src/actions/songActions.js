@@ -4,6 +4,8 @@ import { database, app } from '../firebase';
 import { play } from './queueActions';
 import { parse, toSeconds } from 'iso8601-duration';
 
+// tslint:disable:variable-name
+
 export const addYoutubeSong = t => {
   return async (dispatch, getState) => {
     const name = t.snippet.title;
@@ -12,7 +14,7 @@ export const addYoutubeSong = t => {
       `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
     );
     const json = await res.json();
-    const durationMs = json.items[0]
+    const duration_ms = json.items[0]
       ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
       : null;
 
@@ -25,7 +27,7 @@ export const addYoutubeSong = t => {
       name,
       id,
       added_at: new Date().getTime(),
-      durationMs
+      duration_ms
     });
 
     dispatch({
@@ -33,7 +35,7 @@ export const addYoutubeSong = t => {
       id,
       name,
       added_at: new Date().getTime(),
-      durationMs
+      duration_ms
     });
   };
 };
@@ -50,19 +52,19 @@ export const fetchYoutubeSongs = () => {
         const data = [];
         querySnapshot.forEach(async doc => {
           const { id, name, added_at } = doc.data();
-          let { durationMs } = doc.data();
-          if (!durationMs) {
+          let { duration_ms } = doc.data();
+          if (!duration_ms) {
             const res = await fetch(
               `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
             );
             const json = await res.json();
-            durationMs = json.items[0]
+            duration_ms = json.items[0]
               ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
               : null;
 
             await ref.doc(id).set(
               {
-                durationMs
+                duration_ms
               },
               {
                 merge: true
@@ -76,7 +78,7 @@ export const fetchYoutubeSongs = () => {
             track: {
               id,
               name,
-              durationMs: durationMs
+              duration_ms
             }
           });
         });

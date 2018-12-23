@@ -1,26 +1,30 @@
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
+import {
+  AppBar,
+  Button,
+  Collapse,
+  Fade,
+  Grid,
+  IconButton,
+  Toolbar,
+  withStyles
+} from '@material-ui/core';
 import Clear from '@material-ui/icons/DeleteSweep';
 import MenuIcon from '@material-ui/icons/Menu';
 import Add from '@material-ui/icons/PlaylistAdd';
 import AddCheck from '@material-ui/icons/PlaylistAddCheck';
 import QueueIcon from '@material-ui/icons/QueueMusic';
 import * as React from 'react';
-import asyncComponent from '../AsyncComponent';
 
 import './SongListOptions.css';
-const CurrentArt = asyncComponent(() => import('../CurrentArt'));
-const Filter = asyncComponent(() => import('../Filter'));
-const SongControls = asyncComponent(() => import('../SongControls'));
-const Sort = asyncComponent(() => import('../Sort'));
-const Volume = asyncComponent(() => import('../VolumeControls'));
-const Queue = asyncComponent(() => import('../Queue'));
-const SideMenu = asyncComponent(() => import('../SideMenu'));
-const SongProgress = asyncComponent(() => import('../SongProgress'));
+
+import CurrentArt from '../CurrentArt';
+import Filter from '../Filter';
+import Queue from '../Queue';
+import SideMenu from '../SideMenu';
+import SongControls from '../SongControls';
+import SongProgress from '../SongProgress';
+import Sort from '../Sort';
+import Volume from '../VolumeControls';
 
 interface IProps {
   pending: boolean;
@@ -31,9 +35,11 @@ interface IProps {
   convertPlaylistToUnified: (name: string) => void;
   selectionMade: boolean;
   addSelected: () => void;
-  makeQueue: () => void;
+  makeQueueFromSelection: () => void;
   clearSelection: () => void;
   classes: any;
+  currentTrack: any;
+  selection: boolean;
 }
 
 interface IState {
@@ -54,7 +60,17 @@ class SongListOptions extends React.Component<IProps, IState> {
     this.convert = this.convert.bind(this);
   }
   public render() {
-    const { classes, playlistId, isLibrary, isUnified } = this.props;
+    const {
+      classes,
+      currentTrack,
+      playlistId,
+      isLibrary,
+      isUnified,
+      selection,
+      makeQueueFromSelection,
+      addSelected,
+      clearSelection
+    } = this.props;
     return (
       <>
         <AppBar position="relative" className={classes.appBar}>
@@ -76,19 +92,21 @@ class SongListOptions extends React.Component<IProps, IState> {
                   />
                 </Grid>
               </Grid>
-              <Grid
-                xs={4}
-                sm={4}
-                md={4}
-                lg={4}
-                item={true}
-                container={true}
-                alignItems="center"
-                justify="center"
-              >
-                <SongControls />
-                <SongProgress />
-              </Grid>
+              <Fade in={currentTrack}>
+                <Grid
+                  xs={4}
+                  sm={4}
+                  md={4}
+                  lg={4}
+                  item={true}
+                  container={true}
+                  alignItems="center"
+                  justify="center"
+                >
+                  <SongControls />
+                  <SongProgress />
+                </Grid>
+              </Fade>
               <Grid
                 item={true}
                 container={true}
@@ -99,24 +117,21 @@ class SongListOptions extends React.Component<IProps, IState> {
                 md={4}
                 lg={4}
               >
-                {this.props.selectionMade && (
+                <Fade in={selection}>
                   <Grid item={true}>
-                    <Button onClick={this.props.clearSelection}>
+                    <Button onClick={clearSelection}>
                       <Clear />
                     </Button>
-                    <Button onClick={this.props.addSelected}>
+                    <Button onClick={addSelected}>
                       <Add />
                     </Button>
-                    <Button onClick={this.props.makeQueue}>
+                    <Button onClick={makeQueueFromSelection}>
                       <AddCheck />
                     </Button>
                   </Grid>
-                )}
+                </Fade>
                 <Grid item={true} children={<Filter />} />
-                <Grid
-                  item={true}
-                  children={<Sort update={this.props.update} />}
-                />
+                <Grid item={true} children={<Sort />} />
                 <Grid item={true} children={<Volume />} />
                 <Grid
                   item={true}
@@ -133,7 +148,9 @@ class SongListOptions extends React.Component<IProps, IState> {
               </Grid>
             </Grid>
           </Toolbar>
-          <CurrentArt />
+          <Collapse in={currentTrack}>
+            <CurrentArt />
+          </Collapse>
         </AppBar>
         {playlistId && !isLibrary && !isUnified && (
           <button className="btn" onClick={this.convert(this.props.playlistId)}>
