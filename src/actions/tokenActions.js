@@ -2,6 +2,8 @@ import { initSpotify } from "../helpers/initPlaybackAPIs";
 import { addMinutes, isBefore, parse } from "date-fns";
 
 export const setAuthCode = authCode => {
+  const database = window.firebase.firestore();
+
   return (dispatch, getState) => {
     database
       .collection("client")
@@ -24,6 +26,8 @@ export const setAuthCode = authCode => {
 };
 
 export const listenForToken = () => {
+  const database = window.firebase.firestore();
+
   return (dispatch, getState) => {
     initSpotify();
     database

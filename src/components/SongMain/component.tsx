@@ -12,8 +12,7 @@ interface IProps {
   fetchRecent: () => void;
   location: any;
   match: any;
-  spotifyReady: boolean;
-  youtubeReady: boolean;
+  firebaseLoaded: boolean;
 }
 
 interface IState {
@@ -27,11 +26,19 @@ class SongMain extends React.Component<IProps, IState> {
     this.state = { playlistId: undefined, isUnified: undefined };
     this.handleFetch = this.handleFetch.bind(this);
   }
+
   public componentDidMount() {
-    this.handleFetch(this.props);
+    if (this.props.firebaseLoaded) {
+      console.log("dd");
+      this.handleFetch(this.props);
+    }
   }
   public componentDidUpdate(oldProps: IProps) {
-    this.handleFetch(this.props, oldProps);
+    console.log("dass", this.props);
+    if (this.props.firebaseLoaded) {
+      console.log("dd");
+      //    this.handleFetch(this.props, oldProps);
+    }
   }
 
   public render() {

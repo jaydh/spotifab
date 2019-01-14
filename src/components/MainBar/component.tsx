@@ -64,7 +64,7 @@ interface IState {
 
 const drawerWidth = 600;
 
-class SongListOptions extends React.Component<IProps, IState> {
+class MainBar extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -117,7 +117,7 @@ class SongListOptions extends React.Component<IProps, IState> {
                 </Grid>
                 <Authenticate />
               </Grid>
-              <Fade in={currentTrack}>
+              <Fade in={currentTrack !== undefined}>
                 <Grid
                   xs={4}
                   sm={4}
@@ -142,7 +142,7 @@ class SongListOptions extends React.Component<IProps, IState> {
                 md={4}
                 lg={4}
               >
-                <Fade in={selection}>
+                <Fade in={selection !== undefined}>
                   <Grid item={true}>
                     <Button onClick={clearSelection}>
                       <Clear />
@@ -174,7 +174,7 @@ class SongListOptions extends React.Component<IProps, IState> {
               </Grid>
             </Grid>
           </Toolbar>
-          <Collapse in={currentTrack}>
+          <Collapse in={currentTrack !== undefined}>
             <CurrentArt />
           </Collapse>
         </AppBar>
@@ -284,4 +284,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(SongListOptions);
+export default withStyles(styles)(MainBar);

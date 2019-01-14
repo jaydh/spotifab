@@ -2,10 +2,13 @@ import { SnackbarProvider, withSnackbar } from "notistack";
 import * as React from "react";
 import { connect } from "react-redux";
 import "./App.css";
-import MainView from "./components/MainView";
+import firebase from "./firebase";
+import loader from "./helpers/loader";
 
+const MainView = loader(() => import("./components/MainView"));
 interface IProps {
   onReset: () => void;
+  onFirebaseLoad: () => void;
   signedIn: () => void;
   enqueueSnackbar: (t, options?) => void;
   spotifyReady: boolean;
@@ -17,21 +20,11 @@ interface IProps {
 class App extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
+    this.loadFirebase = this.loadFirebase.bind(this);
   }
 
   public componentDidMount() {
-    const links = [
-      "https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js",
-      "https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js",
-      "https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js"
-    ];
-    links.forEach((t: string) => {
-      const script = document.createElement("script");
-      script.src = t;
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    });
+    this.loadFirebase();
   }
 
   public componentDidUpdate(oldProps: IProps) {
@@ -78,6 +71,35 @@ class App extends React.Component<IProps> {
   public componentDidCatch(error, info) {
     this.props.onReset();
   }
+
+  private loadFirebase() {
+    const main = document.createElement("script");
+    main.src = "https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js";
+    main.async = true;
+    main.defer = true;
+    main.onload = () => {
+      const links = [
+        "https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js",
+        "https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js"
+      ];
+      const promises = links.map((t: string) => {
+        return new Promise((resolve: any, reject: any) => {
+          const script = document.createElement("script");
+          script.src = t;
+          script.async = true;
+          script.defer = true;
+          script.onload = () => resolve();
+          script.onerror = () => reject();
+          document.body.appendChild(script);
+        });
+      });
+      Promise.all(promises).then(() => {
+        firebase();
+        this.props.onFirebaseLoad();
+      });
+    };
+    document.body.appendChild(main);
+  }
 }
 
 const mapStateToProps = state => {
@@ -91,6 +113,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
+    onFirebaseLoad: () => dispatch({ type: "FIREBASE_LOADED" }),
     onReset: () => dispatch({ type: "RESET" })
   };
 };

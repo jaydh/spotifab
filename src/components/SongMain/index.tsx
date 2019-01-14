@@ -10,6 +10,12 @@ import {
 import { fetchSongs, fetchYoutubeSongs } from '../../actions/songActions';
 import Component from './component';
 
+const mapState = (state: any) => {
+  return {
+    firebaseLoaded: state.ui.firebaseLoaded
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
@@ -25,6 +31,6 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(
-  null,
+  mapState,
   mapDispatchToProps
 )(withRouter(Component));

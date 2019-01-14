@@ -1,21 +1,24 @@
-import { List } from 'immutable';
+import { List } from "immutable";
 
 export default (
   state = {
-    filter: '',
-    sort: 'added-asc',
+    filter: "",
+    sort: "added-asc",
     upSelector: undefined,
     downSelector: undefined,
-    selectedSongs: List()
+    selectedSongs: List(),
+    firebaseLoaded: false
   },
   action
 ) => {
   switch (action.type) {
-    case 'SET_FILTER':
+    case "FIREBASE_LOADED":
+      return { ...state, firebaseLoaded: true };
+    case "SET_FILTER":
       return { ...state, filter: action.filter };
-    case 'SET_SORT':
+    case "SET_SORT":
       return { ...state, sort: action.sort };
-    case 'SET_SONG_SELECTION':
+    case "SET_SONG_SELECTION":
       return {
         ...state,
         upSelector: action.upSelector ? action.upSelector : state.upSelector,
@@ -24,7 +27,7 @@ export default (
           : state.downSelector,
         selectedSongs: action.selectedSongs
       };
-    case 'CLEAR_SELECTION':
+    case "CLEAR_SELECTION":
       return { ...state, upSelector: undefined, downSelector: undefined };
     default:
       return state;

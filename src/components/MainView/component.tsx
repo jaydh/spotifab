@@ -1,8 +1,6 @@
-import * as React from 'react';
-import { Redirect, Route, Switch } from 'react-router';
-import loader from '../../helpers/loader';
-
-const SongMain = loader(() => import('../SongMain'));
+import * as React from "react";
+import { Redirect, Route, Switch } from "react-router";
+import SongMain from "../SongMain";
 
 interface IProps {
   setAuthCode: (code) => void;
@@ -13,7 +11,7 @@ const toLibrary = () => <Redirect to="/library" />;
 class MainView extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    const code = this.getQueryVariable('code');
+    const code = this.getQueryVariable("code");
     if (code.length > 0) {
       this.props.setAuthCode(code);
     }
@@ -34,14 +32,14 @@ class MainView extends React.Component<IProps> {
 
   private getQueryVariable(variable) {
     const query = window.location.search.substring(1);
-    const vars = query.split('&');
+    const vars = query.split("&");
     for (const i of vars) {
-      const pair = i.split('=');
+      const pair = i.split("=");
       if (decodeURIComponent(pair[0]) === variable) {
         return decodeURIComponent(pair[1]);
       }
     }
-    return '';
+    return "";
   }
 }
 

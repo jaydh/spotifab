@@ -12,31 +12,31 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const node_fetch_1 = require("node-fetch");
 const config = {
-    apiKey: 'AIzaSyBiqbvG93Vd0tqHkNGZNg6VBHUC4onS3jE',
-    authDomain: 'spotifab-3379e.firebaseapp.com',
-    databaseURL: 'https://spotifab-3379e.firebaseio.com',
-    projectId: 'spotifab-3379e',
-    storageBucket: '',
-    messagingSenderId: '1045511818191'
+    apiKey: "AIzaSyBiqbvG93Vd0tqHkNGZNg6VBHUC4onS3jE",
+    authDomain: "spotifab-3379e.firebaseapp.com",
+    databaseURL: "https://spotifab-3379e.firebaseio.com",
+    projectId: "spotifab-3379e",
+    storageBucket: "",
+    messagingSenderId: "1045511818191"
 };
 admin.initializeApp(config);
 exports.getToken = functions.firestore
-    .document('tokens/{uid}')
+    .document("tokens/{uid}")
     .onCreate((change, context) => __awaiter(this, void 0, void 0, function* () {
     const code = change.data().auth_code;
     const host = change.data().host;
     const redirect_uri = host;
     const { id, secret } = yield (yield admin
         .firestore()
-        .collection('client')
-        .doc('apiKey')
+        .collection("client")
+        .doc("apiKey")
         .get()).data();
-    const json = yield (yield node_fetch_1.default('https://accounts.spotify.com/api/token', {
+    const json = yield (yield node_fetch_1.default("https://accounts.spotify.com/api/token", {
         body: `grant_type=authorization_code&client_id=${id}&client_secret=${secret}&code=${code}&redirect_uri=${redirect_uri}`,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Content-Type": "application/x-www-form-urlencoded"
         },
-        method: 'POST'
+        method: "POST"
     })).json();
     console.log(json, redirect_uri);
     return json.access_token
@@ -50,7 +50,7 @@ exports.getToken = functions.firestore
     return Promise.resolve();
 }));
 exports.refreshToken = functions.firestore
-    .document('tokens/{uid}/refetch')
+    .document("tokens/{uid}")
     .onWrite((change, context) => __awaiter(this, void 0, void 0, function* () {
     const oldFetch = change.before.data() ? change.before.data().refetch : null;
     const newFetch = change.after.data() ? change.after.data().refetch : null;
@@ -58,15 +58,15 @@ exports.refreshToken = functions.firestore
         const refresh_token = change.after.data().refresh_token;
         const { id, secret } = yield (yield admin
             .firestore()
-            .collection('client')
-            .doc('apiKey')
+            .collection("client")
+            .doc("apiKey")
             .get()).data();
-        const json = yield (yield node_fetch_1.default('https://accounts.spotify.com/api/token', {
+        const json = yield (yield node_fetch_1.default("https://accounts.spotify.com/api/token", {
             body: `grant_type=refresh_token&client_id=${id}&client_secret=${secret}&refresh_token=${refresh_token}`,
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                "Content-Type": "application/x-www-form-urlencoded"
             },
-            method: 'POST'
+            method: "POST"
         })).json();
         return json.access_token
             ? change.after.ref.set({

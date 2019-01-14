@@ -1,6 +1,5 @@
 import { Button, Fade } from "@material-ui/core";
 import * as React from "react";
-import { auth, provider } from "../../firebase";
 
 interface IProps {
   isAnon: boolean;
@@ -16,6 +15,8 @@ export default class Authenticat extends React.Component<IProps> {
     );
   }
   private signIn() {
-    auth.signInWithRedirect(provider);
+    const { auth } = (window as any).firebase;
+    const provider = new auth.GoogleAuthProvider();
+    auth().signInWithRedirect(provider);
   }
 }

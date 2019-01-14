@@ -33,6 +33,13 @@ const playerConfig = {
   storage: localForage,
   blacklist: ['playing', 'spotifyReady', 'youtubeReady']
 };
+
+const uiConfig = {
+  key: 'ui',
+  transforms: [immutableTransform()],
+  storage: localForage,
+  blacklist: ['firebaseLoaded']
+};
 const appReducer = combineReducers({
   userReducer,
   playlistReducer,
@@ -40,7 +47,7 @@ const appReducer = combineReducers({
   player: persistReducer(playerConfig, player),
   queue,
   token,
-  ui,
+  ui: persistReducer(uiConfig, ui),
   synced
 });
 const rootReducer = (state, action) => {

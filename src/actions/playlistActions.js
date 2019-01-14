@@ -1,10 +1,11 @@
 import { List } from 'immutable';
 import { parse } from 'date-fns';
-import { database, app } from '../firebase';
 import hash from 'string-hash';
 import { youtubeAPI } from '../../src/apiKeys';
 
 export const addUnifiedPlaylist = name => {
+  const database = window.firebase.firestore();
+
   return async (dispatch, getState) => {
     const tracks = getState().queue.queue;
     const batch = database.batch();
@@ -68,6 +69,7 @@ export const convertPlaylistToUnified = playlistId => {
         return t;
       })
     );
+    const database = window.firebase.firestore();
     const batch = database.batch();
     const id = hash(name).toString();
     const ref = database
@@ -144,6 +146,8 @@ export const fetchPlaylistsMenu = () => {
 };
 
 export const fetchUnifiedPlaylistMenu = () => {
+  const database = window.firebase.firestore();
+
   return (dispatch, getState) => {
     const ref = database
       .collection('userData')
@@ -207,6 +211,7 @@ export const fetchPlaylistSongs = (userId, playlistId) => {
 };
 
 export const fetchUnifiedSongs = (userId, playlistId) => {
+  const database = window.firebase.firestore();
   return async (dispatch, getState) => {
     dispatch(fetchPlaylistSongsPending());
     const ref = database
@@ -223,6 +228,8 @@ export const fetchUnifiedSongs = (userId, playlistId) => {
   };
 };
 export const deleteUnifiedPlaylist = id => {
+  const database = window.firebase.firestore();
+
   return async (dispatch, getState) => {
     dispatch({ type: 'DELETE_UNIFIED_PLAYLIST', id });
     const ref = database
@@ -294,6 +301,8 @@ export const fetchNew = () => {
 };
 
 export const createNewPlaylist = (name, description) => {
+  const database = window.firebase.firestore();
+
   return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     const userId = getState().userReducer.user.id;
