@@ -1,5 +1,4 @@
 import * as React from 'react';
-import './SongControls.css';
 
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';

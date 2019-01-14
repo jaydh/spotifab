@@ -7,24 +7,37 @@ import {
   IconButton,
   Toolbar,
   withStyles
-} from '@material-ui/core';
-import Clear from '@material-ui/icons/DeleteSweep';
-import MenuIcon from '@material-ui/icons/Menu';
-import Add from '@material-ui/icons/PlaylistAdd';
-import AddCheck from '@material-ui/icons/PlaylistAddCheck';
-import QueueIcon from '@material-ui/icons/QueueMusic';
-import * as React from 'react';
+} from "@material-ui/core";
+import {
+  DeleteSweep as Clear,
+  Menu as MenuIcon,
+  PlaylistAdd as Add,
+  PlaylistAddCheck as AddCheck,
+  QueueMusic as QueueIcon
+} from "@material-ui/icons";
+import * as React from "react";
+import * as Loadable from "react-loadable";
 
-import './SongListOptions.css';
+const HiddenLoad = () => <></>;
+const Queue = Loadable({
+  loader: () => import("../Queue"),
+  loading: HiddenLoad
+});
+const SideMenu = Loadable({
+  loader: () => import("../SideMenu"),
+  loading: HiddenLoad
+});
+const SongProgress = Loadable({
+  loader: () => import("../SongProgress"),
+  loading: HiddenLoad
+});
 
-import CurrentArt from '../CurrentArt';
-import Filter from '../Filter';
-import Queue from '../Queue';
-import SideMenu from '../SideMenu';
-import SongControls from '../SongControls';
-import SongProgress from '../SongProgress';
-import Sort from '../Sort';
-import Volume from '../VolumeControls';
+import Authenticate from "../Authenticate";
+import CurrentArt from "../CurrentArt";
+import Filter from "../Filter";
+import SongControls from "../SongControls";
+import Sort from "../Sort";
+import Volume from "../VolumeControls";
 
 interface IProps {
   pending: boolean;
@@ -45,6 +58,8 @@ interface IProps {
 interface IState {
   sideMenuOpen: boolean;
   queueOpen: boolean;
+  sideRender: boolean;
+  queueRender: boolean;
 }
 
 const drawerWidth = 600;
@@ -52,11 +67,18 @@ const drawerWidth = 600;
 class SongListOptions extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
-    this.state = { sideMenuOpen: false, queueOpen: false };
+    this.state = {
+      sideMenuOpen: false,
+      queueOpen: false,
+      sideRender: false,
+      queueRender: false
+    };
     this.handleSideOpen = this.handleSideOpen.bind(this);
     this.handleSideClose = this.handleSideClose.bind(this);
     this.handleQueueOpen = this.handleQueueOpen.bind(this);
     this.handleQueueClose = this.handleQueueClose.bind(this);
+    this.handleQueueMouseOver = this.handleQueueMouseOver.bind(this);
+    this.handleSideMouseOver = this.handleSideMouseOver.bind(this);
     this.convert = this.convert.bind(this);
   }
   public render() {
@@ -71,6 +93,7 @@ class SongListOptions extends React.Component<IProps, IState> {
       addSelected,
       clearSelection
     } = this.props;
+    const { sideRender, queueRender } = this.state;
     return (
       <>
         <AppBar position="relative" className={classes.appBar}>
@@ -87,10 +110,12 @@ class SongListOptions extends React.Component<IProps, IState> {
                     color="inherit"
                     aria-label="Open drawer"
                     onClick={this.handleSideOpen}
+                    onMouseOver={this.handleSideMouseOver}
                     className={classes.menuButton}
                     children={<MenuIcon />}
                   />
                 </Grid>
+                <Authenticate />
               </Grid>
               <Fade in={currentTrack}>
                 <Grid
@@ -140,6 +165,7 @@ class SongListOptions extends React.Component<IProps, IState> {
                       color="inherit"
                       aria-label="Open drawer"
                       onClick={this.handleQueueOpen}
+                      onMouseOver={this.handleQueueMouseOver}
                       className={classes.menuButton}
                       children={<QueueIcon />}
                     />
@@ -157,20 +183,34 @@ class SongListOptions extends React.Component<IProps, IState> {
             Convert to unified
           </button>
         )}
-        <SideMenu
-          open={this.state.sideMenuOpen}
-          handleClose={this.handleSideClose}
-        />
-        <Queue
-          open={this.state.queueOpen}
-          handleClose={this.handleQueueClose}
-        />
+        {sideRender && (
+          <SideMenu
+            open={this.state.sideMenuOpen}
+            handleClose={this.handleSideClose}
+          />
+        )}
+        {queueRender && (
+          <Queue
+            open={this.state.queueOpen}
+            handleClose={this.handleQueueClose}
+          />
+        )}
       </>
     );
   }
   private convert = name => () => {
     this.props.convertPlaylistToUnified(name);
   };
+
+  private handleQueueMouseOver() {
+    this.setState({ queueRender: true });
+    Queue.preload();
+  }
+
+  private handleSideMouseOver() {
+    this.setState({ sideRender: true });
+    SideMenu.preload();
+  }
 
   private handleSideOpen() {
     this.setState({ sideMenuOpen: true, queueOpen: false });
@@ -188,11 +228,11 @@ class SongListOptions extends React.Component<IProps, IState> {
 
 const styles = theme => ({
   root: {
-    display: 'flex'
+    display: "flex"
   },
   appBar: {
-    backgroundColor: '#82b1ff',
-    transition: theme.transitions.create(['margin', 'width'], {
+    backgroundColor: "#82b1ff",
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
@@ -200,7 +240,7 @@ const styles = theme => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     })
@@ -210,7 +250,7 @@ const styles = theme => ({
     marginRight: 20
   },
   hide: {
-    display: 'none'
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
@@ -220,23 +260,23 @@ const styles = theme => ({
     width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 8px',
+    display: "flex",
+    alignItems: "center",
+    padding: "0 8px",
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),

@@ -1,28 +1,21 @@
-import { Button, Grid } from '@material-ui/core';
-import * as firebase from 'firebase';
-import * as React from 'react';
-import { provider } from '../../firebase';
+import { Button, Fade } from "@material-ui/core";
+import * as React from "react";
+import { auth, provider } from "../../firebase";
 
-export default class Authenticat extends React.Component {
+interface IProps {
+  isAnon: boolean;
+}
+
+export default class Authenticat extends React.Component<IProps> {
   public render() {
+    const { isAnon } = this.props;
     return (
-      <Grid container={true} alignItems="center" justify="center">
+      <Fade in={isAnon}>
         <Button onClick={this.signIn}>Sign in </Button>
-        <Button onClick={this.signInAnonymously}>Sign in anonymously</Button>
-      </Grid>
+      </Fade>
     );
   }
   private signIn() {
-    firebase.auth().signInWithRedirect(provider);
-  }
-
-  private signInAnonymously() {
-    firebase
-      .auth()
-      .signInAnonymously()
-      .catch(error => {
-        // Handle Errors here.
-        // ...
-      });
+    auth.signInWithRedirect(provider);
   }
 }

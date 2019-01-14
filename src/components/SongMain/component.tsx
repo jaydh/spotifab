@@ -1,9 +1,7 @@
-import 'firebase/firestore';
-import * as React from 'react';
-import loader from '../../helpers/loader';
-import SongList from '../SongList';
-
-const MainBar = loader(() => import('../MainBar'));
+import * as React from "react";
+import loader from "../../helpers/loader";
+import MainBar from "../MainBar";
+const SongList = loader(() => import("../SongList"));
 
 interface IProps {
   fetchSongs: () => void;
@@ -14,7 +12,6 @@ interface IProps {
   fetchRecent: () => void;
   location: any;
   match: any;
-  enqueueSnackbar: (t, options?) => void;
   spotifyReady: boolean;
   youtubeReady: boolean;
 }
@@ -29,41 +26,19 @@ class SongMain extends React.Component<IProps, IState> {
     super(props);
     this.state = { playlistId: undefined, isUnified: undefined };
     this.handleFetch = this.handleFetch.bind(this);
-
-      }
+  }
   public componentDidMount() {
     this.handleFetch(this.props);
   }
   public componentDidUpdate(oldProps: IProps) {
     this.handleFetch(this.props, oldProps);
-    const { enqueueSnackbar } = this.props;
-    const options = {
-      anchorOrigin: {
-        vertical: 'bottom',
-        horizontal: 'right'
-      },
-      variant: 'success'
-    };
-    if (
-      oldProps.spotifyReady !== this.props.spotifyReady &&
-      this.props.spotifyReady
-    ) {
-      enqueueSnackbar('Spotify playback ready', options);
-    }
-    if (
-      oldProps.youtubeReady !== this.props.youtubeReady &&
-      this.props.youtubeReady
-    ) {
-      enqueueSnackbar('Youtube playback ready', options);
-    }
   }
 
   public render() {
-    console.log('here')
     return (
       <main id="page-wrap" className="main-view">
         <MainBar />
-        <SongList isLibrary={this.props.location.pathname === '/library'} />
+        <SongList isLibrary={this.props.location.pathname === "/library"} />
       </main>
     );
   }
@@ -79,19 +54,19 @@ class SongMain extends React.Component<IProps, IState> {
       fetchNew
     } = current;
     if (!prev || prev.location.pathname !== location.pathname) {
-      if (location.pathname === '/library') {
+      if (location.pathname === "/library") {
         fetchSongs();
         fetchYoutubeSongs();
-      } else if (match.params.type === 'spotify') {
+      } else if (match.params.type === "spotify") {
         fetchPlaylistSongs(match.params.owner, match.params.id);
         this.setState({ playlistId: match.params.id });
         this.setState({ isUnified: false });
-      } else if (match.params.type === 'unified') {
+      } else if (match.params.type === "unified") {
         this.setState({ isUnified: true });
         fetchUnifiedSongs(match.params.owner, match.params.id);
-      } else if (location.pathname === '/recent') {
+      } else if (location.pathname === "/recent") {
         fetchRecent();
-      } else if (location.pathname === '/new') {
+      } else if (location.pathname === "/new") {
         fetchNew();
       }
     }

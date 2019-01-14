@@ -13,7 +13,6 @@ import { auth } from '../../firebase';
 import AddYoutube from '../AddYoutube';
 import UserDetails from '../UserDetails';
 import UserPlaylists from '../UserPlaylists';
-import './SideMenu.css';
 
 interface IProps {
   classes: any;

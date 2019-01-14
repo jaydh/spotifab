@@ -1,11 +1,21 @@
 export const updateVolume = volume => {
-  return async dispatch => {
-    return window.player
-      .setVolume(volume / 100)
-      .then(() => window.ytPlayer.setVolume(volume))
+  return async (dispatch, getState) => {
+    const { player } = getState();
+    const { spotifyReady, youtubeReady } = player;
+    const newVolume = volume > 20 ? volume - 20 : volume;
+
+    return (spotifyReady
+      ? Promise.resolve(window.player.setVolume(newVolume / 100))
+      : Promise.resolve()
+    )
+      .then(
+        youtubeReady
+          ? Promise.resolve(window.ytPlayer.setVolume(newVolume))
+          : Promise.resolve()
+      )
       .then(() =>
         dispatch({
-          type: 'UPDATE_VOLUME',
+          type: "UPDATE_VOLUME",
           volume
         })
       );
@@ -21,7 +31,7 @@ export const toggleMute = () => {
       .then(() => window.ytPlayer.setVolume(muted ? volume : 0))
       .then(() =>
         dispatch({
-          type: 'TOGGLE_MUTE',
+          type: "TOGGLE_MUTE",
           volume
         })
       );

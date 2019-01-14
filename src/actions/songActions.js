@@ -1,8 +1,8 @@
-import { List } from 'immutable';
-import { youtubeAPI } from '../../src/apiKeys';
-import { database, app } from '../firebase';
-import { play } from './queueActions';
-import { parse, toSeconds } from 'iso8601-duration';
+import { List } from "immutable";
+import { youtubeAPI } from "../../src/apiKeys";
+import { database, app } from "../firebase";
+import { play } from "./queueActions";
+import { parse, toSeconds } from "iso8601-duration";
 
 // tslint:disable:variable-name
 
@@ -19,9 +19,9 @@ export const addYoutubeSong = t => {
       : null;
 
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('youtubeTracks')
+      .collection("youtubeTracks")
       .doc(id);
     await ref.set({
       name,
@@ -31,7 +31,7 @@ export const addYoutubeSong = t => {
     });
 
     dispatch({
-      type: 'ADD_YOUTUBE_TRACK',
+      type: "ADD_YOUTUBE_TRACK",
       id,
       name,
       added_at: new Date().getTime(),
@@ -45,9 +45,9 @@ export const fetchYoutubeSongs = () => {
     const user = getState().userReducer.firebaseUser;
     if (user) {
       const ref = database
-        .collection('userData')
+        .collection("userData")
         .doc(user.uid)
-        .collection('youtubeTracks');
+        .collection("youtubeTracks");
       const youtubeTracks = await ref.get().then(querySnapshot => {
         const data = [];
         querySnapshot.forEach(async doc => {
@@ -84,27 +84,27 @@ export const fetchYoutubeSongs = () => {
         });
         return data;
       });
-      return dispatch({ type: 'FETCH_YOUTUBE_TRACKS_SUCCESS', youtubeTracks });
+      return dispatch({ type: "FETCH_YOUTUBE_TRACKS_SUCCESS", youtubeTracks });
     }
   };
 };
 
 export const fetchSongsPending = () => {
   return {
-    type: 'FETCH_SONGS_PENDING'
+    type: "FETCH_SONGS_PENDING"
   };
 };
 
 export const fetchSongsSuccess = songs => {
   return {
     songs,
-    type: 'FETCH_SONGS_SUCCESS'
+    type: "FETCH_SONGS_SUCCESS"
   };
 };
 
 export const fetchSongsError = () => {
   return {
-    type: 'FETCH_SONGS_ERROR'
+    type: "FETCH_SONGS_ERROR"
   };
 };
 
@@ -119,7 +119,7 @@ export const fetchSongs = () => {
     while (next) {
       const request = new Request(next, {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       });
       const json = await (await fetch(request)).json();
@@ -152,20 +152,20 @@ export const fetchSongs = () => {
 
 export const searchSongsPending = () => {
   return {
-    type: 'SEARCH_SONGS_PENDING'
+    type: "SEARCH_SONGS_PENDING"
   };
 };
 
 export const searchSongsSuccess = songs => {
   return {
     songs,
-    type: 'SEARCH_SONGS_SUCCESS'
+    type: "SEARCH_SONGS_SUCCESS"
   };
 };
 
 export const searchSongsError = () => {
   return {
-    type: 'SEARCH_SONGS_ERROR'
+    type: "SEARCH_SONGS_ERROR"
   };
 };
 
@@ -175,8 +175,8 @@ export const searchSongs = (searchTerm, accessToken) => {
       `https://api.spotify.com/v1/search?q=${searchTerm}&type=track`,
       {
         headers: new Headers({
-          Accept: 'application/json',
-          Authorization: 'Bearer ' + accessToken
+          Accept: "application/json",
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -185,8 +185,8 @@ export const searchSongs = (searchTerm, accessToken) => {
 
     fetch(request)
       .then(res => {
-        if (res.statusText === 'Unauthorized') {
-          window.location.href = './';
+        if (res.statusText === "Unauthorized") {
+          window.location.href = "./";
         }
         return res.json();
       })
@@ -206,20 +206,20 @@ export const searchSongs = (searchTerm, accessToken) => {
 
 export const fetchRecentlyPlayedPending = () => {
   return {
-    type: 'FETCH_RECENTLY_PLAYED_PENDING'
+    type: "FETCH_RECENTLY_PLAYED_PENDING"
   };
 };
 
 export const fetchRecentlyPlayedSuccess = songs => {
   return {
     songs,
-    type: 'FETCH_RECENTLY_PLAYED_SUCCESS'
+    type: "FETCH_RECENTLY_PLAYED_SUCCESS"
   };
 };
 
 export const fetchRecentlyPlayedError = () => {
   return {
-    type: 'FETCH_RECENTLY_PLAYED_ERROR'
+    type: "FETCH_RECENTLY_PLAYED_ERROR"
   };
 };
 
@@ -230,7 +230,7 @@ export const fetchRecentlyPlayed = () => {
       `https://api.spotify.com/v1/me/player/recently-played`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -249,7 +249,7 @@ export const fetchRecentlyPlayed = () => {
 
 export const updateViewType = view => {
   return {
-    type: 'UPDATE_VIEW_TYPE',
+    type: "UPDATE_VIEW_TYPE",
     view
   };
 };
@@ -257,10 +257,12 @@ export const updateViewType = view => {
 export const seek = time => {
   return async (dispatch, getState) => {
     dispatch({
-      type: 'SEEK'
+      type: "SEEK"
     });
     const position = getState().queue.position;
     const track = getState().queue.queue.get(position).track;
+    console.log(time, track, time / 1000);
+
     if (!track) {
       window.ytPlayer.pauseVideo();
       const state = await window.player.getCurrentState();
@@ -277,15 +279,15 @@ export const addSpotifySong = track => {
   return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     await fetch(`https://api.spotify.com/v1/me/tracks`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify({
         ids: [track.id]
       }),
       headers: new Headers({
-        Authorization: 'Bearer ' + accessToken
+        Authorization: "Bearer " + accessToken
       })
     });
-    dispatch({ type: 'ADD_SONG_TO_LIBRARY', track, spotify: true });
+    dispatch({ type: "ADD_SONG_TO_LIBRARY", track, spotify: true });
   };
 };
 
@@ -293,15 +295,15 @@ export const removeSpotifySong = track => {
   return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     await fetch(`https://api.spotify.com/v1/me/tracks`, {
-      method: 'DELETE',
+      method: "DELETE",
       body: JSON.stringify({
         ids: [track.id]
       }),
       headers: new Headers({
-        Authorization: 'Bearer ' + accessToken
+        Authorization: "Bearer " + accessToken
       })
     });
-    dispatch({ type: 'REMOVE_SONG_FROM_LIBRARY', id });
+    dispatch({ type: "REMOVE_SONG_FROM_LIBRARY", id });
   };
 };
 
@@ -309,13 +311,13 @@ export const removeYoutubeSong = track => {
   return async (dispatch, getState) => {
     const id = track.id;
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('youtubeTracks')
+      .collection("youtubeTracks")
       .doc(id);
     await ref.delete();
     dispatch({
-      type: 'REMOVE_YOUTUBE_TRACK',
+      type: "REMOVE_YOUTUBE_TRACK",
       id
     });
   };

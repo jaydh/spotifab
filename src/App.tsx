@@ -1,8 +1,8 @@
-import { SnackbarProvider, withSnackbar } from 'notistack';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import './App.css';
-import MainView from './components/MainView';
+import { SnackbarProvider, withSnackbar } from "notistack";
+import * as React from "react";
+import { connect } from "react-redux";
+import "./App.css";
+import MainView from "./components/MainView";
 
 interface IProps {
   onReset: () => void;
@@ -19,38 +19,53 @@ class App extends React.Component<IProps> {
     super(props);
   }
 
+  public componentDidMount() {
+    const links = [
+      "https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js",
+      "https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js",
+      "https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js"
+    ];
+    links.forEach((t: string) => {
+      const script = document.createElement("script");
+      script.src = t;
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    });
+  }
+
   public componentDidUpdate(oldProps: IProps) {
     const { enqueueSnackbar } = this.props;
     const options = {
       anchorOrigin: {
-        vertical: 'bottom',
-        horizontal: 'right'
+        vertical: "bottom",
+        horizontal: "right"
       },
-      variant: 'success'
+      variant: "success"
     };
     if (
       oldProps.spotifyReady !== this.props.spotifyReady &&
       this.props.spotifyReady
     ) {
-      enqueueSnackbar('Spotify playback ready', options);
+      enqueueSnackbar("Spotify playback ready", options);
     }
     if (
       oldProps.youtubeReady !== this.props.youtubeReady &&
       this.props.youtubeReady
     ) {
-      enqueueSnackbar('Youtube playback ready', options);
+      enqueueSnackbar("Youtube playback ready", options);
     }
     if (
       oldProps.songsSynced !== this.props.songsSynced &&
       this.props.songsSynced
     ) {
-      enqueueSnackbar('Songs Fetched', options);
+      enqueueSnackbar("Songs Fetched", options);
     }
     if (
       oldProps.playlistsSynced !== this.props.playlistsSynced &&
       this.props.playlistsSynced
     ) {
-      enqueueSnackbar('Playlists synced', options);
+      enqueueSnackbar("Playlists synced", options);
     }
   }
   public render() {
@@ -76,7 +91,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    onReset: () => dispatch({ type: 'RESET' })
+    onReset: () => dispatch({ type: "RESET" })
   };
 };
 const Connected = connect(

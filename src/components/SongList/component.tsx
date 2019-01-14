@@ -1,8 +1,8 @@
-import { List as MaterialList } from '@material-ui/core';
-import { List } from 'immutable';
-import * as React from 'react';
-import { AutoSizer, List as VirtualList } from 'react-virtualized';
-import Song from '../Song';
+import { List as MaterialList } from "@material-ui/core";
+import { List } from "immutable";
+import * as React from "react";
+import { AutoSizer, List as VirtualList } from "react-virtualized";
+import Song from "../Song";
 
 interface IProps {
   currentTrack?: any;
@@ -61,6 +61,7 @@ class SongList extends React.Component<IProps, IState> {
               rowCount={this.props.songs.size}
               rowRenderer={this.rowRenderer}
               rowHeight={this.state.itemHeight}
+              overscanRowCounter={100}
               width={width}
               height={height}
             />
@@ -82,7 +83,7 @@ class SongList extends React.Component<IProps, IState> {
     return (
       <div
         key={key}
-        style={{ ...style, userSelect: 'none' }}
+        style={{ ...style, userSelect: "none" }}
         onMouseDown={this.handleClickDown(index)}
         onMouseUp={this.handleClickUp(index)}
       >

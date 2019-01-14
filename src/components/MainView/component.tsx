@@ -2,12 +2,9 @@ import * as React from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 import loader from '../../helpers/loader';
 
-const Authenticate = loader(() => import('../Authenticate'));
-const Services = loader(() => import('../Services'));
 const SongMain = loader(() => import('../SongMain'));
 
 interface IProps {
-  signedIn: boolean;
   setAuthCode: (code) => void;
 }
 
@@ -22,23 +19,15 @@ class MainView extends React.Component<IProps> {
     }
   }
   public render() {
-    const { signedIn } = this.props;
     return (
       <>
-        {signedIn ? (
-          <Switch>
-            <Route exact={true} path="/" component={toLibrary} />
-            <Route path="/library" component={SongMain} />
-            <Route path="/recent" component={SongMain} />
-            <Route path="/new" component={SongMain} />
-            <Route path="/playlist/:type/:owner/:id" component={SongMain} />
-            <Route path="/authenticate" component={Authenticate} />
-            <Route path="/authenticate/:auth" component={Authenticate} />
-            <Route path="/services" component={Services} />
-          </Switch>
-        ) : (
-          <Authenticate />
-        )}
+        <Switch>
+          <Route exact={true} path="/" component={toLibrary} />
+          <Route path="/library" component={SongMain} />
+          <Route path="/recent" component={SongMain} />
+          <Route path="/new" component={SongMain} />
+          <Route path="/playlist/:type/:owner/:id" component={SongMain} />
+        </Switch>
       </>
     );
   }

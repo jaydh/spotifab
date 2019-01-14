@@ -1,6 +1,5 @@
 import Avatar from '@material-ui/core/Avatar';
 import React from 'react';
-import './UserDetails.css';
 
 export default class UserDetails extends React.Component {
   componentDidMount() {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './UserPlaylists.css';
 import { NavLink } from 'react-router-dom';
 import { isTokenTimeValid } from '../../helpers/validateToken';
 import { ConnectedPlaylist } from './index';
