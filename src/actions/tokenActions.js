@@ -57,6 +57,8 @@ export const listenForToken = () => {
 };
 
 export const requestTokenRefresh = () => {
+  const database = window.firebase.firestore();
+
   return async (dispatch, getState) => {
     await database
       .collection("tokens")

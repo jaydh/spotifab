@@ -1,47 +1,54 @@
-import { combineReducers } from 'redux';
-import userReducer from './userReducer';
-import queue from './queue';
-import playlistReducer from './playlistReducer';
-import songsReducer from './songsReducer';
-import player from './player';
-import token from './token';
-import { persistReducer } from 'redux-persist';
-import immutableTransform from 'redux-persist-transform-immutable';
-import ui from './ui';
-import synced from './synced';
-import * as localForage from 'localforage';
+import { combineReducers } from "redux";
+import userReducer from "./userReducer";
+import queue from "./queue";
+import playlistReducer from "./playlistReducer";
+import songsReducer from "./songsReducer";
+import player from "./player";
+import token from "./token";
+import { persistReducer } from "redux-persist";
+import immutableTransform from "redux-persist-transform-immutable";
+import ui from "./ui";
+import synced from "./synced";
+import * as localForage from "localforage";
 
 localForage.config({
   driver: localForage.WEBSQL, // Force WebSQL; same as using setDriver()
-  name: 'myApp',
+  name: "myApp",
   version: 1.0,
   size: 4980736, // Size of database, in bytes. WebSQL-only for now.
-  storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
-  description: 'some description'
+  storeName: "keyvaluepairs", // Should be alphanumeric, with underscores.
+  description: "some description"
 });
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   transforms: [immutableTransform()],
   storage: localForage,
-  whitelist: ['queue', 'songsReducer', 'token', 'userReducer', 'ui']
+  whitelist: ["queue", "songsReducer", "token", "ui"]
+};
+
+const userConfig = {
+  key: "userReducer",
+  transforms: [immutableTransform()],
+  storage: localForage,
+  whitelist: ["enabledServices"]
 };
 
 const playerConfig = {
-  key: 'player',
+  key: "player",
   transforms: [immutableTransform()],
   storage: localForage,
-  blacklist: ['playing', 'spotifyReady', 'youtubeReady']
+  blacklist: ["playing", "spotifyReady", "youtubeReady"]
 };
 
 const uiConfig = {
-  key: 'ui',
+  key: "ui",
   transforms: [immutableTransform()],
   storage: localForage,
-  blacklist: ['firebaseLoaded']
+  blacklist: ["firebaseLoaded"]
 };
 const appReducer = combineReducers({
-  userReducer,
+  userReducer: persistReducer(userConfig, userReducer),
   playlistReducer,
   songsReducer,
   player: persistReducer(playerConfig, player),
@@ -51,7 +58,7 @@ const appReducer = combineReducers({
   synced
 });
 const rootReducer = (state, action) => {
-  if (action.type === 'RESET') {
+  if (action.type === "RESET") {
     state = undefined;
   }
   return appReducer(state, action);

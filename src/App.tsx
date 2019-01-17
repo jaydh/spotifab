@@ -106,9 +106,7 @@ const mapStateToProps = state => {
   return {
     signedIn: state.userReducer.signedIn,
     youtubeReady: state.player.youtubeReady,
-    spotifyReady: state.player.spotifyReady,
-    songsSynced: state.synced.songsSynced,
-    playlistsSynced: state.synced.playlistsSynced
+    spotifyReady: state.player.spotifyReady
   };
 };
 const mapDispatchToProps = dispatch => {

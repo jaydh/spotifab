@@ -11,6 +11,7 @@ export default () => {
       store.dispatch(listenForToken());
     } else {
       store.dispatch({ type: "RESET" });
+      console.log("d");
       firebase.auth().signInAnonymously();
     }
   });

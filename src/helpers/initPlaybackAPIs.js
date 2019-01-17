@@ -8,6 +8,9 @@ export const initYoutube = () => {
   if (youtube && !youtubeReady) {
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
+    tag.async = true;
+    tag.defer = true;
+
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     window.onYouTubeIframeAPIReady = () => {
@@ -55,6 +58,9 @@ export const initSpotify = () => {
   if (spotify && !spotifyReady) {
     const tag = document.createElement('script');
     tag.src = 'https://sdk.scdn.co/spotify-player.js';
+    tag.async = true;
+    tag.defer = true;
+
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -103,4 +109,3 @@ export const initSpotify = () => {
     };
   }
 };
-

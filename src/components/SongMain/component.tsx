@@ -13,6 +13,7 @@ interface IProps {
   location: any;
   match: any;
   firebaseLoaded: boolean;
+  signedIn: boolean;
 }
 
 interface IState {
@@ -29,15 +30,12 @@ class SongMain extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     if (this.props.firebaseLoaded) {
-      console.log("dd");
       this.handleFetch(this.props);
     }
   }
   public componentDidUpdate(oldProps: IProps) {
-    console.log("dass", this.props);
     if (this.props.firebaseLoaded) {
-      console.log("dd");
-      //    this.handleFetch(this.props, oldProps);
+      this.handleFetch(this.props, oldProps);
     }
   }
 
@@ -58,9 +56,14 @@ class SongMain extends React.Component<IProps, IState> {
       fetchSongs,
       fetchYoutubeSongs,
       fetchRecent,
-      fetchNew
+      fetchNew,
+      signedIn
     } = current;
-    if (!prev || prev.location.pathname !== location.pathname) {
+    if (
+      !prev ||
+      prev.location.pathname !== location.pathname ||
+      prev.signedIn !== signedIn
+    ) {
       if (location.pathname === "/library") {
         fetchSongs();
         fetchYoutubeSongs();
