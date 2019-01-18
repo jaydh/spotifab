@@ -1,7 +1,7 @@
-import * as React from "react";
-import loader from "../../helpers/loader";
-import MainBar from "../MainBar";
-const SongList = loader(() => import("../SongList"));
+import * as React from 'react';
+import loader from '../../helpers/loader';
+const MainBar = loader(() => import('../MainBar'));
+const SongList = loader(() => import('../SongList'));
 
 interface IProps {
   fetchSongs: () => void;
@@ -28,11 +28,6 @@ class SongMain extends React.Component<IProps, IState> {
     this.handleFetch = this.handleFetch.bind(this);
   }
 
-  public componentDidMount() {
-    if (this.props.firebaseLoaded) {
-      this.handleFetch(this.props);
-    }
-  }
   public componentDidUpdate(oldProps: IProps) {
     if (this.props.firebaseLoaded) {
       this.handleFetch(this.props, oldProps);
@@ -43,7 +38,7 @@ class SongMain extends React.Component<IProps, IState> {
     return (
       <main id="page-wrap" className="main-view">
         <MainBar />
-        <SongList isLibrary={this.props.location.pathname === "/library"} />
+        <SongList isLibrary={this.props.location.pathname === '/library'} />
       </main>
     );
   }
@@ -64,19 +59,19 @@ class SongMain extends React.Component<IProps, IState> {
       prev.location.pathname !== location.pathname ||
       prev.signedIn !== signedIn
     ) {
-      if (location.pathname === "/library") {
+      if (location.pathname === '/library') {
         fetchSongs();
         fetchYoutubeSongs();
-      } else if (match.params.type === "spotify") {
+      } else if (match.params.type === 'spotify') {
         fetchPlaylistSongs(match.params.owner, match.params.id);
         this.setState({ playlistId: match.params.id });
         this.setState({ isUnified: false });
-      } else if (match.params.type === "unified") {
+      } else if (match.params.type === 'unified') {
         this.setState({ isUnified: true });
         fetchUnifiedSongs(match.params.owner, match.params.id);
-      } else if (location.pathname === "/recent") {
+      } else if (location.pathname === '/recent') {
         fetchRecent();
-      } else if (location.pathname === "/new") {
+      } else if (location.pathname === '/new') {
         fetchNew();
       }
     }

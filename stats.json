@@ -1,0 +1,23 @@
+{
+  "errors": [
+    "Entry module not found: Error: Can't resolve './src' in '/home/jay/repos/bard'\nresolve './src' in '/home/jay/repos/bard'\n  using description file: /home/jay/repos/bard/package.json (relative path: .)\n    Field 'browser' doesn't contain a valid alias configuration\n    using description file: /home/jay/repos/bard/package.json (relative path: ./src)\n      no extension\n        Field 'browser' doesn't contain a valid alias configuration\n        /home/jay/repos/bard/src is not a file\n      .wasm\n        Field 'browser' doesn't contain a valid alias configuration\n        /home/jay/repos/bard/src.wasm doesn't exist\n      .mjs\n        Field 'browser' doesn't contain a valid alias configuration\n        /home/jay/repos/bard/src.mjs doesn't exist\n      .js\n        Field 'browser' doesn't contain a valid alias configuration\n        /home/jay/repos/bard/src.js doesn't exist\n      .json\n        Field 'browser' doesn't contain a valid alias configuration\n        /home/jay/repos/bard/src.json doesn't exist\n      as directory\n        existing directory\n          using path: /home/jay/repos/bard/src/index\n            using description file: /home/jay/repos/bard/package.json (relative path: ./src/index)\n              no extension\n                Field 'browser' doesn't contain a valid alias configuration\n                /home/jay/repos/bard/src/index doesn't exist\n              .wasm\n                Field 'browser' doesn't contain a valid alias configuration\n                /home/jay/repos/bard/src/index.wasm doesn't exist\n              .mjs\n                Field 'browser' doesn't contain a valid alias configuration\n                /home/jay/repos/bard/src/index.mjs doesn't exist\n              .js\n                Field 'browser' doesn't contain a valid alias configuration\n                /home/jay/repos/bard/src/index.js doesn't exist\n              .json\n                Field 'browser' doesn't contain a valid alias configuration\n                /home/jay/repos/bard/src/index.json doesn't exist"
+  ],
+  "warnings": [
+    "configuration\nThe 'mode' option has not been set, webpack will fallback to 'production' for this value. Set 'mode' option to 'development' or 'production' to enable defaults for each environment.\nYou can also set it to 'none' to disable any default behavior. Learn more: https://webpack.js.org/concepts/mode/"
+  ],
+  "version": "4.28.4",
+  "hash": "6d37f3ba2cab6c2cd916",
+  "time": 74,
+  "builtAt": 1547804137103,
+  "publicPath": "",
+  "outputPath": "/home/jay/repos/bard/dist",
+  "assetsByChunkName": {},
+  "assets": [],
+  "filteredAssets": 0,
+  "entrypoints": {},
+  "namedChunkGroups": {},
+  "chunks": [],
+  "modules": [],
+  "filteredModules": 0,
+  "children": []
+}

@@ -1,11 +1,10 @@
-import { SnackbarProvider, withSnackbar } from "notistack";
-import * as React from "react";
-import { connect } from "react-redux";
-import "./App.css";
-import firebase from "./firebase";
-import loader from "./helpers/loader";
+import { SnackbarProvider, withSnackbar } from 'notistack';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import './App.css';
+import MainView from './components/MainView';
+import firebase from './firebase';
 
-const MainView = loader(() => import("./components/MainView"));
 interface IProps {
   onReset: () => void;
   onFirebaseLoad: () => void;
@@ -31,34 +30,34 @@ class App extends React.Component<IProps> {
     const { enqueueSnackbar } = this.props;
     const options = {
       anchorOrigin: {
-        vertical: "bottom",
-        horizontal: "right"
+        vertical: 'bottom',
+        horizontal: 'right'
       },
-      variant: "success"
+      variant: 'success'
     };
     if (
       oldProps.spotifyReady !== this.props.spotifyReady &&
       this.props.spotifyReady
     ) {
-      enqueueSnackbar("Spotify playback ready", options);
+      enqueueSnackbar('Spotify playback ready', options);
     }
     if (
       oldProps.youtubeReady !== this.props.youtubeReady &&
       this.props.youtubeReady
     ) {
-      enqueueSnackbar("Youtube playback ready", options);
+      enqueueSnackbar('Youtube playback ready', options);
     }
     if (
       oldProps.songsSynced !== this.props.songsSynced &&
       this.props.songsSynced
     ) {
-      enqueueSnackbar("Songs Fetched", options);
+      enqueueSnackbar('Songs Fetched', options);
     }
     if (
       oldProps.playlistsSynced !== this.props.playlistsSynced &&
       this.props.playlistsSynced
     ) {
-      enqueueSnackbar("Playlists synced", options);
+      enqueueSnackbar('Playlists synced', options);
     }
   }
   public render() {
@@ -73,18 +72,18 @@ class App extends React.Component<IProps> {
   }
 
   private loadFirebase() {
-    const main = document.createElement("script");
-    main.src = "https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js";
+    const main = document.createElement('script');
+    main.src = 'https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js';
     main.async = true;
     main.defer = true;
     main.onload = () => {
       const links = [
-        "https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js",
-        "https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js"
+        'https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js',
+        'https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js'
       ];
       const promises = links.map((t: string) => {
         return new Promise((resolve: any, reject: any) => {
-          const script = document.createElement("script");
+          const script = document.createElement('script');
           script.src = t;
           script.async = true;
           script.defer = true;
@@ -111,8 +110,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    onFirebaseLoad: () => dispatch({ type: "FIREBASE_LOADED" }),
-    onReset: () => dispatch({ type: "RESET" })
+    onFirebaseLoad: () => dispatch({ type: 'FIREBASE_LOADED' }),
+    onReset: () => dispatch({ type: 'RESET' })
   };
 };
 const Connected = connect(
