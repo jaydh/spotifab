@@ -64,14 +64,15 @@ export default (
         queue: state.queue.push(action.song)
       };
     case 'SHUFFLE_QUEUE':
-      const shuffled = state.queue.isEmpty()
-        ? state.queue
-        : shuffle(state.queue.delete(state.position)).insert(
-            0,
-            state.queue.find(
-              t => t.track.id === state.queue.get(state.position).track.id
-            )
-          );
+      const shuffled =
+        state.queue.length === 0
+          ? state.queue
+          : shuffle(state.queue.delete(state.position)).insert(
+              0,
+              state.queue.find(
+                t => t.track.id === state.queue.get(state.position).track.id
+              )
+            );
       return { ...state, queue: shuffled, position: 0 };
     case 'INSERT_SONG_IN_QUEUE':
       return {

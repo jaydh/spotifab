@@ -8,16 +8,7 @@ import token from './token';
 import { persistReducer } from 'redux-persist';
 import ui from './ui';
 import synced from './synced';
-import * as storage from 'localforage';
-
-storage.config({
-  driver: storage.WEBSQL, // Force WebSQL; same as using setDriver()
-  name: 'bard',
-  version: 1.0,
-  size: 4980736, // Size of database, in bytes. WebSQL-only for now.
-  storeName: 'keyvaluepairs', // Should be alphanumeric, with underscores.
-  description: 'some description'
-});
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 
 const persistConfig = {
   key: 'root',
