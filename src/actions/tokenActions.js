@@ -27,7 +27,6 @@ export const setAuthCode = authCode => {
 
 export const listenForToken = () => {
   const database = window.firebase.firestore();
-
   return (dispatch, getState) => {
     initSpotify();
     database

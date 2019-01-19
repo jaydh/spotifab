@@ -1,21 +1,18 @@
-import SongList from './component';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import Queue from "./component";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
-  updatePosition,
-  play,
   shuffleQueue,
   toggleRepeat,
   removeSongFromQueue,
   clearSongQueue,
   insertSongInQueue
-} from '../../actions/queueActions';
-import { nextSong, prevSong, togglePlay } from '../../actions/songActions';
-import { addSongToLibrary } from '../../actions/userActions';
-import { addUnifiedPlaylist } from '../../actions/playlistActions';
+} from "../../actions/queueActions";
+import { addUnifiedPlaylist } from "../../actions/playlistActions";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   return {
+    open: state.ui.queueOpen,
     songs: state.queue.queue,
     position: state.queue.position,
     repeatOn: state.queue.repeat,
@@ -23,7 +20,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       shuffleQueue,
@@ -31,7 +28,8 @@ const mapDispatchToProps = dispatch => {
       clearSongQueue,
       addUnifiedPlaylist,
       removeSongFromQueue,
-      insertSongInQueue
+      insertSongInQueue,
+      onQueueClose: () => dispatch({ type: "CLOSE_QUEUE" })
     },
     dispatch
   );
@@ -39,4 +37,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SongList);
+)(Queue);

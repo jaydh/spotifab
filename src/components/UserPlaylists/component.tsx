@@ -1,21 +1,36 @@
-import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
-import { isTokenTimeValid } from '../../helpers/validateToken';
-import { ConnectedPlaylist } from './index';
-import { Button, Collapse } from '@material-ui/core';
-import Plus from '@material-ui/icons/Add';
-import Delete from '@material-ui/icons/Delete';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import More from '@material-ui/icons/MoreHoriz';
-import Minus from '@material-ui/icons/Remove';
-import Warning from '@material-ui/icons/Warning';
+import React, { Component } from "react";
+import { isTokenTimeValid } from "../../helpers/validateToken";
+import { ConnectedPlaylist } from "./index";
+import { Button, Collapse } from "@material-ui/core";
+import Plus from "@material-ui/icons/Add";
+import Delete from "@material-ui/icons/Delete";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import More from "@material-ui/icons/MoreHoriz";
+import Minus from "@material-ui/icons/Remove";
+import Warning from "@material-ui/icons/Warning";
 
-class UserPlaylists extends Component {
-  constructor(props) {
+interface IProps {
+  fetchPlaylistsMenu: () => void;
+  fetchUnifiedPlaylistMenu: () => void;
+  synced: boolean;
+  tokenTime: boolean;
+  history: any;
+  location: any;
+  playlistMenu: any;
+  unifiedMenu: any;
+  user: any;
+}
+
+interface IState {
+  showPlaylist: boolean;
+  selectedId?: any[];
+}
+
+class UserPlaylists extends Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       showPlaylist: true,
@@ -24,7 +39,7 @@ class UserPlaylists extends Component {
     this.toggleShowPlaylist = this.toggleShowPlaylist.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: IProps) {
     if (!this.props.synced && isTokenTimeValid(this.props.tokenTime)) {
       this.props.fetchPlaylistsMenu();
       this.props.fetchUnifiedPlaylistMenu();
@@ -33,11 +48,11 @@ class UserPlaylists extends Component {
 
   render() {
     const { showPlaylist } = this.state;
-    const isPlaylist = this.props.location.pathname.startsWith('/playlist');
+    const isPlaylist = this.props.location.pathname.startsWith("/playlist");
     return (
       <React.Fragment>
         <Button onClick={this.toggleShowPlaylist}>
-          <Typography variant="subheading">Playlists</Typography>{' '}
+          <Typography variant="subheading">Playlists</Typography>{" "}
           {this.state.showPlaylist ? <Minus /> : <Plus />}
         </Button>
         <Collapse in={showPlaylist}>
@@ -45,7 +60,7 @@ class UserPlaylists extends Component {
             {this.props.playlistMenu &&
               this.props.unifiedMenu
                 .concat(this.props.playlistMenu)
-                .map(playlist => (
+                .map((playlist: any) => (
                   <ConnectedPlaylist
                     key={playlist.id}
                     playlist={playlist}
@@ -61,10 +76,10 @@ class UserPlaylists extends Component {
     );
   }
 
-  handleSelect = playlist => event => {
+  handleSelect = (playlist: any) => (event: Event) => {
     this.setState({ selectedId: playlist.id });
     this.props.history.push(
-      `/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
+      `/playlist/${playlist.unified ? "unified" : "spotify"}/${
         playlist.owner.id
       }/${playlist.id}`
     );
@@ -75,8 +90,20 @@ class UserPlaylists extends Component {
   }
 }
 
-export class Playlist extends React.Component {
-  constructor(props) {
+interface IProps2 {
+  playlist: any;
+  selected: any;
+  selectHandler: any;
+  deleteUnifiedPlaylist: (id: string) => void;
+  unfollowPlaylist: (id: string) => void;
+}
+interface IState2 {
+  showMenu: boolean;
+  unfollowCount: number;
+}
+
+export class Playlist extends React.Component<IProps2, IState2> {
+  constructor(props: IProps2) {
     super(props);
     this.state = {
       showMenu: false,
@@ -89,7 +116,7 @@ export class Playlist extends React.Component {
     this.setState({ showMenu: !this.state.showMenu });
   }
 
-  handleUnfollow = playlist => () => {
+  handleUnfollow = (playlist: any) => () => {
     if (this.state.unfollowCount > 2) {
       playlist.unified
         ? this.props.deleteUnifiedPlaylist(playlist.id)
@@ -107,14 +134,14 @@ export class Playlist extends React.Component {
           {this.state.showMenu ? (
             <Button
               onClick={this.handleUnfollow(playlist)}
-              style={{ color: this.state.unfollowCount > 0 ? 'red' : '' }}
+              style={{ color: this.state.unfollowCount > 0 ? "red" : "" }}
             >
               {this.state.unfollowCount > 0 && this.state.unfollowCount < 3 ? (
                 <React.Fragment>
                   <Warning /> {4 - this.state.unfollowCount}
                 </React.Fragment>
               ) : (
-                ''
+                ""
               )}
               <Delete />
             </Button>

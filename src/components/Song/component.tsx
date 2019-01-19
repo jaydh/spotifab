@@ -6,24 +6,24 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   withStyles
-} from '@material-ui/core';
-import Delete from '@material-ui/icons/Delete';
-import Next from '@material-ui/icons/NavigateNext';
-import Play from '@material-ui/icons/PlayArrow';
-import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
-import { parse } from 'date-fns';
-import { Spotify, Youtube } from 'mdi-material-ui';
-import * as React from 'react';
-import './Song.css';
+} from "@material-ui/core";
+import Delete from "@material-ui/icons/Delete";
+import Next from "@material-ui/icons/NavigateNext";
+import Play from "@material-ui/icons/PlayArrow";
+import PlaylistAdd from "@material-ui/icons/PlaylistAdd";
+import { parse } from "date-fns";
+import { Spotify, Youtube } from "mdi-material-ui";
+import * as React from "react";
+import "./Song.css";
 
 interface IProps {
   index: number;
   song: any;
-  makeNewQueueAndPlay: (index) => void;
+  makeNewQueueAndPlay: (index: number) => void;
   selected: boolean;
   addSongToQueue: (song: string) => void;
-  removeSpotifySong: (song) => void;
-  removeYoutubeSong: (song) => void;
+  removeSpotifySong: (song: any) => void;
+  removeYoutubeSong: (song: any) => void;
   addToNext: () => void;
   sort: string;
   classes: any;
@@ -35,7 +35,7 @@ interface IState {
 }
 
 class Song extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       showOptions: false,
@@ -63,7 +63,7 @@ class Song extends React.Component<IProps, IState> {
         <ListItemIcon
           children={
             <Fade in={hovered}>
-              <Button onClick={makeNewQueueAndPlay}>
+              <Button>
                 <Play />
               </Button>
             </Fade>
@@ -95,10 +95,10 @@ class Song extends React.Component<IProps, IState> {
         />
         <ListItemText
           primary={song.track.name}
-          primaryTypographyProps={{ variant: 'subtitle1' }}
+          primaryTypographyProps={{ variant: "subtitle1" }}
           secondary={this.state.hovered ? detailString : sortString}
           secondaryTypographyProps={{
-            variant: 'body2'
+            variant: "body2"
           }}
         />
       </ListItem>
@@ -109,10 +109,10 @@ class Song extends React.Component<IProps, IState> {
       showOptions: !this.state.showOptions
     });
   }
-  private handleAdd = song => () => {
+  private handleAdd = (song: any) => () => {
     this.props.addSongToQueue(song);
   };
-  private handleRemove = song => () => {
+  private handleRemove = (song: any) => () => {
     if (song.youtube) {
       this.props.removeYoutubeSong(song.track);
     } else {
@@ -129,47 +129,47 @@ class Song extends React.Component<IProps, IState> {
 
   private getDetailString() {
     const { song, sort } = this.props;
-    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
+    const currentSort = sort.substring(0, this.props.sort.indexOf("-"));
 
     switch (currentSort) {
-      case 'artist':
+      case "artist":
         return (
           song.track.album &&
-          song.track.album.name + ' - ' + song.track.artists &&
+          song.track.album.name + " - " + song.track.artists &&
           song.track.artists[0].name
         );
-      case 'album':
+      case "album":
         return (
           song.track.artists &&
-          song.track.artists[0].name + ' - ' + song.track.album &&
+          song.track.artists[0].name + " - " + song.track.album &&
           song.track.album.name
         );
-      case 'added':
+      case "added":
         return (
           song.track.artists &&
-          song.track.artists[0].name + ' - ' + song.track.album &&
+          song.track.artists[0].name + " - " + song.track.album &&
           song.track.album.name +
-            ' - ' +
+            " - " +
             parse(song.added_at).toLocaleDateString()
         );
       default:
-        return '';
+        return "";
     }
   }
 
   private getSortString() {
     const { song, sort } = this.props;
-    const currentSort = sort.substring(0, this.props.sort.indexOf('-'));
+    const currentSort = sort.substring(0, this.props.sort.indexOf("-"));
 
     switch (currentSort) {
-      case 'artist':
+      case "artist":
         return song.track.artists && song.track.artists[0].name;
-      case 'album':
+      case "album":
         return song.track.album && song.track.album.name;
-      case 'added':
+      case "added":
         return parse(song.added_at).toLocaleDateString();
       default:
-        return '';
+        return "";
     }
   }
 }

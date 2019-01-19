@@ -1,8 +1,6 @@
-import { List } from 'immutable';
-import shuffle from 'immutable-shuffle';
 export default (
   state = {
-    queue: List(),
+    queue: [],
     repeat: true,
     position: 0
   },
@@ -21,7 +19,7 @@ export default (
     case 'CLEAR_QUEUE':
       return {
         ...state,
-        queue: List(),
+        queue: [],
         position: 0
       };
     case 'ADD_SONG_TO_NEXT':
@@ -89,3 +87,14 @@ export default (
       return state;
   }
 };
+
+function shuffle(a) {
+  var j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
+}

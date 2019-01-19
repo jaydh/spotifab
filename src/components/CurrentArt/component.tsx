@@ -5,10 +5,10 @@ import {
   Grid,
   Typography,
   withStyles
-} from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
-import * as React from 'react';
-import { initYoutube } from '../../helpers/initPlaybackAPIs';
+} from "@material-ui/core";
+import { ExpandMore } from "@material-ui/icons";
+import * as React from "react";
+import { initYoutube } from "../../helpers/initPlaybackAPIs";
 
 interface IProps {
   currentTrack: any;
@@ -32,10 +32,10 @@ class CurrentArt extends React.Component<IProps, IState> {
     this.toggleMaxYT = this.toggleMaxYT.bind(this);
     this.toggleExpand = this.toggleExpand.bind(this);
   }
-  public componentWillReceiveProps(nextProps) {
+  public componentWillReceiveProps(nextProps: IProps) {
     if (nextProps.currentTrack && !nextProps.currentTrack.youtube) {
       this.setState({ showYT: false });
-      document.getElementById('ytPlayer')!.style.display = 'none';
+      document.getElementById("ytPlayer")!.style.display = "none";
     }
   }
 
@@ -46,7 +46,7 @@ class CurrentArt extends React.Component<IProps, IState> {
   public render() {
     const { classes, currentTrack } = this.props;
     const { expanded } = this.state;
-    let image = '';
+    let image = "";
     if (currentTrack) {
       image = this.props.currentTrack.track.album
         ? this.props.currentTrack.track.album.images[1].url
@@ -68,13 +68,13 @@ class CurrentArt extends React.Component<IProps, IState> {
                   src={image}
                   className={classes.image}
                   style={{
-                    height: expanded ? '200px' : '24px',
-                    borderRadius: expanded ? '0%' : '10%'
+                    height: expanded ? "200px" : "24px",
+                    borderRadius: expanded ? "0%" : "10%"
                   }}
                 />
               )}
               <Typography className={classes.title} variant="subtitle2">
-                {currentTrack.track.name}{' '}
+                {currentTrack.track.name}{" "}
               </Typography>
               <Typography variant="body1">
                 {currentTrack.track.artists &&
@@ -90,11 +90,11 @@ class CurrentArt extends React.Component<IProps, IState> {
                 <div
                   id="ytPlayer"
                   style={{
-                    display: 'none',
-                    margin: 'auto',
-                    maxHeight: !this.state.maximizeYT ? '20px' : '200px',
-                    height: !this.state.maximizeYT ? 'auto' : '200px',
-                    maxWidth: !this.state.maximizeYT ? '20px' : '200px'
+                    display: "none",
+                    margin: "auto",
+                    maxHeight: !this.state.maximizeYT ? "20px" : "200px",
+                    height: !this.state.maximizeYT ? "auto" : "200px",
+                    maxWidth: !this.state.maximizeYT ? "20px" : "200px"
                   }}
                 />
               </>
@@ -106,9 +106,9 @@ class CurrentArt extends React.Component<IProps, IState> {
   }
 
   private toggleYoutube() {
-    document.getElementById('ytPlayer')!.style.display = this.state.showYT
-      ? 'none'
-      : 'flex';
+    document.getElementById("ytPlayer")!.style.display = this.state.showYT
+      ? "none"
+      : "flex";
     this.setState({ showYT: !this.state.showYT });
   }
 
@@ -121,8 +121,8 @@ class CurrentArt extends React.Component<IProps, IState> {
 }
 
 const styles = {
-  image: { transition: 'all 0.5s ease' },
-  title: { padding: '0 2em' },
+  image: { transition: "all 0.5s ease" },
+  title: { padding: "0 2em" },
   root: {}
 };
 export default withStyles(styles)(CurrentArt);

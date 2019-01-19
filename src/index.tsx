@@ -1,18 +1,14 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { persistStore } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
-import thunk from 'redux-thunk';
-import App from './App';
-import reducers from './reducers';
-import { unregister } from './registerServiceWorker';
-
-declare module 'redux' {
-  export type GenericStoreEnhancer = any;
-}
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { applyMiddleware, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import thunk from "redux-thunk";
+import App from "./App";
+import reducers from "./reducers";
+import { unregister } from "./registerServiceWorker";
 
 export const store = createStore(
   reducers,
@@ -26,7 +22,7 @@ ReactDOM.render(
       <App />
     </PersistGate>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 unregister();

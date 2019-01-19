@@ -1,10 +1,10 @@
-import * as React from "react";
+import * as React from 'react';
 
-import IconButton from "@material-ui/core/IconButton";
-import { withStyles } from "@material-ui/core/styles";
-import Mute from "@material-ui/icons/VolumeOff";
-import VolumeUp from "@material-ui/icons/VolumeUp";
-import Slider from "@material-ui/lab/Slider";
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
+import Mute from '@material-ui/icons/VolumeOff';
+import VolumeUp from '@material-ui/icons/VolumeUp';
+import Slider from '@material-ui/lab/Slider';
 
 interface IProps {
   classes: any;
@@ -39,14 +39,14 @@ class VolumeControls extends React.Component<IProps> {
       </div>
     );
   }
-  private updateVolume = (e, value) => {
+  private updateVolume = (e: any, value: number) => {
     this.props.updateVolume(value);
   };
 }
 
 const styles = {
-  root: { alignItems: "center", display: "flex", width: 80 },
-  slider: { padding: "20px 0px" }
+  root: { alignItems: 'center', display: 'flex', width: 80 },
+  slider: { padding: '20px 0px' }
 };
 
 export default withStyles(styles)(VolumeControls);

@@ -1,10 +1,9 @@
-import { Button, Collapse } from '@material-ui/core';
-import Settings from '@material-ui/icons/Settings';
-import { List } from 'immutable';
-import { Spotify, Youtube } from 'mdi-material-ui';
-import * as React from 'react';
-import { youtubeAPI } from '../../../src/apiKeys';
-import Services from '../Services';
+import { Button, Collapse } from "@material-ui/core";
+import Settings from "@material-ui/icons/Settings";
+import { Spotify, Youtube } from "mdi-material-ui";
+import * as React from "react";
+import { youtubeAPI } from "../../../src/apiKeys";
+import Services from "../Services";
 
 interface IProps {
   addYoutubeSong: (t: string) => void;
@@ -15,21 +14,21 @@ interface IState {
   value: string;
   show: boolean;
   showSpotify: boolean;
-  videos: List<any>;
-  spotifySongs: List<any>;
+  videos: any[];
+  spotifySongs: any[];
   showOptions: boolean;
 }
 
 export default class Filter extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       showOptions: false,
-      value: '',
+      value: "",
       show: false,
       showSpotify: false,
-      videos: List(),
-      spotifySongs: List()
+      videos: [],
+      spotifySongs: []
     };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -58,14 +57,14 @@ export default class Filter extends React.Component<IProps, IState> {
         {showSpotify && (
           <form onSubmit={this.onSpotifySubmit}>
             <input
-              placeholder={value === '' ? 'Spotify search' : value}
+              placeholder={value === "" ? "Spotify search" : value}
               onChange={this.handleChange}
             />
-            {!spotifySongs.isEmpty() && (
+            {spotifySongs.length !== 0 && (
               <div
                 style={{
-                  height: '400px',
-                  overflowY: 'auto'
+                  height: "400px",
+                  overflowY: "auto"
                 }}
               >
                 {spotifySongs.map(t => (
@@ -87,14 +86,14 @@ export default class Filter extends React.Component<IProps, IState> {
         {show && (
           <form onSubmit={this.onSubmit}>
             <input
-              placeholder={value === '' ? 'Youtube search' : value}
+              placeholder={value === "" ? "Youtube search" : value}
               onChange={this.handleChange}
             />
-            {!videos.isEmpty() && (
+            {videos.length !== 0 && (
               <div
                 style={{
-                  height: '400px',
-                  overflowY: 'auto'
+                  height: "400px",
+                  overflowY: "auto"
                 }}
               >
                 {videos.map(t => (
@@ -113,7 +112,7 @@ export default class Filter extends React.Component<IProps, IState> {
         <Button onClick={this.handleSettingsClick}>
           <Settings />
         </Button>
-        <Collapse in={showOptions} children={<Services />} />{' '}
+        <Collapse in={showOptions} children={<Services />} />{" "}
       </div>
     );
   }
@@ -142,7 +141,7 @@ export default class Filter extends React.Component<IProps, IState> {
       )}&part=snippet&maxResults=25&type=video`
     )) as any;
     const json = await res.json();
-    this.setState({ videos: List(json.items) });
+    this.setState({ videos: json.items });
   }
   private async onSpotifySubmit(e: any) {
     e.preventDefault();
@@ -153,19 +152,19 @@ export default class Filter extends React.Component<IProps, IState> {
       )}&type=track&limit=25`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     )) as any;
     const json = await res.json();
-    this.setState({ spotifySongs: List(json.tracks.items) });
+    this.setState({ spotifySongs: json.tracks.items });
   }
 
-  private handleAdd = snippet => () => {
+  private handleAdd = (snippet: any) => () => {
     this.props.addYoutubeSong(snippet);
     this.setState({ show: false });
   };
-  private handleSpotifyAdd = track => async () => {
+  private handleSpotifyAdd = (track: any) => async () => {
     this.props.addSpotifySong(track);
     this.setState({ showSpotify: false });
   };

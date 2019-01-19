@@ -1,63 +1,61 @@
-import { List } from 'immutable';
-
 export const updatePlayer = state => {
-  return { type: 'UPDATE_PLAYER' };
+  return { type: "UPDATE_PLAYER" };
 };
 
 export const toggleRepeat = () => {
   return {
-    type: 'TOGGLE_REPEAT'
+    type: "TOGGLE_REPEAT"
   };
 };
 
 export const updateCurrentTrack = track => {
   return {
-    type: 'UPDATE_CURRENT_TRACK',
+    type: "UPDATE_CURRENT_TRACK",
     track
   };
 };
 
 export const addSongToQueue = song => {
   return {
-    type: 'ADD_SONG_TO_QUEUE',
+    type: "ADD_SONG_TO_QUEUE",
     song
   };
 };
 
 export const makeNewQueue = songs => {
   return {
-    type: 'MAKE_NEW_QUEUE',
+    type: "MAKE_NEW_QUEUE",
     songs
   };
 };
 
 export const clearSongQueue = () => {
   return {
-    type: 'CLEAR_QUEUE'
+    type: "CLEAR_QUEUE"
   };
 };
 
 export const shuffleQueue = () => {
   return {
-    type: 'SHUFFLE_QUEUE'
+    type: "SHUFFLE_QUEUE"
   };
 };
 export const addSongToNext = song => {
   return {
-    type: 'ADD_SONG_TO_NEXT',
+    type: "ADD_SONG_TO_NEXT",
     song
   };
 };
 export const removeSongFromQueue = position => {
   return {
-    type: 'REMOVE_SONG_FROM_QUEUE',
+    type: "REMOVE_SONG_FROM_QUEUE",
     position
   };
 };
 
 export const insertSongInQueue = (track, position) => {
   return {
-    type: 'INSERT_SONG_IN_QUEUE',
+    type: "INSERT_SONG_IN_QUEUE",
     position,
     track
   };
@@ -65,7 +63,7 @@ export const insertSongInQueue = (track, position) => {
 
 export const updatePosition = position => {
   return {
-    type: 'UPDATE_POSITION',
+    type: "UPDATE_POSITION",
     position
   };
 };
@@ -80,10 +78,10 @@ const apiPlay = (
   }
 ) =>
   fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-    method: 'PUT',
+    method: "PUT",
     body: JSON.stringify({ uris: spotify_uri }),
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`
     }
   });
@@ -93,10 +91,10 @@ export const play = () => {
     const state = getState();
     const { player } = state;
     dispatch({
-      type: 'PLAY'
+      type: "PLAY"
     });
     const position = state.queue.position;
-    const song = state.queue.queue.get(position);
+    const song = state.queue.queue[position];
     if (player.spotifyReady) {
       await window.player.pause();
     }
@@ -114,7 +112,7 @@ export const play = () => {
 export const nextSong = () => {
   return async (dispatch, getState) => {
     dispatch({
-      type: 'NEXT_SONG'
+      type: "NEXT_SONG"
     });
     return dispatch(play());
   };
@@ -123,7 +121,7 @@ export const nextSong = () => {
 export const prevSong = () => {
   return async (dispatch, getState) => {
     dispatch({
-      type: 'PREV_SONG'
+      type: "PREV_SONG"
     });
     return dispatch(play());
   };
@@ -131,11 +129,11 @@ export const prevSong = () => {
 
 export const togglePlay = () => {
   return async (dispatch, getState) => {
-    const { spotifyPlayer, playing, ytPlayer } = getState().player;
+    const { playing } = getState().player;
     const position = getState().queue.position;
-    const song = getState().queue.queue.get(position);
+    const song = getState().queue.queue[position];
     dispatch({
-      type: 'TOGGLE_PLAY'
+      type: "TOGGLE_PLAY"
     });
     const state = song.youtube
       ? window.ytPlayer.getPlayerState()

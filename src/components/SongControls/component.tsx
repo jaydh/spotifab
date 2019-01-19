@@ -1,12 +1,12 @@
-import * as React from 'react';
+import * as React from "react";
 
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import Trash from '@material-ui/icons/Delete';
-import Forward from '@material-ui/icons/FastForward';
-import Rewind from '@material-ui/icons/FastRewind';
-import Pause from '@material-ui/icons/Pause';
-import Play from '@material-ui/icons/PlayArrow';
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Trash from "@material-ui/icons/Delete";
+import Forward from "@material-ui/icons/FastForward";
+import Rewind from "@material-ui/icons/FastRewind";
+import Pause from "@material-ui/icons/Pause";
+import Play from "@material-ui/icons/PlayArrow";
 
 interface IProps {
   nextSong: () => void;
@@ -18,7 +18,7 @@ interface IProps {
   prevTrack: any;
   ready: boolean;
   removeNext: () => void;
-  removeSongFromQueue: (index) => void;
+  removeSongFromQueue: (index: number) => void;
   nextTrackPosition: number;
   seek: (t: number) => void;
 }
@@ -90,11 +90,11 @@ class SongControls extends React.Component<IProps, IState> {
     this.props.removeSongFromQueue(this.props.nextTrackPosition);
   }
 
-  private toggleLeft = value => () => {
+  private toggleLeft = (value: boolean) => () => {
     this.setState({ showLeft: this.props.prevTrack && value });
   };
 
-  private toggleRight = value => () => {
+  private toggleRight = (value: boolean) => () => {
     this.setState({ showRight: this.props.nextTrack && value });
   };
 }

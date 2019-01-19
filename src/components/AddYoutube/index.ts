@@ -1,13 +1,13 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { addSpotifySong, addYoutubeSong } from '../../actions/songActions';
-import Component from './component';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { addSpotifySong, addYoutubeSong } from "../../actions/songActions";
+import Component from "./component";
 
-const mapState = state => {
+const mapState = (state: any) => {
   return { accessToken: state.token.token };
 };
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch: any) => {
   return bindActionCreators({ addYoutubeSong, addSpotifySong }, dispatch);
 };
 

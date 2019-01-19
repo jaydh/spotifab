@@ -1,22 +1,18 @@
-import { List } from 'immutable';
-import { isBefore, parse } from 'date-fns';
-
 const defaultState = {
   fetchSongsPending: true,
   songPlaying: false,
   timeElapsed: 0,
   songId: 0,
-  viewType: 'songs',
+  viewType: "songs",
   songPaused: true,
-  youtubeTracks: List(),
-  spotifyTracks: List(),
-  playlistSongs: List()
+  youtubeTracks: [],
+  spotifyTracks: [],
+  playlistSongs: []
 };
 
 export const songsReducer = (state = defaultState, action) => {
-  const now = new Date();
   switch (action.type) {
-    case 'ADD_SONG_TO_LIBRARY':
+    case "ADD_SONG_TO_LIBRARY":
       return {
         ...state,
         spotifyTracks: state.spotifyTracks.insert(0, {
@@ -24,7 +20,7 @@ export const songsReducer = (state = defaultState, action) => {
           track: action.track
         })
       };
-    case 'REMOVE_SONG_FROM_LIBRARY': {
+    case "REMOVE_SONG_FROM_LIBRARY": {
       const spotifyIndex = state.spotifyTracks.findIndex(
         t => t.track.id === action.id
       );
@@ -34,7 +30,7 @@ export const songsReducer = (state = defaultState, action) => {
         spotifyTracks: state.spotifyTracks.delete(spotifyIndex)
       };
     }
-    case 'REMOVE_YOUTUBE_TRACK': {
+    case "REMOVE_YOUTUBE_TRACK": {
       const youtubeIndex = state.youtubeTracks.findIndex(
         t => t.youbue && t.track.id === action.id
       );
@@ -44,115 +40,114 @@ export const songsReducer = (state = defaultState, action) => {
         youtubeTracks: state.youtubeTracks.delete(youtubeIndex)
       };
     }
-    case 'UPDATE_VIEW_TYPE':
+    case "UPDATE_VIEW_TYPE":
       return {
         ...state,
         viewType: action.view
       };
 
-    case 'FETCH_SONGS_PENDING':
+    case "FETCH_SONGS_PENDING":
       return {
         ...state,
         fetchSongsPending: true
       };
 
-    case 'FETCH_SONGS_SUCCESS':
+    case "FETCH_SONGS_SUCCESS":
       return {
         ...state,
-        spotifyTracks: action.songs.isEmpty()
-          ? state.spotifyTracks
-          : action.songs
+        spotifyTracks:
+          action.songs.length === 0 ? state.spotifyTracks : action.songs
       };
 
-    case 'FETCH_SONGS_ERROR':
+    case "FETCH_SONGS_ERROR":
       return {
         ...state
       };
 
-    case 'SEARCH_SONGS_PENDING':
+    case "SEARCH_SONGS_PENDING":
       return {
         ...state
       };
 
-    case 'SEARCH_SONGS_SUCCESS':
+    case "SEARCH_SONGS_SUCCESS":
       return {
         ...state,
-        spotifyTracks: List(action.songs),
-        viewType: 'search'
+        spotifyTracks: action.songs,
+        viewType: "search"
       };
 
-    case 'SEARCH_SONGS_ERROR':
+    case "SEARCH_SONGS_ERROR":
       return {
         ...state,
         searchSongsError: true,
         searchSongsPending: false
       };
 
-    case 'FETCH_RECENTLY_PLAYED_PENDING':
+    case "FETCH_RECENTLY_PLAYED_PENDING":
       return {
         ...state,
         fetchSongsPending: true
       };
 
-    case 'FETCH_RECENTLY_PLAYED_SUCCESS':
+    case "FETCH_RECENTLY_PLAYED_SUCCESS":
       return {
         ...state,
-        spotifyTracks: List(action.songs),
-        viewType: 'Recently Played',
+        spotifyTracks: action.songs,
+        viewType: "Recently Played",
         fetchSongsError: false,
         fetchSongsPending: false
       };
 
-    case 'FETCH_RECENTLY_PLAYED_ERROR':
+    case "FETCH_RECENTLY_PLAYED_ERROR":
       return {
         ...state,
         fetchSongsError: true,
         fetchSongsPending: false
       };
 
-    case 'FETCH_PLAYLIST_SONGS_PENDING':
+    case "FETCH_PLAYLIST_SONGS_PENDING":
       return {
         ...state,
         fetchPlaylistSongsPending: true
       };
 
-    case 'FETCH_PLAYLIST_SONGS_SUCCESS':
+    case "FETCH_PLAYLIST_SONGS_SUCCESS":
       return {
         ...state,
-        playlistSongs: List(action.songs),
+        playlistSongs: action.songs,
         fetchPlaylistSongsError: false,
         fetchPlaylistSongsPending: false
       };
 
-    case 'FETCH_PLAYLIST_SONGS_ERROR':
+    case "FETCH_PLAYLIST_SONGS_ERROR":
       return {
         ...state,
         fetchPlaylistSongsError: true,
         fetchPlaylistSongsPending: false
       };
 
-    case 'FETCH_ARTIST_SONGS_PENDING':
+    case "FETCH_ARTIST_SONGS_PENDING":
       return {
         ...state,
         fetchArtistSongsPending: true
       };
 
-    case 'FETCH_ARTIST_SONGS_SUCCESS':
+    case "FETCH_ARTIST_SONGS_SUCCESS":
       return {
         ...state,
         spotifyTracks: action.songs,
-        viewType: 'Artist',
+        viewType: "Artist",
         fetchArtistSongsError: false,
         fetchArtistSongsPending: false
       };
 
-    case 'FETCH_ARTIST_SONGS_ERROR':
+    case "FETCH_ARTIST_SONGS_ERROR":
       return {
         ...state,
         fetchArtistSongsError: true,
         fetchArtistSongsPending: false
       };
-    case 'ADD_YOUTUBE_TRACK': {
+    case "ADD_YOUTUBE_TRACK": {
       const track = {
         youtube: true,
         added_at: action.added_at,
@@ -169,11 +164,11 @@ export const songsReducer = (state = defaultState, action) => {
           : state.youtubeTracks.push(track)
       };
     }
-    case 'FETCH_YOUTUBE_TRACKS_SUCCESS': {
-      return { ...state, youtubeTracks: List(action.youtubeTracks) };
+    case "FETCH_YOUTUBE_TRACKS_SUCCESS": {
+      return { ...state, youtubeTracks: action.youtubeTracks };
     }
 
-    case 'PLAY':
+    case "PLAY":
       return {
         ...state
       };

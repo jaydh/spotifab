@@ -1,19 +1,18 @@
 import { connect } from 'react-redux';
 import Component from './Component';
+import { toggleService } from '../../actions/uiActions';
+import { bindActionCreators } from 'redux';
 const mapStateToProps = (state: any) => {
   return {
-    services: state.userReducer.enabledServices,
+    youtube: state.userReducer.youtubeEnabled,
+    spotify: state.userReducer.spotifyEnabled,
+    soundcloud: state.userReducer.soundcloudEnabled,
     spotifyValid: state.token.valid
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    onToggle: (t: string) => () =>
-      dispatch({ type: 'TOGGLE_SERVICE', service: t })
-  };
-};
-
+const mapDispatchToProps = (dispatch: any) =>
+  bindActionCreators({ toggleService }, dispatch);
 export default connect(
   mapStateToProps,
   mapDispatchToProps

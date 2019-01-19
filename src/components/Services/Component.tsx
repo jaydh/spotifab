@@ -4,21 +4,27 @@ import {
   FormGroup,
   Grid,
   Switch
-} from '@material-ui/core';
-import { Map } from 'immutable';
-import * as querystring from 'querystring';
-import * as React from 'react';
+} from "@material-ui/core";
+import * as querystring from "querystring";
+import * as React from "react";
 
 interface IProps {
-  services: Map<string, boolean>;
-  onToggle: (service: string) => () => void;
+  toggleService: (service: string) => void;
   spotifyValid: true;
+  youtube: boolean;
+  spotify: boolean;
+  soundcloud: boolean;
 }
 
 export default class Services extends React.Component<IProps> {
   public render() {
-    const { services, onToggle, spotifyValid } = this.props;
-    const { youtube, spotify, soundcloud } = services.toJS();
+    const {
+      youtube,
+      spotify,
+      soundcloud,
+      toggleService,
+      spotifyValid
+    } = this.props;
     return (
       <Grid container={true} justify="center" alignItems="center">
         <FormGroup row={true}>
@@ -28,7 +34,7 @@ export default class Services extends React.Component<IProps> {
                 <Switch
                   disabled={!spotifyValid}
                   checked={spotify}
-                  onChange={onToggle('spotify')}
+                  onChange={() => toggleService("spotify")}
                   value="spotify"
                   color="primary"
                 />
@@ -41,7 +47,7 @@ export default class Services extends React.Component<IProps> {
               control={
                 <Switch
                   checked={youtube}
-                  onChange={onToggle('youtube')}
+                  onChange={() => toggleService("youtube")}
                   value="youtube"
                   color="primary"
                 />
@@ -55,7 +61,7 @@ export default class Services extends React.Component<IProps> {
                 <Switch
                   disabled={true}
                   checked={soundcloud}
-                  onChange={onToggle('soundcloud')}
+                  onChange={() => toggleService("soundcloud")}
                   value="soundcloud"
                   color="primary"
                 />
@@ -72,14 +78,14 @@ export default class Services extends React.Component<IProps> {
   }
   private redirect() {
     const scopes =
-      'playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming';
-    const isDev = window.location.host.startsWith('local');
-    const callback = isDev ? 'http://localhost:3000/' : 'https://bard.live/';
+      "playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming";
+    const isDev = window.location.host.startsWith("local");
+    const callback = isDev ? "http://localhost:3000/" : "https://bard.live/";
     const url =
-      'https://accounts.spotify.com/authorize/?' +
+      "https://accounts.spotify.com/authorize/?" +
       querystring.stringify({
-        response_type: 'code',
-        client_id: '59a5654b5619409b93dab24d4efd4204',
+        response_type: "code",
+        client_id: "59a5654b5619409b93dab24d4efd4204",
         scope: scopes,
         redirect_uri: callback
       });

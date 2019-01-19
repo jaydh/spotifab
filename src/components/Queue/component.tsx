@@ -1,18 +1,18 @@
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
-import MaterialList from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Delete from '@material-ui/icons/Delete';
-import PlaylistAdd from '@material-ui/icons/PlaylistAdd';
-import Repeat from '@material-ui/icons/Repeat';
-import Shuffle from '@material-ui/icons/Shuffle';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import * as React from 'react';
-import QueueItem from '../QueueItem';
+import Divider from "@material-ui/core/Divider";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import MaterialList from "@material-ui/core/List";
+import { withStyles } from "@material-ui/core/styles";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Delete from "@material-ui/icons/Delete";
+import PlaylistAdd from "@material-ui/icons/PlaylistAdd";
+import Repeat from "@material-ui/icons/Repeat";
+import Shuffle from "@material-ui/icons/Shuffle";
+import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import * as React from "react";
+import QueueItem from "../QueueItem";
 
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const drawerWidth = 300;
 
@@ -20,7 +20,7 @@ interface IProps {
   position: number;
   songs: any;
   open: boolean;
-  handleClose: () => void;
+  onQueueClose: () => void;
   repeatOn: boolean;
   toggleRepeat: () => void;
   clearSongQueue: () => void;
@@ -38,12 +38,12 @@ interface IState {
 }
 
 class Queue extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       showPlaylist: false,
       itemHeight: 30,
-      newPlaylistName: ''
+      newPlaylistName: ""
     };
     this.handleSumbit = this.handleSumbit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -53,16 +53,16 @@ class Queue extends React.Component<IProps, IState> {
     this.togglePlaylistAdd = this.togglePlaylistAdd.bind(this);
   }
 
-  public componentDidUpdate(prevProps) {
+  public componentDidUpdate(prevProps: IProps) {
     if (this.props.position !== prevProps.position) {
       const current = document.getElementById(
         `queue-item-${this.props.position}`
       );
       if (current) {
         current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest'
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest"
         });
       }
     }
@@ -73,7 +73,7 @@ class Queue extends React.Component<IProps, IState> {
       classes,
       songs,
       open,
-      handleClose,
+      onQueueClose,
       repeatOn,
       toggleRepeat,
       clearSongQueue
@@ -86,7 +86,7 @@ class Queue extends React.Component<IProps, IState> {
         open={open}
       >
         <div className={classes.drawerHeader}>
-          <IconButton onClick={handleClose}>
+          <IconButton onClick={onQueueClose}>
             <ChevronRight />
           </IconButton>
           <ToggleButtonGroup>
@@ -124,16 +124,16 @@ class Queue extends React.Component<IProps, IState> {
 
         <Divider />
         <DragDropContext onDragEnd={this.handleDragStop}>
-          <Droppable droppableId={'queue-droppbale'}>
-            {(provided, snapshot) => (
+          <Droppable droppableId={"queue-droppbale"}>
+            {(provided: any, snapshot: any) => (
               <div
                 className="queue"
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
                 <MaterialList>
-                  {songs.map((song, index) =>
-                    this.rowRenderer(song, index, 'queue-song' + index)
+                  {songs.map((song: any, index: number) =>
+                    this.rowRenderer(song, index, "queue-song" + index)
                   )}
                 </MaterialList>
               </div>
@@ -143,10 +143,10 @@ class Queue extends React.Component<IProps, IState> {
       </Drawer>
     );
   }
-  private rowRenderer(song, index, key) {
+  private rowRenderer(song: any, index: number, key: any) {
     return (
       <Draggable draggableId={`draggable-${index}`} index={index} key={key}>
-        {(provid, snaps) => (
+        {(provid: any, snaps: any) => (
           <div
             ref={provid.innerRef}
             {...provid.draggableProps}
@@ -159,11 +159,11 @@ class Queue extends React.Component<IProps, IState> {
     );
   }
 
-  private handleSumbit(e) {
+  private handleSumbit(e: any) {
     e.preventDefault();
     this.props.addUnifiedPlaylist(this.state.newPlaylistName);
   }
-  private handleChange(e) {
+  private handleChange(e: any) {
     e.preventDefault();
     this.setState({ newPlaylistName: e.target.value });
   }
@@ -172,7 +172,7 @@ class Queue extends React.Component<IProps, IState> {
     this.props.shuffleQueue();
   }
 
-  private handleDragStop(result) {
+  private handleDragStop(result: any) {
     if (!result.destination) {
       return;
     }
@@ -184,13 +184,13 @@ class Queue extends React.Component<IProps, IState> {
     this.setState({ showPlaylist: !this.state.showPlaylist });
   }
 }
-const styles = theme => ({
+const styles = (theme: any) => ({
   menuButton: {
     marginLeft: 12,
     marginRight: 20
   },
   hide: {
-    display: 'none'
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
@@ -200,23 +200,23 @@ const styles = theme => ({
     width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 8px',
+    display: "flex",
+    alignItems: "center",
+    padding: "0 8px",
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),

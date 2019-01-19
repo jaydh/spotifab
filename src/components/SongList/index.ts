@@ -1,8 +1,7 @@
-import { isBefore, parse } from 'date-fns';
-import * as Fuse from 'fuse.js';
-import { List } from 'immutable';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { isBefore, parse } from "date-fns";
+import Fuse from "fuse.js";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   addSongToQueue,
   clearSongQueue,
@@ -10,29 +9,29 @@ import {
   makeNewQueue,
   play,
   shuffleQueue
-} from '../../actions/queueActions';
-import { setSongSelection } from '../../actions/uiActions';
-import { addSongToLibrary } from '../../actions/userActions';
-import SongList from './component';
+} from "../../actions/queueActions";
+import { setSongSelection } from "../../actions/uiActions";
+import { addSongToLibrary } from "../../actions/userActions";
+import SongList from "./component";
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: any, ownProps: any) => {
   const options = {
     threshold: 0.3,
     keys: [
-      { name: 'track.artists.name', weight: 0.5 },
-      { name: 'track.album.name', weight: 0.3 },
-      { name: 'track.name', weight: 1 }
+      { name: "track.artists.name", weight: 0.5 },
+      { name: "track.album.name", weight: 0.3 },
+      { name: "track.name", weight: 1 }
     ]
   };
   const library = (ownProps.isLibrary
     ? state.songsReducer.spotifyTracks.concat(state.songsReducer.youtubeTracks)
     : state.songsReducer.playlistSongs
-  ).sort((a, b) => sortBy(state.ui.sort, a, b));
-  const fuse = new Fuse(library.toJS(), options);
+  ).sort((a: any, b: any) => sortBy(state.ui.sort, a, b));
+  const fuse = new Fuse(library, options);
   const filter = state.ui.filter;
   return {
-    currentTrack: state.queue.queue.get(state.queue.position),
-    songs: filter.length > 0 ? List(fuse.search(state.ui.filter)) : library,
+    currentTrack: state.queue.queue[state.queue.position],
+    songs: filter.length > 0 ? fuse.search(state.ui.filter) : library,
     songId: state.songsReducer.songId,
     sort: state.ui.sort,
     upSelector: state.ui.upSelector,
@@ -40,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       addSongToLibrary,
@@ -60,21 +59,21 @@ export default connect(
   mapDispatchToProps
 )(SongList);
 
-const sortBy = (sort, a, b) => {
+const sortBy = (sort: string, a: any, b: any) => {
   switch (sort) {
-    case 'added-asc':
+    case "added-asc":
       return isBefore(parse(a.added_at), parse(b.added_at)) ? 1 : -1;
-    case 'added-desc':
+    case "added-desc":
       return isBefore(parse(a.added_at), parse(b.added_at)) ? -1 : 1;
-    case 'name-asc':
+    case "name-asc":
       return a.track.name
         .toLowerCase()
         .localeCompare(b.track.name.toLowerCase());
-    case 'name-desc':
+    case "name-desc":
       return b.track.name
         .toLowerCase()
         .localeCompare(a.track.name.toLowerCase());
-    case 'artist-asc':
+    case "artist-asc":
       if (!a.track.artists) {
         return -1;
       }
@@ -84,7 +83,7 @@ const sortBy = (sort, a, b) => {
       return a.track.artists[0].name
         .toLowerCase()
         .localeCompare(b.track.artists[0].name.toLowerCase());
-    case 'artist-desc':
+    case "artist-desc":
       if (!a.track.artists) {
         return -1;
       }
@@ -94,7 +93,7 @@ const sortBy = (sort, a, b) => {
       b.track.artists[0].name
         .toLowerCase()
         .localeCompare(a.track.artists[0].name.toLowerCase());
-    case 'album-asc':
+    case "album-asc":
       if (!a.track.album) {
         return -1;
       }
@@ -104,7 +103,7 @@ const sortBy = (sort, a, b) => {
       return a.track.album.name
         .toLowerCase()
         .localeCompare(b.track.album.name.toLowerCase());
-    case 'album-desc':
+    case "album-desc":
       if (!a.track.album) {
         return -1;
       }

@@ -9,14 +9,14 @@ import {
 import { addSongToLibrary } from '../../actions/userActions';
 import Component from './component';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   return {
     songSize: state.queue.queue.size,
-    position: state.queue.position,
+    position: state.queue.position
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       addSongToLibrary,

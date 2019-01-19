@@ -1,14 +1,14 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { bindActionCreators } from 'redux';
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { bindActionCreators } from "redux";
 import {
   fetchNew,
   fetchPlaylistSongs,
   fetchRecent,
   fetchUnifiedSongs
-} from '../../actions/playlistActions';
-import { fetchSongs, fetchYoutubeSongs } from '../../actions/songActions';
-import Component from './component';
+} from "../../actions/playlistActions";
+import { fetchSongs, fetchYoutubeSongs } from "../../actions/songActions";
+import Component from "./component";
 
 const mapState = (state: any) => {
   return {
@@ -18,7 +18,7 @@ const mapState = (state: any) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       fetchSongs,
@@ -32,7 +32,9 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatchToProps
-)(withRouter(Component));
+export default withRouter(
+  connect(
+    mapState,
+    mapDispatchToProps
+  )(Component)
+);

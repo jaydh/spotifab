@@ -1,17 +1,26 @@
-import { List } from "immutable";
-
 export default (
   state = {
     filter: "",
     sort: "added-asc",
     upSelector: undefined,
     downSelector: undefined,
-    selectedSongs: List(),
-    firebaseLoaded: false
+    selectedSongs: [],
+    firebaseLoaded: false,
+    sideMenuOpen: false,
+    queueOpen: false
   },
-  action
+  action: any
 ) => {
   switch (action.type) {
+    case "OPEN_SIDE_MENU":
+      return { ...state, sideMenuOpen: true, queueOpen: false };
+    case "CLOSE_SIDE_MENU":
+      return { ...state, sideMenuOpen: false };
+    case "OPEN_QUEUE": {
+      return { ...state, queueOpen: true, sideMenuOpen: false };
+    }
+    case "CLOSE_QUEUE":
+      return { ...state, queueOpen: false };
     case "FIREBASE_LOADED":
       return { ...state, firebaseLoaded: true };
     case "SET_FILTER":

@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 
-import Button from '@material-ui/core/Button';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Play from '@material-ui/icons/PlayCircleOutline';
+import Button from "@material-ui/core/Button";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Play from "@material-ui/icons/PlayCircleOutline";
 
 interface IProps {
   itemHeight: number;
@@ -11,14 +11,14 @@ interface IProps {
   index: number;
   key: string;
   style: any;
-  updatePosition: (index) => void;
-  removeSongFromQueue: (index) => void;
-  insertSongInQueue: (song, newPosition) => void;
+  updatePosition: (index: number) => void;
+  removeSongFromQueue: (index: number) => void;
+  insertSongInQueue: (song: any, newPosition: number) => void;
   position: number;
   play: () => void;
 }
 export default class QueueItem extends React.Component<IProps> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
@@ -28,10 +28,10 @@ export default class QueueItem extends React.Component<IProps> {
     return (
       <ListItem
         style={{
-          width: '300px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          width: "300px",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis"
         }}
       >
         <Button
@@ -43,7 +43,7 @@ export default class QueueItem extends React.Component<IProps> {
         </Button>
         <ListItemText
           primary={song.track.name}
-          primaryTypographyProps={{ variant: 'body1' }}
+          primaryTypographyProps={{ variant: "body1" }}
         />
         <div className="song-buttons">
           <button className="btn" onClick={this.handleRemove}>

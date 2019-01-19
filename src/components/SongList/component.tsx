@@ -1,19 +1,18 @@
-import { List as MaterialList } from "@material-ui/core";
-import { List } from "immutable";
-import * as React from "react";
-import { AutoSizer, List as VirtualList } from "react-virtualized";
-import Song from "../Song";
+import { List as MaterialList } from '@material-ui/core';
+import * as React from 'react';
+import { AutoSizer, List as VirtualList } from 'react-virtualized';
+import Song from '../Song';
 
 interface IProps {
   currentTrack?: any;
-  songs: List<any>;
-  makeNewQueue: (songs: List<any>) => void;
-  addSongToQueue: (song) => void;
+  songs: any[];
+  makeNewQueue: (songs: any[]) => void;
+  addSongToQueue: (song: any) => void;
   play: () => void;
   upSelector?: number;
   downSelector?: number;
   setSongSelection: (
-    data: { up?: number; down?: number; selectedSongs?: List<any> }
+    data: { up?: number; down?: number; selectedSongs?: any[] }
   ) => void;
   sort: string;
 }
@@ -23,7 +22,7 @@ interface IState {
   itemHeight: number;
 }
 class SongList extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       itemHeight: 50,
@@ -54,11 +53,11 @@ class SongList extends React.Component<IProps, IState> {
   public render() {
     return (
       <AutoSizer>
-        {({ height, width }) => (
+        {({ height, width }: any) => (
           <MaterialList style={{ height, width }}>
             <VirtualList
-              ref={ref => (this.refs = ref)}
-              rowCount={this.props.songs.size}
+              ref={(ref: any) => (this.refs = ref)}
+              rowCount={this.props.songs.length}
               rowRenderer={this.rowRenderer}
               rowHeight={this.state.itemHeight}
               overscanRowCounter={100}
@@ -70,10 +69,10 @@ class SongList extends React.Component<IProps, IState> {
       </AutoSizer>
     );
   }
-  private rowRenderer(options) {
+  private rowRenderer(options: any) {
     const { index, key, style } = options;
     const { currentTrack, upSelector, downSelector, songs } = this.props;
-    const song = songs.get(index);
+    const song = songs[index];
     const selected =
       (currentTrack && currentTrack.id === song.track.id) ||
       (upSelector &&
@@ -83,7 +82,7 @@ class SongList extends React.Component<IProps, IState> {
     return (
       <div
         key={key}
-        style={{ ...style, userSelect: "none" }}
+        style={{ ...style, userSelect: 'none' }}
         onMouseDown={this.handleClickDown(index)}
         onMouseUp={this.handleClickUp(index)}
       >
@@ -97,13 +96,13 @@ class SongList extends React.Component<IProps, IState> {
     );
   }
 
-  private handleClickDown = index => () => {
+  private handleClickDown = (index: number) => () => {
     this.clearSelection();
     this.setState({
       mouseDownIndex: index
     });
   };
-  private handleClickUp = index => () => {
+  private handleClickUp = (index: number) => () => {
     this.setState({
       mouseUpIndex: index
     });
@@ -115,20 +114,20 @@ class SongList extends React.Component<IProps, IState> {
     }
   };
 
-  private updateSelection = (down, up) => {
+  private updateSelection = (down: number, up: number) => {
     {
       const { songs } = this.props;
-      const selectedSongs = songs.slice(down, up).toList();
+      const selectedSongs = songs.slice(down, up);
       this.props.setSongSelection({ down, up, selectedSongs });
     }
   };
 
-  private makeNewQueue(i, j) {
-    const end = i < j ? j : this.props.songs.size;
-    const songs = this.props.songs.slice(i, end + 1).toList();
+  private makeNewQueue(i: number, j: number) {
+    const end = i < j ? j : this.props.songs.length;
+    const songs = this.props.songs.slice(i, end + 1);
     this.props.makeNewQueue(songs);
   }
-  private makeNewQueueAndPlay = index => () => {
+  private makeNewQueueAndPlay = (index: number) => () => {
     this.makeNewQueue(
       index,
       this.props.upSelector ? this.props.upSelector : index + 100
@@ -137,10 +136,11 @@ class SongList extends React.Component<IProps, IState> {
   };
 
   private addSelectedToQueue() {
-    const selected = this.props.songs
-      .slice(this.props.upSelector, this.props.downSelector)
-      .toList();
-    selected.map(t => this.props.addSongToQueue(t));
+    const selected = this.props.songs.slice(
+      this.props.upSelector,
+      this.props.downSelector
+    );
+    selected.map((t: any) => this.props.addSongToQueue(t));
   }
 
   private clearSelection() {

@@ -1,19 +1,14 @@
-import { SnackbarProvider, withSnackbar } from 'notistack';
-import * as React from 'react';
-import { connect } from 'react-redux';
-import './App.css';
-import MainView from './components/MainView';
-import firebase from './firebase';
+import { SnackbarProvider } from "notistack";
+import * as React from "react";
+import { connect } from "react-redux";
+import "./App.css";
+import MainView from "./components/MainView";
+import firebase from "./firebase";
 
 interface IProps {
   onReset: () => void;
   onFirebaseLoad: () => void;
   signedIn: () => void;
-  enqueueSnackbar: (t, options?) => void;
-  spotifyReady: boolean;
-  youtubeReady: boolean;
-  songsSynced: boolean;
-  playlistsSynced: boolean;
 }
 
 class App extends React.Component<IProps> {
@@ -25,65 +20,32 @@ class App extends React.Component<IProps> {
   public componentDidMount() {
     this.loadFirebase();
   }
-
-  public componentDidUpdate(oldProps: IProps) {
-    const { enqueueSnackbar } = this.props;
-    const options = {
-      anchorOrigin: {
-        vertical: 'bottom',
-        horizontal: 'right'
-      },
-      variant: 'success'
-    };
-    if (
-      oldProps.spotifyReady !== this.props.spotifyReady &&
-      this.props.spotifyReady
-    ) {
-      enqueueSnackbar('Spotify playback ready', options);
-    }
-    if (
-      oldProps.youtubeReady !== this.props.youtubeReady &&
-      this.props.youtubeReady
-    ) {
-      enqueueSnackbar('Youtube playback ready', options);
-    }
-    if (
-      oldProps.songsSynced !== this.props.songsSynced &&
-      this.props.songsSynced
-    ) {
-      enqueueSnackbar('Songs Fetched', options);
-    }
-    if (
-      oldProps.playlistsSynced !== this.props.playlistsSynced &&
-      this.props.playlistsSynced
-    ) {
-      enqueueSnackbar('Playlists synced', options);
-    }
-  }
   public render() {
     return (
-      <div id="app-container">
-        <MainView />
-      </div>
+      <SnackbarProvider maxSnack={5}>
+        <div id="app-container">
+          <MainView />
+        </div>
+      </SnackbarProvider>
     );
   }
-  public componentDidCatch(error, info) {
+  public componentDidCatch(error: any, info: any) {
     this.props.onReset();
   }
 
   private loadFirebase() {
-    const main = document.createElement('script');
-    main.src = 'https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js';
+    const main = document.createElement("script");
+    main.src = "https://www.gstatic.com/firebasejs/5.7.2/firebase-app.js";
     main.async = true;
     main.defer = true;
     main.onload = () => {
       const links = [
-        'https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js',
-        'https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js'
+        "https://www.gstatic.com/firebasejs/5.7.2/firebase-auth.js",
+        "https://www.gstatic.com/firebasejs/5.7.2/firebase-firestore.js"
       ];
       const promises = links.map((t: string) => {
         return new Promise((resolve: any, reject: any) => {
-          const script = document.createElement('script');
+          const script = document.createElement("script");
           script.src = t;
           script.async = true;
           script.defer = true;
@@ -101,28 +63,21 @@ class App extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   return {
     signedIn: state.userReducer.signedIn,
     youtubeReady: state.player.youtubeReady,
     spotifyReady: state.player.spotifyReady
   };
 };
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
-    onFirebaseLoad: () => dispatch({ type: 'FIREBASE_LOADED' }),
-    onReset: () => dispatch({ type: 'RESET' })
+    onFirebaseLoad: () => dispatch({ type: "FIREBASE_LOADED" }),
+    onReset: () => dispatch({ type: "RESET" })
   };
 };
-const Connected = connect(
+
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App);
-
-const Main = withSnackbar(Connected);
-
-export default () => (
-  <SnackbarProvider maxSnack={5}>
-    <Main />
-  </SnackbarProvider>
-);

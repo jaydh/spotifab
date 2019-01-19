@@ -16,7 +16,7 @@ import {
   QueueMusic as QueueIcon
 } from "@material-ui/icons";
 import * as React from "react";
-import * as Loadable from "react-loadable";
+import Loadable from "react-loadable";
 
 const HiddenLoad = () => <></>;
 const Queue = Loadable({
@@ -53,11 +53,11 @@ interface IProps {
   classes: any;
   currentTrack: any;
   selection: boolean;
+  onSideOpen: () => void;
+  onQueueOpen: () => void;
 }
 
 interface IState {
-  sideMenuOpen: boolean;
-  queueOpen: boolean;
   sideRender: boolean;
   queueRender: boolean;
 }
@@ -65,18 +65,14 @@ interface IState {
 const drawerWidth = 600;
 
 class MainBar extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      sideMenuOpen: false,
-      queueOpen: false,
       sideRender: false,
       queueRender: false
     };
     this.handleSideOpen = this.handleSideOpen.bind(this);
-    this.handleSideClose = this.handleSideClose.bind(this);
     this.handleQueueOpen = this.handleQueueOpen.bind(this);
-    this.handleQueueClose = this.handleQueueClose.bind(this);
     this.handleQueueMouseOver = this.handleQueueMouseOver.bind(this);
     this.handleSideMouseOver = this.handleSideMouseOver.bind(this);
     this.convert = this.convert.bind(this);
@@ -183,22 +179,12 @@ class MainBar extends React.Component<IProps, IState> {
             Convert to unified
           </button>
         )}
-        {sideRender && (
-          <SideMenu
-            open={this.state.sideMenuOpen}
-            handleClose={this.handleSideClose}
-          />
-        )}
-        {queueRender && (
-          <Queue
-            open={this.state.queueOpen}
-            handleClose={this.handleQueueClose}
-          />
-        )}
+        {sideRender && <SideMenu />}
+        {queueRender && <Queue />}
       </>
     );
   }
-  private convert = name => () => {
+  private convert = (name: string) => () => {
     this.props.convertPlaylistToUnified(name);
   };
 
@@ -213,20 +199,14 @@ class MainBar extends React.Component<IProps, IState> {
   }
 
   private handleSideOpen() {
-    this.setState({ sideMenuOpen: true, queueOpen: false });
-  }
-  private handleSideClose() {
-    this.setState({ sideMenuOpen: false });
+    this.props.onSideOpen();
   }
   private handleQueueOpen() {
-    this.setState({ queueOpen: true, sideMenuOpen: false });
-  }
-  private handleQueueClose() {
-    this.setState({ queueOpen: false });
+    this.props.onQueueOpen();
   }
 }
 
-const styles = theme => ({
+const styles = (theme: any) => ({
   root: {
     display: "flex"
   },

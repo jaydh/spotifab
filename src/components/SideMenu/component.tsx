@@ -6,23 +6,22 @@ import {
   Tab,
   Tabs,
   withStyles
-} from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import * as React from 'react';
-import AddYoutube from '../AddYoutube';
-import UserDetails from '../UserDetails';
-import UserPlaylists from '../UserPlaylists';
+} from "@material-ui/core";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import * as React from "react";
+import AddYoutube from "../AddYoutube";
+import UserDetails from "../UserDetails";
+import UserPlaylists from "../UserPlaylists";
 
 interface IProps {
   classes: any;
   open: boolean;
-  handleClose: () => void;
+  onSideClose: () => void;
   location: any;
   history: any;
 }
 
 interface IState {
-  open: boolean;
   tabValue: string;
 }
 
@@ -30,17 +29,16 @@ class SideMenu extends React.Component<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
     this.state = {
-      open: false,
       tabValue: props.location.pathname.substring(1)
     };
     this.handleHistoryPush = this.handleHistoryPush.bind(this);
   }
   public render() {
-    const { classes, open, handleClose, location } = this.props;
+    const { classes, open, onSideClose, location } = this.props;
     const { tabValue } = this.state;
     const path = location.pathname.substring(1);
     const useTab =
-      path === 'library' || path === 'new' || path === 'recent' ? true : false;
+      path === "library" || path === "new" || path === "recent" ? true : false;
     return (
       <Drawer
         className={classes.drawer}
@@ -53,7 +51,7 @@ class SideMenu extends React.Component<IProps, IState> {
       >
         <div className={classes.drawerHeader}>
           <UserDetails />
-          <IconButton onClick={handleClose}>
+          <IconButton onClick={onSideClose}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
@@ -64,22 +62,22 @@ class SideMenu extends React.Component<IProps, IState> {
           value={useTab ? tabValue : false}
           indicatorColor="primary"
           textColor="primary"
-          fullWidth={true}
+          variant="fullWidth"
         >
           <Tab
             value="library"
             label="Library"
-            onClick={this.handleHistoryPush('/library')}
+            onClick={this.handleHistoryPush("/library")}
           />
           <Tab
             value="recent"
             label="Recently Played"
-            onClick={this.handleHistoryPush('/recent')}
+            onClick={this.handleHistoryPush("/recent")}
           />
           <Tab
             value="new"
             label="New Ablums"
-            onClick={this.handleHistoryPush('/new')}
+            onClick={this.handleHistoryPush("/new")}
           />
         </Tabs>
 
@@ -103,12 +101,12 @@ class SideMenu extends React.Component<IProps, IState> {
 
 const drawerWidth = 500;
 
-const styles = theme => ({
+const styles = (theme: any) => ({
   root: {
-    display: 'flex'
+    display: "flex"
   },
   appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
@@ -116,7 +114,7 @@ const styles = theme => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     })
@@ -126,7 +124,7 @@ const styles = theme => ({
     marginRight: 20
   },
   hide: {
-    display: 'none'
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
@@ -136,23 +134,23 @@ const styles = theme => ({
     width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 8px',
+    display: "flex",
+    alignItems: "center",
+    padding: "0 8px",
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),

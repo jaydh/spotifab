@@ -19,7 +19,7 @@ interface IProps {
 }
 
 export default class SongProgress extends React.Component<IProps, IState> {
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       position: 0,

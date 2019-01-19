@@ -1,7 +1,6 @@
-import { List } from 'immutable';
-import { parse } from 'date-fns';
-import hash from 'string-hash';
-import { youtubeAPI } from '../../src/apiKeys';
+import { parse } from "date-fns";
+import hash from "string-hash";
+import { youtubeAPI } from "../../src/apiKeys";
 
 export const addUnifiedPlaylist = name => {
   const database = window.firebase.firestore();
@@ -11,7 +10,7 @@ export const addUnifiedPlaylist = name => {
     const batch = database.batch();
     const id = hash(name).toString();
     dispatch({
-      type: 'ADD_UNIFIED_PLAYLIST',
+      type: "ADD_UNIFIED_PLAYLIST",
       name,
       id,
       owner: { id: getState().userReducer.firebaseUser.uid },
@@ -19,9 +18,9 @@ export const addUnifiedPlaylist = name => {
     });
 
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('playlists')
+      .collection("playlists")
       .doc(id);
 
     batch.set(ref, {
@@ -30,7 +29,7 @@ export const addUnifiedPlaylist = name => {
       owner: { id: getState().userReducer.firebaseUser.uid }
     });
     tracks.forEach(t => {
-      batch.set(ref.collection('tracks').doc(t.track.id), t);
+      batch.set(ref.collection("tracks").doc(t.track.id), t);
     });
     return batch.commit();
   };
@@ -47,11 +46,11 @@ export const convertPlaylistToUnified = playlistId => {
         if (t.is_local) {
           const res = await fetch(
             `https://www.googleapis.com/youtube/v3/search?key=${youtubeAPI}&q=${encodeURIComponent(
-              (t.track.name ? t.track.name : '') +
-                ' ' +
-                (t.track.artists.name ? t.track.artists.name : '') +
-                ' ' +
-                (t.track.album.name ? t.track.album.name : '')
+              (t.track.name ? t.track.name : "") +
+                " " +
+                (t.track.artists.name ? t.track.artists.name : "") +
+                " " +
+                (t.track.album.name ? t.track.album.name : "")
             )}&part=snippet&maxResults=1&type=video`
           );
           const json = await res.json();
@@ -73,9 +72,9 @@ export const convertPlaylistToUnified = playlistId => {
     const batch = database.batch();
     const id = hash(name).toString();
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('playlists')
+      .collection("playlists")
       .doc(id);
 
     batch.set(ref, {
@@ -85,11 +84,11 @@ export const convertPlaylistToUnified = playlistId => {
     });
     tracks.forEach(t => {
       console.log(t);
-      batch.set(ref.collection('tracks').doc(t.track.id), t);
+      batch.set(ref.collection("tracks").doc(t.track.id), t);
     });
     return batch.commit().then(() =>
       dispatch({
-        type: 'ADD_UNIFIED_PLAYLIST',
+        type: "ADD_UNIFIED_PLAYLIST",
         name,
         id,
         owner: { id: getState().userReducer.firebaseUser.uid },
@@ -101,27 +100,27 @@ export const convertPlaylistToUnified = playlistId => {
 
 export const fetchPlaylistMenuPending = () => {
   return {
-    type: 'FETCH_PLAYLIST_MENU_PENDING'
+    type: "FETCH_PLAYLIST_MENU_PENDING"
   };
 };
 
 export const fetchPlaylistMenuSuccess = playlists => {
   return {
     playlists,
-    type: 'FETCH_PLAYLIST_MENU_SUCCESS'
+    type: "FETCH_PLAYLIST_MENU_SUCCESS"
   };
 };
 
 export const fetchPlaylistMenuError = () => {
   return {
-    type: 'FETCH_PLAYLIST_MENU_ERROR'
+    type: "FETCH_PLAYLIST_MENU_ERROR"
   };
 };
 
 export const addPlaylistItem = playlist => {
   return {
     playlist,
-    type: 'ADD_PLAYLIST_ITEM'
+    type: "ADD_PLAYLIST_ITEM"
   };
 };
 
@@ -132,7 +131,7 @@ export const fetchPlaylistsMenu = () => {
 
     const res = await (await fetch(`https://api.spotify.com/v1/me/playlists`, {
       headers: new Headers({
-        Authorization: 'Bearer ' + accessToken
+        Authorization: "Bearer " + accessToken
       })
     })).json();
     dispatch(
@@ -150,9 +149,9 @@ export const fetchUnifiedPlaylistMenu = () => {
 
   return (dispatch, getState) => {
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('playlists');
+      .collection("playlists");
     return ref.get().then(query => {
       const playlists = [];
       query.forEach(doc =>
@@ -163,27 +162,27 @@ export const fetchUnifiedPlaylistMenu = () => {
           unified: true
         })
       );
-      dispatch({ type: 'FETCH_UNIFIED_PLAYLIST_MENU', playlists });
+      dispatch({ type: "FETCH_UNIFIED_PLAYLIST_MENU", playlists });
     });
   };
 };
 
 export const fetchPlaylistSongsPending = () => {
   return {
-    type: 'FETCH_PLAYLIST_SONGS_PENDING'
+    type: "FETCH_PLAYLIST_SONGS_PENDING"
   };
 };
 
 export const fetchPlaylistSongsSuccess = songs => {
   return {
     songs,
-    type: 'FETCH_PLAYLIST_SONGS_SUCCESS'
+    type: "FETCH_PLAYLIST_SONGS_SUCCESS"
   };
 };
 
 export const fetchPlaylistSongsError = () => {
   return {
-    type: 'FETCH_PLAYLIST_SONGS_ERROR'
+    type: "FETCH_PLAYLIST_SONGS_ERROR"
   };
 };
 
@@ -195,7 +194,7 @@ export const fetchPlaylistSongs = (userId, playlistId) => {
       `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -215,11 +214,11 @@ export const fetchUnifiedSongs = (userId, playlistId) => {
   return async (dispatch, getState) => {
     dispatch(fetchPlaylistSongsPending());
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('playlists')
+      .collection("playlists")
       .doc(playlistId)
-      .collection('tracks');
+      .collection("tracks");
     return ref.get().then(query => {
       const tracks = [];
       query.forEach(doc => tracks.push(doc.data()));
@@ -231,11 +230,11 @@ export const deleteUnifiedPlaylist = id => {
   const database = window.firebase.firestore();
 
   return async (dispatch, getState) => {
-    dispatch({ type: 'DELETE_UNIFIED_PLAYLIST', id });
+    dispatch({ type: "DELETE_UNIFIED_PLAYLIST", id });
     const ref = database
-      .collection('userData')
+      .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)
-      .collection('playlists')
+      .collection("playlists")
       .doc(id);
     return ref.delete();
   };
@@ -249,7 +248,7 @@ export const fetchRecent = () => {
       `https://api.spotify.com/v1/me/player/recently-played?limit=50`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -272,7 +271,7 @@ export const fetchNew = () => {
       `https://api.spotify.com/v1/browse/new-releases?country=US&limit=20`,
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     )).json();
@@ -282,7 +281,7 @@ export const fetchNew = () => {
           `https://api.spotify.com/v1/albums/${t.id}/tracks`,
           {
             headers: new Headers({
-              Authorization: 'Bearer ' + accessToken
+              Authorization: "Bearer " + accessToken
             })
           }
         )).json();
@@ -301,43 +300,41 @@ export const fetchNew = () => {
 };
 
 export const createNewPlaylist = (name, description) => {
-  const database = window.firebase.firestore();
-
   return async (dispatch, getState) => {
     const accessToken = getState().token.token;
     const userId = getState().userReducer.user.id;
     const trackURIs = getState().queue.queue.map(t => t.track.uri);
     await fetch(`https://api.spotify.com/v1/users/${userId}/playlists/`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
         name,
         description,
         public: true
       }),
       headers: new Headers({
-        Authorization: 'Bearer ' + accessToken
+        Authorization: "Bearer " + accessToken
       })
     });
     const playlists = (await (await fetch(
-      'https://api.spotify.com/v1/me/playlists',
+      "https://api.spotify.com/v1/me/playlists",
       {
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     )).json()).items;
-    const newPlaylist = List(playlists).filter(t => t.name === name);
+    const newPlaylist = playlists.filter(t => t.name === name);
     await fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists/${
         newPlaylist.get(0).id
       }/tracks`,
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           uris: trackURIs
         }),
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );
@@ -352,9 +349,9 @@ export const unfollowPlaylist = id => {
     await fetch(
       `https://api.spotify.com/v1/users/${userId}/playlists/${id}/followers`,
       {
-        method: 'DELETE',
+        method: "DELETE",
         headers: new Headers({
-          Authorization: 'Bearer ' + accessToken
+          Authorization: "Bearer " + accessToken
         })
       }
     );

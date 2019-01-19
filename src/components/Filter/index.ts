@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { setFilter } from '../../actions/uiActions';
 import Filter from './component';
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch: any) => {
   return bindActionCreators({ setFilter }, dispatch);
 };
 

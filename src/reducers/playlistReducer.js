@@ -1,10 +1,9 @@
-import { List } from 'immutable';
 export const playlistReducer = (
-  state = { unifiedMenu: List(), playlistMenu: List() },
+  state = { unifiedMenu: [], playlistMenu: [] },
   action
 ) => {
   switch (action.type) {
-    case 'ADD_UNIFIED_PLAYLIST':
+    case "ADD_UNIFIED_PLAYLIST":
       return {
         ...state,
         unifiedMenu: state.unifiedMenu.push({
@@ -15,33 +14,33 @@ export const playlistReducer = (
           unified: true
         })
       };
-    case 'FETCH_PLAYLIST_MENU_PENDING':
+    case "FETCH_PLAYLIST_MENU_PENDING":
       return {
         ...state,
         fetchPlaylistPending: true
       };
 
-    case 'FETCH_PLAYLIST_MENU_SUCCESS':
+    case "FETCH_PLAYLIST_MENU_SUCCESS":
       return {
         ...state,
-        playlistMenu: List(action.playlists),
-        playlists: List(action.playlists),
+        playlistMenu: action.playlists,
+        playlists: action.playlists,
         fetchPlaylistError: false,
         fetchPlaylistPending: false
       };
-    case 'FETCH_UNIFIED_PLAYLIST_MENU':
+    case "FETCH_UNIFIED_PLAYLIST_MENU":
       return {
         ...state,
-        unifiedMenu: List(action.playlists)
+        unifiedMenu: action.playlists
       };
 
-    case 'ADD_PLAYLIST_ITEM':
+    case "ADD_PLAYLIST_ITEM":
       return {
         ...state,
         playlists: [...state.playlists, action.playlist]
       };
 
-    case 'DELETE_UNIFIED_PLAYLIST':
+    case "DELETE_UNIFIED_PLAYLIST":
       return {
         ...state,
         unifiedMenu: state.unifiedMenu.delete(

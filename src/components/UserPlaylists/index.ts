@@ -1,15 +1,15 @@
-import UserPlaylists, { Playlist } from './component';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import UserPlaylists, { Playlist } from "./component";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   deleteUnifiedPlaylist,
   fetchPlaylistsMenu,
   fetchUnifiedPlaylistMenu,
   unfollowPlaylist
-} from '../../actions/playlistActions';
-import { withRouter } from 'react-router';
+} from "../../actions/playlistActions";
+import { withRouter } from "react-router";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   return {
     user: state.userReducer.user,
     playlistMenu: state.playlistReducer.playlistMenu,
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
       fetchUnifiedPlaylistMenu,
@@ -28,7 +28,7 @@ const mapDispatchToProps = dispatch => {
     dispatch
   );
 };
-const mapDispatchToProps2 = dispatch => {
+const mapDispatchToProps2 = (dispatch: any) => {
   return bindActionCreators(
     {
       unfollowPlaylist,
@@ -38,10 +38,12 @@ const mapDispatchToProps2 = dispatch => {
   );
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(UserPlaylists));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(UserPlaylists)
+);
 
 export const ConnectedPlaylist = connect(
   null,

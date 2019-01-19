@@ -1,5 +1,3 @@
-import { fromJS } from 'immutable';
-
 interface IServices {
   spotify: boolean;
   youtube: boolean;
@@ -8,22 +6,22 @@ interface IServices {
 export const userReducer = (
   state = {
     signedIn: false,
-    enabledServices: fromJS({
-      spotify: false,
-      youtube: true,
-      soundcloud: false
-    } as IServices).toMap(),
+    spotifyEnabled: false,
+    youtubeEnabled: true,
+    soundcloud: false,
     spotifySignedIn: false
   },
-  action
+  action: any
 ) => {
   switch (action.type) {
     case 'TOGGLE_SERVICE':
-      const draft = state.enabledServices;
-      return {
-        ...state,
-        enabledServices: draft.set(action.service, !draft.get(action.service))
-      };
+      if (action.service === 'youtube') {
+        return { ...state, youtubeEnabled: !state.youtubeEnabled };
+      }
+      if (action.service === 'spotify') {
+        return { ...state, spotifyEnabled: !state.spotifyEnabled };
+      }
+      break;
     case 'FETCH_USER_SUCCESS':
       return {
         ...state,
