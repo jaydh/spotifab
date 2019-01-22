@@ -2,6 +2,7 @@ import {
   Button,
   Divider,
   Drawer,
+  Grid,
   IconButton,
   Tab,
   Tabs,
@@ -49,12 +50,16 @@ class SideMenu extends React.Component<IProps, IState> {
           paper: classes.drawerPaper
         }}
       >
-        <div className={classes.drawerHeader}>
-          <UserDetails />
-          <IconButton onClick={onSideClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
+        <Grid container className={classes.drawerHeader}>
+          <Grid item xs={10} sm={10} md={10} lg={10}>
+            <UserDetails />
+          </Grid>
+          <Grid item>
+            <IconButton onClick={onSideClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
         <Divider />
         <AddYoutube />
 
@@ -83,14 +88,8 @@ class SideMenu extends React.Component<IProps, IState> {
 
         <Divider />
         <UserPlaylists />
-        <Divider />
-        <Button onClick={this.signOut}>Logout</Button>
       </Drawer>
     );
-  }
-
-  private signOut() {
-    (window as any).firebase.auth().signOut();
   }
 
   private handleHistoryPush = (value: string) => () => {
@@ -99,7 +98,7 @@ class SideMenu extends React.Component<IProps, IState> {
   };
 }
 
-const drawerWidth = 500;
+const drawerWidth = Math.min(500, window.innerWidth);
 
 const styles = (theme: any) => ({
   root: {

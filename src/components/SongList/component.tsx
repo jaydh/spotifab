@@ -1,7 +1,7 @@
-import { List as MaterialList } from '@material-ui/core';
-import * as React from 'react';
-import { AutoSizer, List as VirtualList } from 'react-virtualized';
-import Song from '../Song';
+import { List as MaterialList } from "@material-ui/core";
+import * as React from "react";
+import { AutoSizer, List as VirtualList } from "react-virtualized";
+import Song from "../Song";
 
 interface IProps {
   currentTrack?: any;
@@ -25,7 +25,7 @@ class SongList extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      itemHeight: 50,
+      itemHeight: 60,
       mouseDownIndex: undefined,
       mouseUpIndex: undefined
     };
@@ -82,7 +82,7 @@ class SongList extends React.Component<IProps, IState> {
     return (
       <div
         key={key}
-        style={{ ...style, userSelect: 'none' }}
+        style={{ ...style, userSelect: "none" }}
         onMouseDown={this.handleClickDown(index)}
         onMouseUp={this.handleClickUp(index)}
       >
@@ -128,10 +128,7 @@ class SongList extends React.Component<IProps, IState> {
     this.props.makeNewQueue(songs);
   }
   private makeNewQueueAndPlay = (index: number) => () => {
-    this.makeNewQueue(
-      index,
-      this.props.upSelector ? this.props.upSelector : index + 100
-    );
+    this.makeNewQueue(index, index + 100);
     this.props.play();
   };
 

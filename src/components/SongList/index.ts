@@ -85,10 +85,10 @@ const sortBy = (sort: string, a: any, b: any) => {
         .localeCompare(b.track.artists[0].name.toLowerCase());
     case "artist-desc":
       if (!a.track.artists) {
-        return -1;
+        return 1;
       }
       if (!b.track.artists) {
-        return 1;
+        return -1;
       }
       b.track.artists[0].name
         .toLowerCase()

@@ -9,9 +9,11 @@ export default class Authenticat extends React.Component<IProps> {
   public render() {
     const { isAnon } = this.props;
     return (
-      <Fade in={isAnon}>
-        <Button onClick={this.signIn}>Sign in </Button>
-      </Fade>
+      isAnon && (
+        <Fade in={isAnon}>
+          <Button onClick={this.signIn}>Sign in </Button>
+        </Fade>
+      )
     );
   }
   private signIn() {

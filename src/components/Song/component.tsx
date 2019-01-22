@@ -1,6 +1,7 @@
 import {
   Button,
   Fade,
+  Hidden,
   ListItem,
   ListItemIcon,
   ListItemSecondaryAction,
@@ -63,7 +64,7 @@ class Song extends React.Component<IProps, IState> {
         <ListItemIcon
           children={
             <Fade in={hovered}>
-              <Button>
+              <Button onClick={this.handleDouble}>
                 <Play />
               </Button>
             </Fade>
@@ -71,19 +72,21 @@ class Song extends React.Component<IProps, IState> {
         />
         <ListItemSecondaryAction
           children={
-            <Fade in={hovered}>
-              <div>
-                <Button onClick={this.handleRemove(song)}>
-                  <Delete />
-                </Button>
-                <Button onClick={this.handleAdd(song)}>
-                  <PlaylistAdd />
-                </Button>
-                <Button onClick={this.props.addToNext}>
-                  <Next />
-                </Button>
-              </div>
-            </Fade>
+            <Hidden mdDown>
+              <Fade in={hovered}>
+                <div>
+                  <Button onClick={this.handleRemove(song)}>
+                    <Delete />
+                  </Button>
+                  <Button onClick={this.handleAdd(song)}>
+                    <PlaylistAdd />
+                  </Button>
+                  <Button onClick={this.props.addToNext}>
+                    <Next />
+                  </Button>
+                </div>
+              </Fade>
+            </Hidden>
           }
         />
 
@@ -95,7 +98,15 @@ class Song extends React.Component<IProps, IState> {
         />
         <ListItemText
           primary={song.track.name}
-          primaryTypographyProps={{ variant: "subtitle1" }}
+          primaryTypographyProps={{
+            variant: "subtitle1",
+            style: {
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "200px"
+            }
+          }}
           secondary={this.state.hovered ? detailString : sortString}
           secondaryTypographyProps={{
             variant: "body2"

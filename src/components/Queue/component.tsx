@@ -14,8 +14,6 @@ import QueueItem from "../QueueItem";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-const drawerWidth = 300;
-
 interface IProps {
   position: number;
   songs: any;
@@ -121,25 +119,25 @@ class Queue extends React.Component<IProps, IState> {
           </ToggleButtonGroup>
         </div>
         <Divider />
-
-        <Divider />
-        <DragDropContext onDragEnd={this.handleDragStop}>
-          <Droppable droppableId={"queue-droppbale"}>
-            {(provided: any, snapshot: any) => (
-              <div
-                className="queue"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                <MaterialList>
-                  {songs.map((song: any, index: number) =>
-                    this.rowRenderer(song, index, "queue-song" + index)
-                  )}
-                </MaterialList>
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <div className={classes.drawerList}>
+          <DragDropContext onDragEnd={this.handleDragStop}>
+            <Droppable droppableId={"queue-droppbale"}>
+              {(provided: any, snapshot: any) => (
+                <div
+                  className="queue"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  <MaterialList>
+                    {songs.map((song: any, index: number) =>
+                      this.rowRenderer(song, index, "queue-song" + index)
+                    )}
+                  </MaterialList>
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       </Drawer>
     );
   }
@@ -184,6 +182,8 @@ class Queue extends React.Component<IProps, IState> {
     this.setState({ showPlaylist: !this.state.showPlaylist });
   }
 }
+
+const drawerWidth = Math.min(500, window.innerWidth);
 const styles = (theme: any) => ({
   menuButton: {
     marginLeft: 12,
@@ -202,9 +202,11 @@ const styles = (theme: any) => ({
   drawerHeader: {
     display: "flex",
     alignItems: "center",
-    padding: "0 8px",
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-end"
+    justifyContent: "flex-start"
+  },
+  drawerList: {
+    height: "100%",
+    overflow: "auto"
   },
   content: {
     flexGrow: 1,

@@ -4,6 +4,7 @@ import {
   Collapse,
   Fade,
   Grid,
+  Hidden,
   IconButton,
   Toolbar,
   withStyles
@@ -55,11 +56,13 @@ interface IProps {
   selection: boolean;
   onSideOpen: () => void;
   onQueueOpen: () => void;
+  updateVolume: (val: number) => void;
 }
 
 interface IState {
   sideRender: boolean;
   queueRender: boolean;
+  matches: boolean;
 }
 
 const drawerWidth = 600;
@@ -69,14 +72,27 @@ class MainBar extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       sideRender: false,
-      queueRender: false
+      queueRender: false,
+      matches: window.innerWidth <= 992
     };
     this.handleSideOpen = this.handleSideOpen.bind(this);
     this.handleQueueOpen = this.handleQueueOpen.bind(this);
     this.handleQueueMouseOver = this.handleQueueMouseOver.bind(this);
     this.handleSideMouseOver = this.handleSideMouseOver.bind(this);
     this.convert = this.convert.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
+
+  public componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+    if (this.state.matches) {
+      this.props.updateVolume(750);
+    }
+  }
+  public componentWillUnmount() {
+    window.addEventListener("resize", this.handleResize);
+  }
+
   public render() {
     const {
       classes,
@@ -89,7 +105,7 @@ class MainBar extends React.Component<IProps, IState> {
       addSelected,
       clearSelection
     } = this.props;
-    const { sideRender, queueRender } = this.state;
+    const { sideRender, queueRender, matches } = this.state;
     return (
       <>
         <AppBar position="relative" className={classes.appBar}>
@@ -100,60 +116,67 @@ class MainBar extends React.Component<IProps, IState> {
               alignItems="center"
               justify="space-between"
             >
-              <Grid item={true} container={true} xs={4} sm={4} md={4} lg={4}>
-                <Grid item={true}>
-                  <IconButton
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={this.handleSideOpen}
-                    onMouseOver={this.handleSideMouseOver}
-                    className={classes.menuButton}
-                    children={<MenuIcon />}
-                  />
-                </Grid>
+              <Grid item={true} xs={2} sm={2} md={4} lg={4}>
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleSideOpen}
+                  onMouseOver={this.handleSideMouseOver}
+                  className={classes.menuButton}
+                  children={<MenuIcon />}
+                />
                 <Authenticate />
               </Grid>
-              <Fade in={currentTrack !== undefined}>
-                <Grid
-                  xs={4}
-                  sm={4}
-                  md={4}
-                  lg={4}
-                  item={true}
-                  container={true}
-                  alignItems="center"
-                  justify="center"
-                >
-                  <SongControls />
-                  <SongProgress />
-                </Grid>
-              </Fade>
+              {currentTrack !== undefined && (
+                <Fade in={currentTrack !== undefined}>
+                  <Grid
+                    xs={12}
+                    sm={12}
+                    md={4}
+                    lg={4}
+                    item={true}
+                    container={true}
+                    alignItems="center"
+                    justify="center"
+                    style={{ order: matches ? 2 : 0 }}
+                  >
+                    <SongControls />
+                    <SongProgress />
+                  </Grid>
+                </Fade>
+              )}
               <Grid
                 item={true}
                 container={true}
-                justify="flex-end"
+                justify={matches ? "center" : "flex-end"}
                 alignItems="center"
-                xs={4}
-                sm={4}
+                xs={8}
+                sm={8}
                 md={4}
                 lg={4}
               >
-                <Fade in={selection !== undefined}>
-                  <Grid item={true}>
-                    <Button onClick={clearSelection}>
-                      <Clear />
-                    </Button>
-                    <Button onClick={addSelected}>
-                      <Add />
-                    </Button>
-                    <Button onClick={makeQueueFromSelection}>
-                      <AddCheck />
-                    </Button>
-                  </Grid>
-                </Fade>
+                <Hidden mdDown>
+                  {selection !== undefined && (
+                    <Fade in={selection !== undefined}>
+                      <Grid item={true}>
+                        <Button onClick={clearSelection}>
+                          <Clear />
+                        </Button>
+                        <Button onClick={addSelected}>
+                          <Add />
+                        </Button>
+                        <Button onClick={makeQueueFromSelection}>
+                          <AddCheck />
+                        </Button>
+                      </Grid>
+                    </Fade>
+                  )}
+                </Hidden>
                 <Grid item={true} children={<Filter />} />
                 <Grid item={true} children={<Sort />} />
-                <Grid item={true} children={<Volume />} />
+                <Hidden mdDown>
+                  <Grid item={true} children={<Volume />} />
+                </Hidden>
                 <Grid
                   item={true}
                   children={
@@ -203,6 +226,10 @@ class MainBar extends React.Component<IProps, IState> {
   }
   private handleQueueOpen() {
     this.props.onQueueOpen();
+  }
+  private handleResize() {
+    const x = window.matchMedia("(max-width: 992px)");
+    this.setState({ matches: x.matches });
   }
 }
 

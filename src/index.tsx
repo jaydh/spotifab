@@ -8,7 +8,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import thunk from "redux-thunk";
 import App from "./App";
 import reducers from "./reducers";
-import { unregister } from "./registerServiceWorker";
+import register  from "./registerServiceWorker";
 
 export const store = createStore(
   reducers,
@@ -25,4 +25,4 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-unregister();
+register();

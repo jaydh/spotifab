@@ -1,26 +1,29 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { convertPlaylistToUnified } from "../../actions/playlistActions";
-import { makeNewQueue } from "../../actions/queueActions";
-import { setSort } from "../../actions/uiActions";
-import component from "./component";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { convertPlaylistToUnified } from '../../actions/playlistActions';
+import { makeNewQueue } from '../../actions/queueActions';
+import { setSort } from '../../actions/uiActions';
+import component from './component';
+import { updateVolume } from '../../actions/soundActions';
 
 const addSelected = () => {
   return (dispatch: any, getState: any) => {
     const { selectedSongs } = getState().ui;
-    return dispatch({ type: "ADD_SELECTED_TO_QUEUE", selectedSongs });
+    dispatch({ type: 'ADD_SELECTED_TO_QUEUE', selectedSongs });
+    dispatch(clearSelection());
   };
 };
 
 const makeQueueFromSelection = () => {
   return (dispatch: any, getState: any) => {
     const { selectedSongs } = getState().ui;
-    return dispatch(makeNewQueue(selectedSongs));
+    dispatch(makeNewQueue(selectedSongs));
+    dispatch(clearSelection());
   };
 };
 
 const clearSelection = () => {
-  return { type: "CLEAR_SELECTION" };
+  return { type: 'CLEAR_SELECTION' };
 };
 
 const mapStateToProps = (state: any) => {
@@ -39,8 +42,9 @@ const mapDispatch = (dispatch: any) => {
       makeQueueFromSelection,
       setSort,
       convertPlaylistToUnified,
-      onSideOpen: () => dispatch({ type: "OPEN_SIDE_MENU" }),
-      onQueueOpen: () => dispatch({ type: "OPEN_QUEUE" })
+      onSideOpen: () => dispatch({ type: 'OPEN_SIDE_MENU' }),
+      onQueueOpen: () => dispatch({ type: 'OPEN_QUEUE' }),
+      updateVolume
     },
     dispatch
   );
