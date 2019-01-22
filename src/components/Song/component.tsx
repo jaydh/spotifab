@@ -1,5 +1,6 @@
 import {
   Button,
+  Slide,
   Fade,
   Hidden,
   ListItem,
@@ -61,15 +62,19 @@ class Song extends React.Component<IProps, IState> {
         onDoubleClick={this.handleDouble}
         selected={selected}
       >
-        <ListItemIcon
-          children={
-            <Fade in={hovered}>
-              <Button onClick={this.handleDouble}>
-                <Play />
-              </Button>
-            </Fade>
-          }
-        />
+        {hovered && (
+          <Slide direction="right" in={hovered} timeout={500}>
+            <ListItemIcon
+              children={
+                <Button onClick={this.handleDouble}>
+                  {song.youtube ? <Youtube /> : <Spotify />}
+                  <Play />
+                </Button>
+              }
+            />
+          </Slide>
+        )}
+
         <ListItemSecondaryAction
           children={
             <Hidden mdDown>
@@ -87,13 +92,6 @@ class Song extends React.Component<IProps, IState> {
                 </div>
               </Fade>
             </Hidden>
-          }
-        />
-
-        <ListItemIcon
-          className={classes.icon}
-          children={
-            <Fade in={hovered}>{song.youtube ? <Youtube /> : <Spotify />}</Fade>
           }
         />
         <ListItemText
