@@ -7,38 +7,38 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case 'PLAY':
+    case "PLAY":
       return {
         ...state
       };
-    case 'TOGGLE_REPEAT':
+    case "TOGGLE_REPEAT":
       return {
         ...state,
         repeat: !state.repeat
       };
-    case 'CLEAR_QUEUE':
+    case "CLEAR_QUEUE":
       return {
         ...state,
         queue: [],
         position: 0
       };
-    case 'ADD_SONG_TO_NEXT':
+    case "ADD_SONG_TO_NEXT":
       return {
         ...state,
         queue: state.queue.insert(state.position, action.song)
       };
-    case 'ADD_SELECTED_TO_QUEUE':
+    case "ADD_SELECTED_TO_QUEUE":
       return { ...state, queue: state.queue.concat(action.selectedSongs) };
-    case 'REMOVE_SONG_FROM_QUEUE':
+    case "REMOVE_SONG_FROM_QUEUE":
       return {
         ...state,
         queue: state.queue.delete(action.position)
       };
 
-    case 'MAKE_NEW_QUEUE': {
+    case "MAKE_NEW_QUEUE": {
       return { ...state, queue: action.songs, position: 0 };
     }
-    case 'PREV_SONG': {
+    case "PREV_SONG": {
       const nextPos =
         state.position - 1 < 0 && state.repeat
           ? state.queue.size - 1
@@ -48,7 +48,7 @@ export default (
         position: nextPos
       };
     }
-    case 'NEXT_SONG': {
+    case "NEXT_SONG": {
       const nextPos =
         state.position + 1 >= state.queue.size && state.repeat
           ? 0
@@ -58,28 +58,23 @@ export default (
         position: nextPos
       };
     }
-    case 'ADD_SONG_TO_QUEUE':
+    case "ADD_SONG_TO_QUEUE":
       return {
         ...state,
         queue: state.queue.push(action.song)
       };
-    case 'SHUFFLE_QUEUE':
-      const shuffled =
-        state.queue.length === 0
-          ? state.queue
-          : shuffle(state.queue.delete(state.position)).insert(
-              0,
-              state.queue.find(
-                t => t.track.id === state.queue.get(state.position).track.id
-              )
-            );
+    case "SHUFFLE_QUEUE":
+      if (state.queue.length === 0) {
+        return state;
+      }
+      const shuffled = shuffle(state.queue.slice(0));
       return { ...state, queue: shuffled, position: 0 };
-    case 'INSERT_SONG_IN_QUEUE':
+    case "INSERT_SONG_IN_QUEUE":
       return {
         ...state,
         queue: state.queue.insert(action.position, action.track)
       };
-    case 'UPDATE_POSITION':
+    case "UPDATE_POSITION":
       return {
         ...state,
         position: action.position

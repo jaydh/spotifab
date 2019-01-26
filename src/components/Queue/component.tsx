@@ -143,7 +143,7 @@ class Queue extends React.Component<IProps, IState> {
   }
   private rowRenderer(song: any, index: number, key: any) {
     return (
-      <Draggable draggableId={`draggable-${index}`} index={index} key={key}>
+      <Draggable draggableId={`queue-item-${index}`} index={index} key={key}>
         {(provid: any, snaps: any) => (
           <div
             ref={provid.innerRef}
