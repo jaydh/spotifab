@@ -88,6 +88,8 @@ class MainBar extends React.Component<IProps, IState> {
     if (this.state.matches) {
       this.props.updateVolume(750);
     }
+    this.handleQueueMouseOver();
+    this.handleSideMouseOver();
   }
   public componentWillUnmount() {
     window.addEventListener("resize", this.handleResize);
@@ -121,7 +123,6 @@ class MainBar extends React.Component<IProps, IState> {
                   color="inherit"
                   aria-label="Open drawer"
                   onClick={this.handleSideOpen}
-                  onMouseOver={this.handleSideMouseOver}
                   className={classes.menuButton}
                   children={<MenuIcon />}
                 />
@@ -184,7 +185,6 @@ class MainBar extends React.Component<IProps, IState> {
                       color="inherit"
                       aria-label="Open drawer"
                       onClick={this.handleQueueOpen}
-                      onMouseOver={this.handleQueueMouseOver}
                       className={classes.menuButton}
                       children={<QueueIcon />}
                     />
