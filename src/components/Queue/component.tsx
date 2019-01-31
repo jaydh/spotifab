@@ -174,7 +174,7 @@ class Queue extends React.Component<IProps, IState> {
     if (!result.destination) {
       return;
     }
-    const song = this.props.songs.get(result.source.index);
+    const song = this.props.songs[result.source.index];
     this.props.removeSongFromQueue(result.source.index);
     this.props.insertSongInQueue(song, result.destination.index);
   }

@@ -68,62 +68,20 @@ export const updatePosition = position => {
   };
 };
 
-const apiPlay = (
-  token,
-  {
-    spotify_uri,
-    playerInstance: {
-      _options: { id }
-    }
-  }
-) =>
-  fetch(`https://api.spotify.com/v1/me/player/play?device_id=${id}`, {
-    method: "PUT",
-    body: JSON.stringify({ uris: spotify_uri }),
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    }
-  });
-
 export const play = () => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    const { player } = state;
-    dispatch({
-      type: "PLAY"
-    });
-    const position = state.queue.position;
-    const song = state.queue.queue[position];
-    if (player.spotifyReady) {
-      await window.player.pause();
-    }
-    if (player.youtubeReady) {
-      await window.ytPlayer.stopVideo();
-    }
-    return song.youtube
-      ? window.ytPlayer.loadVideoById(song.track.id)
-      : apiPlay(state.token.token, {
-          playerInstance: window.player,
-          spotify_uri: [song.track.uri]
-        });
+  return {
+    type: "PLAY_SONG_REQUESTED"
   };
 };
 export const nextSong = () => {
-  return async (dispatch, getState) => {
-    dispatch({
-      type: "NEXT_SONG"
-    });
-    return dispatch(play());
+  return {
+    type: "NEXT_SONG"
   };
 };
 
 export const prevSong = () => {
-  return async (dispatch, getState) => {
-    dispatch({
-      type: "PREV_SONG"
-    });
-    return dispatch(play());
+  return {
+    type: "PREV_SONG"
   };
 };
 

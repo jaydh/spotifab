@@ -3,7 +3,8 @@ import * as React from "react";
 import Button from "@material-ui/core/Button";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Play from "@material-ui/icons/PlayCircleOutline";
+import { Slide } from "@material-ui/core";
+import { PlayArrow, Delete } from "@material-ui/icons";
 
 interface IProps {
   itemHeight: number;
@@ -17,39 +18,53 @@ interface IProps {
   position: number;
   play: () => void;
 }
-export default class QueueItem extends React.Component<IProps> {
+
+interface IState {
+  hovered: boolean;
+}
+
+export default class QueueItem extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
+    this.state = { hovered: false };
     this.handleUpdate = this.handleUpdate.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
   public render() {
-    const { song } = this.props;
+    const { song, index, position } = this.props;
+    const { hovered } = this.state;
+    const current = index === position;
     return (
       <ListItem
+        onMouseEnter={this.setHoverTrue}
+        onMouseLeave={this.setHoverFalse}
+        onDoubleClick={this.handleUpdate}
+        color={current ? "primary" : ""}
         style={{
-          width: "300px",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis"
+          width: "300px"
         }}
       >
-        <Button
-          size="small"
-          className="play-song btn"
-          onClick={this.handleUpdate}
-        >
-          <Play />
-        </Button>
+        {hovered && (
+          <Slide direction="right" in={hovered} timeout={250}>
+            <Button size="small" onClick={this.handleUpdate}>
+              <PlayArrow />
+            </Button>
+          </Slide>
+        )}
         <ListItemText
           primary={song.track.name}
-          primaryTypographyProps={{ variant: "body1" }}
+          primaryTypographyProps={{
+            variant: "body1",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}
         />
-        <div className="song-buttons">
-          <button className="btn" onClick={this.handleRemove}>
-            <i className="fa fa-trash" aria-hidden="true" />
-          </button>
-        </div>
+        {hovered && (
+          <Button className="btn" onClick={this.handleRemove}>
+            <Delete />
+          </Button>
+        )}
       </ListItem>
     );
   }
@@ -61,4 +76,7 @@ export default class QueueItem extends React.Component<IProps> {
   private handleRemove() {
     this.props.removeSongFromQueue(this.props.index);
   }
+
+  private setHoverTrue = () => this.setState({ hovered: true });
+  private setHoverFalse = () => this.setState({ hovered: false });
 }

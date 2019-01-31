@@ -16,7 +16,6 @@ import PlaylistAdd from "@material-ui/icons/PlaylistAdd";
 import { parse } from "date-fns";
 import { Spotify, Youtube } from "mdi-material-ui";
 import * as React from "react";
-import "./Song.css";
 
 interface IProps {
   index: number;
@@ -45,7 +44,6 @@ class Song extends React.Component<IProps, IState> {
     };
     this.toggleShow = this.toggleShow.bind(this);
     this.handleDouble = this.handleDouble.bind(this);
-    this.toggleHover = this.toggleHover.bind(this);
     this.getDetailString = this.getDetailString.bind(this);
     this.getSortString = this.getSortString.bind(this);
   }
@@ -57,8 +55,8 @@ class Song extends React.Component<IProps, IState> {
     return (
       <ListItem
         className={classes.root}
-        onMouseEnter={this.toggleHover}
-        onMouseLeave={this.toggleHover}
+        onMouseEnter={this.setHoverTrue}
+        onMouseLeave={this.setHoverFalse}
         onDoubleClick={this.handleDouble}
         selected={selected}
       >
@@ -113,11 +111,11 @@ class Song extends React.Component<IProps, IState> {
       </ListItem>
     );
   }
-  private toggleShow() {
+  private toggleShow = () => {
     this.setState({
       showOptions: !this.state.showOptions
     });
-  }
+  };
   private handleAdd = (song: any) => () => {
     this.props.addSongToQueue(song);
   };
@@ -132,9 +130,8 @@ class Song extends React.Component<IProps, IState> {
     this.props.makeNewQueueAndPlay(this.props.index);
   }
 
-  private toggleHover() {
-    this.setState({ hovered: !this.state.hovered });
-  }
+  private setHoverTrue = () => this.setState({ hovered: true });
+  private setHoverFalse = () => this.setState({ hovered: false });
 
   private getDetailString() {
     const { song, sort } = this.props;

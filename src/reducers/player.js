@@ -11,7 +11,7 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case 'PLAY':
+    case 'PLAY_SONG_SUCCESS':
       return { ...state, playing: true };
     case 'TOGGLE_MUTE':
       return { ...state, muted: !state.muted };

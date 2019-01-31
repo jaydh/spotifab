@@ -2,7 +2,7 @@ export const updateVolume = volume => {
   return async (dispatch, getState) => {
     const { player } = getState();
     const { spotifyReady, youtubeReady } = player;
-    const newVolume = volume > 20 ? volume - 20 : volume;
+    const newVolume = volume > 10 ? volume - 10 : 0;
 
     return (spotifyReady
       ? Promise.resolve(window.player.setVolume(newVolume / 100))

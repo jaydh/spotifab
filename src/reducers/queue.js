@@ -30,9 +30,11 @@ export default (
     case "ADD_SELECTED_TO_QUEUE":
       return { ...state, queue: state.queue.concat(action.selectedSongs) };
     case "REMOVE_SONG_FROM_QUEUE":
+      const copyre = state.queue.slice(0);
+      copyre.splice(action.position, 1);
       return {
         ...state,
-        queue: state.queue.delete(action.position)
+        queue: copyre
       };
 
     case "MAKE_NEW_QUEUE": {
@@ -70,9 +72,11 @@ export default (
       const shuffled = shuffle(state.queue.slice(0));
       return { ...state, queue: shuffled, position: 0 };
     case "INSERT_SONG_IN_QUEUE":
+      const copy = state.queue.slice(0);
+      copy.splice(action.position, 0, action.track);
       return {
         ...state,
-        queue: state.queue.insert(action.position, action.track)
+        queue: copy
       };
     case "UPDATE_POSITION":
       return {
