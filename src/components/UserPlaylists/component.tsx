@@ -44,7 +44,6 @@ class UserPlaylists extends Component<IProps, IState> {
     if (
       !this.props.synced &&
       isTokenTimeValid(this.props.tokenTime) &&
-      this.props.firebaseLoaded !== prevProps.firebaseLoaded &&
       this.props.firebaseLoaded
     ) {
       this.props.fetchPlaylistsMenu();
