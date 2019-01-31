@@ -145,9 +145,8 @@ export const fetchPlaylistsMenu = () => {
 };
 
 export const fetchUnifiedPlaylistMenu = () => {
-  const database = window.firebase.firestore();
-
   return (dispatch, getState) => {
+    const database = window.firebase.firestore();
     const ref = database
       .collection("userData")
       .doc(getState().userReducer.firebaseUser.uid)

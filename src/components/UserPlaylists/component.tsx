@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { isTokenTimeValid } from "../../helpers/validateToken";
-import { ConnectedPlaylist } from "./index";
-import { Button, Collapse } from "@material-ui/core";
-import Plus from "@material-ui/icons/Add";
-import Delete from "@material-ui/icons/Delete";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
-import More from "@material-ui/icons/MoreHoriz";
-import Minus from "@material-ui/icons/Remove";
-import Warning from "@material-ui/icons/Warning";
+import React, { Component } from 'react';
+import { isTokenTimeValid } from '../../helpers/validateToken';
+import { ConnectedPlaylist } from './index';
+import { Button, Collapse } from '@material-ui/core';
+import Plus from '@material-ui/icons/Add';
+import Delete from '@material-ui/icons/Delete';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import More from '@material-ui/icons/MoreHoriz';
+import Minus from '@material-ui/icons/Remove';
+import Warning from '@material-ui/icons/Warning';
 
 interface IProps {
   fetchPlaylistsMenu: () => void;
@@ -22,6 +22,7 @@ interface IProps {
   playlistMenu: any;
   unifiedMenu: any;
   user: any;
+  firebaseLoaded: boolean;
 }
 
 interface IState {
@@ -40,7 +41,12 @@ class UserPlaylists extends Component<IProps, IState> {
     this.handleSelect = this.handleSelect.bind(this);
   }
   componentDidUpdate(prevProps: IProps) {
-    if (!this.props.synced && isTokenTimeValid(this.props.tokenTime)) {
+    if (
+      !this.props.synced &&
+      isTokenTimeValid(this.props.tokenTime) &&
+      this.props.firebaseLoaded !== prevProps.firebaseLoaded &&
+      this.props.firebaseLoaded
+    ) {
       this.props.fetchPlaylistsMenu();
       this.props.fetchUnifiedPlaylistMenu();
     }
@@ -48,11 +54,11 @@ class UserPlaylists extends Component<IProps, IState> {
 
   render() {
     const { showPlaylist } = this.state;
-    const isPlaylist = this.props.location.pathname.startsWith("/playlist");
+    const isPlaylist = this.props.location.pathname.startsWith('/playlist');
     return (
-      <React.Fragment>
+      <>
         <Button onClick={this.toggleShowPlaylist}>
-          <Typography variant="subheading">Playlists</Typography>{" "}
+          <Typography variant="subheading">Playlists</Typography>{' '}
           {this.state.showPlaylist ? <Minus /> : <Plus />}
         </Button>
         <Collapse in={showPlaylist}>
@@ -72,14 +78,14 @@ class UserPlaylists extends Component<IProps, IState> {
                 ))}
           </List>
         </Collapse>
-      </React.Fragment>
+      </>
     );
   }
 
   handleSelect = (playlist: any) => (event: Event) => {
     this.setState({ selectedId: playlist.id });
     this.props.history.push(
-      `/playlist/${playlist.unified ? "unified" : "spotify"}/${
+      `/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
         playlist.owner.id
       }/${playlist.id}`
     );
@@ -134,14 +140,14 @@ export class Playlist extends React.Component<IProps2, IState2> {
           {this.state.showMenu ? (
             <Button
               onClick={this.handleUnfollow(playlist)}
-              style={{ color: this.state.unfollowCount > 0 ? "red" : "" }}
+              style={{ color: this.state.unfollowCount > 0 ? 'red' : '' }}
             >
               {this.state.unfollowCount > 0 && this.state.unfollowCount < 3 ? (
                 <React.Fragment>
                   <Warning /> {4 - this.state.unfollowCount}
                 </React.Fragment>
               ) : (
-                ""
+                ''
               )}
               <Delete />
             </Button>
