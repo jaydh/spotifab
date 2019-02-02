@@ -146,6 +146,7 @@ class Queue extends React.Component<IProps, IState> {
       <Draggable draggableId={`queue-item-${index}`} index={index} key={key}>
         {(provid: any, snaps: any) => (
           <div
+            id={`queue-item-${index}`}
             ref={provid.innerRef}
             {...provid.draggableProps}
             {...provid.dragHandleProps}
