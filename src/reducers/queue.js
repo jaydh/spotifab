@@ -69,8 +69,13 @@ export default (
       if (state.queue.length === 0) {
         return state;
       }
-      const shuffled = shuffle(state.queue.slice(0));
-      return { ...state, queue: shuffled, position: 0 };
+      const pos = state.position;
+      const end = state.queue.length - 1;
+      const shuffled = shuffle(Array.from(state.queue).slice(pos + 1, end));
+      return {
+        ...state,
+        queue: state.queue.slice(0, pos + 1).concat(shuffled)
+      };
     case "INSERT_SONG_IN_QUEUE":
       const copy = state.queue.slice(0);
       copy.splice(action.position, 0, action.track);

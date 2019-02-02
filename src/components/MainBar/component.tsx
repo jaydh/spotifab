@@ -193,9 +193,11 @@ class MainBar extends React.Component<IProps, IState> {
               </Grid>
             </Grid>
           </Toolbar>
-          <Collapse in={currentTrack !== undefined}>
-            <CurrentArt />
-          </Collapse>
+          {currentTrack && (
+            <Collapse in={currentTrack !== undefined}>
+              <CurrentArt />
+            </Collapse>
+          )}
         </AppBar>
         {playlistId && !isLibrary && !isUnified && (
           <button className="btn" onClick={this.convert(this.props.playlistId)}>
