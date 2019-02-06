@@ -1,61 +1,64 @@
-import * as React from 'react';
-import { Redirect, Route, Switch } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
-import SongMain from '../SongMain';
+import * as React from "react";
+import { Redirect, Route, Switch } from "react-router";
+import { BrowserRouter } from "react-router-dom";
+import SongMain from "../SongMain";
 
 interface IProps {
-  setAuthCode: (code: string) => void;
   enqueueSnackbar: (t: any, options?: any) => void;
   spotifyReady: boolean;
   youtubeReady: boolean;
   songsSynced: boolean;
+  firebaseLoaded: boolean;
   playlistsSynced: boolean;
+  loadFirebase: () => void;
+  setAuthCode: (code: string) => void;
+}
+
+interface IState {
+  authCode?: string;
 }
 
 const toLibrary = () => <Redirect to="/library" />;
 
-class MainView extends React.Component<IProps> {
-  constructor(props: IProps) {
+class MainView extends React.Component<IProps, IState> {
+  public constructor(props: IProps) {
     super(props);
-    const code = this.getQueryVariable('code');
-    if (code.length > 0) {
-      this.props.setAuthCode(code);
-    }
+    props.loadFirebase();
+    const authCode = this.getQueryVariable("code");
+    this.state = { authCode: authCode.length > 0 ? authCode : undefined };
   }
 
   public componentDidUpdate(oldProps: IProps) {
-    const { enqueueSnackbar } = this.props;
-    const options = {
-      anchorOrigin: {
-        vertical: 'bottom',
-        horizontal: 'right'
-      },
-      variant: 'success'
-    };
-    console.log(this.props);
-    if (
-      oldProps.spotifyReady !== this.props.spotifyReady &&
-      this.props.spotifyReady
-    ) {
-      enqueueSnackbar('Spotify playback ready', options);
+    const {
+      enqueueSnackbar,
+      spotifyReady,
+      youtubeReady,
+      songsSynced,
+      playlistsSynced,
+      firebaseLoaded,
+      setAuthCode
+    } = this.props;
+    const { authCode } = this.state;
+    if (oldProps.spotifyReady !== spotifyReady && spotifyReady) {
+      this.snackBar("Spotify playback ready");
+    }
+    if (oldProps.youtubeReady !== youtubeReady && youtubeReady) {
+      this.snackBar("Youtube playback ready");
+    }
+    if (oldProps.songsSynced !== songsSynced && songsSynced) {
+      this.snackBar("Songs Fetched");
+    }
+    if (oldProps.playlistsSynced !== playlistsSynced && playlistsSynced) {
+      this.snackBar("Playlists synced");
     }
     if (
-      oldProps.youtubeReady !== this.props.youtubeReady &&
-      this.props.youtubeReady
+      oldProps.firebaseLoaded !== this.props.firebaseLoaded &&
+      this.props.firebaseLoaded
     ) {
-      enqueueSnackbar('Youtube playback ready', options);
-    }
-    if (
-      oldProps.songsSynced !== this.props.songsSynced &&
-      this.props.songsSynced
-    ) {
-      enqueueSnackbar('Songs Fetched', options);
-    }
-    if (
-      oldProps.playlistsSynced !== this.props.playlistsSynced &&
-      this.props.playlistsSynced
-    ) {
-      enqueueSnackbar('Playlists synced', options);
+      this.snackBar("Firebase Loaded");
+      if (authCode) {
+        this.props.setAuthCode(authCode);
+      }
     }
   }
 
@@ -63,27 +66,34 @@ class MainView extends React.Component<IProps> {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact={true} path="/" component={toLibrary} />
           <Route path="/library" component={SongMain} />
           <Route path="/recent" component={SongMain} />
           <Route path="/new" component={SongMain} />
-          <Route path="/playlist/:type/:owner/:id" component={SongMain} />
+          <Route exact={true} path="/" component={toLibrary} />
         </Switch>
       </BrowserRouter>
     );
   }
+  private snackBar = (t: string) =>
+    this.props.enqueueSnackbar(t, {
+      anchorOrigin: {
+        vertical: "bottom",
+        horizontal: "right"
+      },
+      variant: "success"
+    });
 
-  private getQueryVariable(variable: string) {
+  private getQueryVariable = (variable: string) => {
     const query = window.location.search.substring(1);
-    const vars = query.split('&');
+    const vars = query.split("&");
     for (const i of vars) {
-      const pair = i.split('=');
+      const pair = i.split("=");
       if (decodeURIComponent(pair[0]) === variable) {
         return decodeURIComponent(pair[1]);
       }
     }
-    return '';
-  }
+    return "";
+  };
 }
 
 export default MainView;

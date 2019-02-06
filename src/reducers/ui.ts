@@ -5,7 +5,6 @@ export default (
     upSelector: undefined,
     downSelector: undefined,
     selectedSongs: [],
-    firebaseLoaded: false,
     sideMenuOpen: false,
     queueOpen: false
   },

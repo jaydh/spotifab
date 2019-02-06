@@ -1,7 +1,8 @@
 export default (
   state = {
     playlistsSynced: false,
-    songsSynced: false
+    songsSynced: false,
+    firebaseLoaded: false
   },
   action: any
 ) => {
@@ -17,6 +18,9 @@ export default (
       return { ...state, songsSynced: false };
     case "FETCH_PLAYLIST_SONGS_SUCCESS":
       return { ...state, songsSynced: true };
+    case "FIREBASE_LOADED":
+      return { ...state, firebaseLoaded: true };
+
     default:
       return state;
   }
