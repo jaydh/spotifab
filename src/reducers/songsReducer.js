@@ -26,20 +26,24 @@ export const songsReducer = (state = defaultState, action) => {
       const spotifyIndex = state.spotifyTracks.findIndex(
         t => t.track.id === action.id
       );
+      const copyre = state.spotifyTracks.slice(0);
+      copyre.splice(spotifyIndex, 1);
 
       return {
         ...state,
-        spotifyTracks: state.spotifyTracks.delete(spotifyIndex)
+        spotifyTracks: copyre
       };
     }
     case "REMOVE_YOUTUBE_TRACK": {
       const youtubeIndex = state.youtubeTracks.findIndex(
         t => t.youbue && t.track.id === action.id
       );
+      const copyre = state.youtubeTracks.slice(0);
+      copyre.splice(youtubeIndex, 1);
 
       return {
         ...state,
-        youtubeTracks: state.youtubeTracks.delete(youtubeIndex)
+        youtubeTracks: copyre
       };
     }
     case "UPDATE_VIEW_TYPE":
@@ -159,11 +163,14 @@ export const songsReducer = (state = defaultState, action) => {
           duration_ms: action.durationMs
         }
       };
+      const next = state.youtubeTracks.slice(0);
+      if (state.youtubeTracks.find(t => t.track.id === action.id)) {
+        next.push(track);
+      }
+
       return {
         ...state,
-        youtubeTracks: state.youtubeTracks.find(t => t.track.id === action.id)
-          ? state.youtubeTracks
-          : state.youtubeTracks.push(track)
+        youtubeTracks: next
       };
     }
     case "FETCH_YOUTUBE_TRACKS_SUCCESS": {

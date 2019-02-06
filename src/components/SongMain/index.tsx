@@ -1,14 +1,14 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { bindActionCreators } from 'redux';
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { bindActionCreators } from "redux";
 import {
   fetchNew,
   fetchPlaylistSongs,
   fetchRecent,
   fetchUnifiedSongs
-} from '../../actions/playlistActions';
-import { fetchSongs, fetchYoutubeSongs } from '../../actions/songActions';
-import Component from './component';
+} from "../../actions/playlistActions";
+import { fetchSongs, fetchYoutubeSongs } from "../../actions/songActions";
+import Component from "./component";
 
 const mapState = (state: any) => {
   return {
