@@ -13,12 +13,14 @@ const defaultState = {
 export const songsReducer = (state = defaultState, action) => {
   switch (action.type) {
     case "ADD_SONG_TO_LIBRARY":
+      const next = state.spotifyTracks.slice(0);
+      next.unshift({
+        added_at: new Date().getTime(),
+        track: action.track
+      });
       return {
         ...state,
-        spotifyTracks: state.spotifyTracks.insert(0, {
-          added_at: new Date().getTime(),
-          track: action.track
-        })
+        spotifyTracks: next
       };
     case "REMOVE_SONG_FROM_LIBRARY": {
       const spotifyIndex = state.spotifyTracks.findIndex(
