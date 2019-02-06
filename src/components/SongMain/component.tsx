@@ -14,6 +14,7 @@ interface IProps {
   match: any;
   firebaseLoaded: boolean;
   signedIn: boolean;
+  songsFetched: boolean;
 }
 
 interface IState {
@@ -29,7 +30,11 @@ class SongMain extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate(oldProps: IProps) {
-    if (this.props.firebaseLoaded) {
+    const { firebaseLoaded, songsFetched, location } = this.props;
+    if (
+      firebaseLoaded &&
+      (oldProps.location.pathname !== location.pathname || !songsFetched)
+    ) {
       this.handleFetch(this.props, oldProps);
     }
   }
@@ -54,26 +59,20 @@ class SongMain extends React.Component<IProps, IState> {
       fetchNew,
       signedIn
     } = current;
-    if (
-      !prev ||
-      prev.location.pathname !== location.pathname ||
-      prev.signedIn !== signedIn
-    ) {
-      if (location.pathname === "/library") {
-        fetchSongs();
-        fetchYoutubeSongs();
-      } else if (match.params.type === "spotify") {
-        fetchPlaylistSongs(match.params.owner, match.params.id);
-        this.setState({ playlistId: match.params.id });
-        this.setState({ isUnified: false });
-      } else if (match.params.type === "unified") {
-        this.setState({ isUnified: true });
-        fetchUnifiedSongs(match.params.owner, match.params.id);
-      } else if (location.pathname === "/recent") {
-        fetchRecent();
-      } else if (location.pathname === "/new") {
-        fetchNew();
-      }
+    if (location.pathname === "/library") {
+      fetchSongs();
+      fetchYoutubeSongs();
+    } else if (match.params.type === "spotify") {
+      fetchPlaylistSongs(match.params.owner, match.params.id);
+      this.setState({ playlistId: match.params.id });
+      this.setState({ isUnified: false });
+    } else if (match.params.type === "unified") {
+      this.setState({ isUnified: true });
+      fetchUnifiedSongs(match.params.owner, match.params.id);
+    } else if (location.pathname === "/recent") {
+      fetchRecent();
+    } else if (location.pathname === "/new") {
+      fetchNew();
     }
   }
 }
