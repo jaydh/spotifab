@@ -33,13 +33,13 @@ export default class QueueItem extends React.Component<IProps, IState> {
   public render() {
     const { song, index, position } = this.props;
     const { hovered } = this.state;
-    const current = index === position;
+
     return (
       <ListItem
         onMouseEnter={this.setHoverTrue}
         onMouseLeave={this.setHoverFalse}
         onDoubleClick={this.handleUpdate}
-        color={current ? "primary" : ""}
+        selected={index === position}
         style={{
           width: "300px"
         }}
