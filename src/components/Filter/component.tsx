@@ -1,9 +1,9 @@
-import * as React from "react";
-import "./Filter.css";
+import * as React from 'react';
+import './Filter.css';
 
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FilterIcon from "@material-ui/icons/FilterList";
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FilterIcon from '@material-ui/icons/FilterList';
 
 interface IProps {
   setFilter: (t: string) => void;
@@ -16,7 +16,7 @@ export default class Filter extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      value: ""
+      value: ''
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -35,7 +35,7 @@ export default class Filter extends React.Component<IProps, IState> {
             </InputAdornment>
           }
           inputProps={{
-            "aria-label": "Save article"
+            'aria-label': 'Filter'
           }}
         />
       </form>

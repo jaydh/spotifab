@@ -17,15 +17,9 @@ interface IProps {
   songsFetched: boolean;
 }
 
-interface IState {
-  playlistId?: string;
-  isUnified?: boolean;
-}
-
-class SongMain extends React.Component<IProps, IState> {
+class SongMain extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    this.state = { playlistId: undefined, isUnified: undefined };
     this.handleFetch = this.handleFetch.bind(this);
   }
 
@@ -64,10 +58,7 @@ class SongMain extends React.Component<IProps, IState> {
       fetchYoutubeSongs();
     } else if (match.params.type === "spotify") {
       fetchPlaylistSongs(match.params.owner, match.params.id);
-      this.setState({ playlistId: match.params.id });
-      this.setState({ isUnified: false });
     } else if (match.params.type === "unified") {
-      this.setState({ isUnified: true });
       fetchUnifiedSongs(match.params.owner, match.params.id);
     } else if (location.pathname === "/recent") {
       fetchRecent();

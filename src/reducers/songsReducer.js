@@ -46,11 +46,6 @@ export const songsReducer = (state = defaultState, action) => {
         youtubeTracks: copyre
       };
     }
-    case "UPDATE_VIEW_TYPE":
-      return {
-        ...state,
-        viewType: action.view
-      };
 
     case "FETCH_SONGS_PENDING":
       return {
@@ -68,53 +63,6 @@ export const songsReducer = (state = defaultState, action) => {
     case "FETCH_SONGS_ERROR":
       return {
         ...state
-      };
-
-    case "SEARCH_SONGS_PENDING":
-      return {
-        ...state
-      };
-
-    case "SEARCH_SONGS_SUCCESS":
-      return {
-        ...state,
-        spotifyTracks: action.songs,
-        viewType: "search"
-      };
-
-    case "SEARCH_SONGS_ERROR":
-      return {
-        ...state,
-        searchSongsError: true,
-        searchSongsPending: false
-      };
-
-    case "FETCH_RECENTLY_PLAYED_PENDING":
-      return {
-        ...state,
-        fetchSongsPending: true
-      };
-
-    case "FETCH_RECENTLY_PLAYED_SUCCESS":
-      return {
-        ...state,
-        spotifyTracks: action.songs,
-        viewType: "Recently Played",
-        fetchSongsError: false,
-        fetchSongsPending: false
-      };
-
-    case "FETCH_RECENTLY_PLAYED_ERROR":
-      return {
-        ...state,
-        fetchSongsError: true,
-        fetchSongsPending: false
-      };
-
-    case "FETCH_PLAYLIST_SONGS_PENDING":
-      return {
-        ...state,
-        fetchPlaylistSongsPending: true
       };
 
     case "FETCH_PLAYLIST_SONGS_SUCCESS":
@@ -164,7 +112,7 @@ export const songsReducer = (state = defaultState, action) => {
         }
       };
       const next = state.youtubeTracks.slice(0);
-      if (state.youtubeTracks.find(t => t.track.id === action.id)) {
+      if (!state.youtubeTracks.find(t => t.track.id === action.id)) {
         next.push(track);
       }
 

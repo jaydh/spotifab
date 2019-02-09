@@ -22,10 +22,11 @@ export const loadFirebase = () => {
           document.body.appendChild(script);
         });
       });
-      return Promise.all(promises).then(() => {
-        firebase();
-        dispatch({ type: "FIREBASE_LOADED" });
-      });
+      return Promise.all(promises)
+        .then(() => {
+          firebase();
+        })
+        .then(() => dispatch({ type: "FIREBASE_LOADED" }));
     };
     document.body.appendChild(main);
   };

@@ -69,6 +69,7 @@ class MainView extends React.Component<IProps, IState> {
           <Route path="/library" component={SongMain} />
           <Route path="/recent" component={SongMain} />
           <Route path="/new" component={SongMain} />
+          <Route path="/playlist/:type/:owner/:id" component={SongMain} />
           <Route exact={true} path="/" component={toLibrary} />
         </Switch>
       </BrowserRouter>
