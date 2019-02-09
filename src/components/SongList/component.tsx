@@ -1,7 +1,10 @@
-import { List as MaterialList } from "@material-ui/core";
+import { List as MaterialList, Grid } from "@material-ui/core";
+import { LibraryAdd } from "@material-ui/icons";
 import * as React from "react";
 import { AutoSizer, List as VirtualList } from "react-virtualized";
 import Song from "../Song";
+import AddSpotify from "../AddSpotify";
+import AddYoutube from "../AddYoutube";
 
 interface IProps {
   currentTrack?: any;
@@ -51,7 +54,7 @@ class SongList extends React.Component<IProps, IState> {
   }
 
   public render() {
-    return (
+    return this.props.songs.length > 0 ? (
       <AutoSizer>
         {({ height, width }: any) => (
           <MaterialList style={{ height, width }}>
@@ -67,6 +70,18 @@ class SongList extends React.Component<IProps, IState> {
           </MaterialList>
         )}
       </AutoSizer>
+    ) : (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        alignContent="center"
+        style={{ height: "100%" }}
+      >
+        <LibraryAdd fontSize="small" />
+        <AddSpotify />
+        <AddYoutube />
+      </Grid>
     );
   }
   private rowRenderer(options: any) {

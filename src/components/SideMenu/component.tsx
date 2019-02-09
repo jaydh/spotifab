@@ -1,5 +1,6 @@
 import {
   Button,
+  Collapse,
   Divider,
   Drawer,
   Grid,
@@ -10,9 +11,12 @@ import {
 } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import * as React from "react";
+import AddSpotify from "../AddSpotify";
 import AddYoutube from "../AddYoutube";
 import UserDetails from "../UserDetails";
 import UserPlaylists from "../UserPlaylists";
+import Services from "../Services";
+import Settings from "@material-ui/icons/Settings";
 
 interface IProps {
   classes: any;
@@ -24,19 +28,21 @@ interface IProps {
 
 interface IState {
   tabValue: string;
+  showOptions: boolean;
 }
 
 class SideMenu extends React.Component<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
     this.state = {
-      tabValue: props.location.pathname.substring(1)
+      tabValue: props.location.pathname.substring(1),
+      showOptions: false
     };
     this.handleHistoryPush = this.handleHistoryPush.bind(this);
   }
   public render() {
     const { classes, open, onSideClose, location } = this.props;
-    const { tabValue } = this.state;
+    const { tabValue, showOptions } = this.state;
     const path = location.pathname.substring(1);
     const useTab =
       path === "library" || path === "new" || path === "recent" ? true : false;
@@ -51,17 +57,27 @@ class SideMenu extends React.Component<IProps, IState> {
         }}
       >
         <Grid container className={classes.drawerHeader}>
-          <Grid item xs={10} sm={10} md={10} lg={10}>
+          <Grid item xs={9} sm={9} md={9} lg={9}>
             <UserDetails />
           </Grid>
-          <Grid item>
+          <Grid item xs={3} sm={3} md={3} lg={3}>
+            <IconButton onClick={this.handleSettingsClick}>
+              <Settings />
+            </IconButton>
             <IconButton onClick={onSideClose}>
               <ChevronLeftIcon />
             </IconButton>
           </Grid>
         </Grid>
+        <div>
+          <Collapse in={showOptions} children={<Services />} />
+        </div>
         <Divider />
-        <AddYoutube />
+        <div>
+          <AddSpotify />
+          <AddYoutube />
+        </div>
+        <Divider />
 
         <Tabs
           value={useTab ? tabValue : false}
@@ -85,12 +101,14 @@ class SideMenu extends React.Component<IProps, IState> {
             onClick={this.handleHistoryPush("/new")}
           />
         </Tabs>
-
         <Divider />
         <UserPlaylists />
       </Drawer>
     );
   }
+
+  private handleSettingsClick = () =>
+    this.setState({ showOptions: !this.state.showOptions });
 
   private handleHistoryPush = (value: string) => () => {
     this.props.history.push(value);

@@ -1,10 +1,13 @@
 import {
   Button,
+  IconButton,
   FormControlLabel,
   FormGroup,
   Grid,
-  Switch
+  Switch,
+  Tooltip
 } from "@material-ui/core";
+import { Announcement } from "@material-ui/icons";
 import * as querystring from "querystring";
 import * as React from "react";
 
@@ -28,7 +31,7 @@ export default class Services extends React.Component<IProps> {
     return (
       <Grid container={true} justify="center" alignItems="center">
         <FormGroup row={true}>
-          <Grid item={true}>
+          <Grid item>
             <FormControlLabel
               control={
                 <Switch
@@ -41,6 +44,15 @@ export default class Services extends React.Component<IProps> {
               }
               label="Spotify"
             />
+            {!spotifyValid && (
+              <Tooltip title="Connect Spotify">
+                <IconButton>
+                  <a href={this.redirect()}>
+                    <Announcement />
+                  </a>
+                </IconButton>
+              </Tooltip>
+            )}
           </Grid>
           <Grid item={true}>
             <FormControlLabel
@@ -70,9 +82,6 @@ export default class Services extends React.Component<IProps> {
             />
           </Grid>
         </FormGroup>
-        <Button>
-          <a href={this.redirect()}>Connect Spotify</a>
-        </Button>
       </Grid>
     );
   }

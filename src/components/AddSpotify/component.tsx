@@ -1,73 +1,68 @@
+import * as React from 'react';
 import {
   Avatar,
   Button,
   Input,
   InputAdornment,
+  Grid,
   List,
   ListItemAvatar,
-  ListItem,
   ListItemText,
-  Grid,
-  Collapse,
+  ListItem,
   Modal,
   Tooltip,
-  Typography,
   withStyles
-} from "@material-ui/core";
-import { Youtube } from "mdi-material-ui";
-import * as React from "react";
-import { youtubeAPI } from "../../../src/apiKeys";
+} from '@material-ui/core';
+import { Spotify } from 'mdi-material-ui';
 
 interface IProps {
-  addYoutubeSong: (t: string) => void;
+  classes: any;
   accessToken: string;
   enabled: boolean;
-  classes: any;
+  addSpotifySong: (track: any) => void;
 }
 interface IState {
   showModal: boolean;
   searchValue?: string;
   tracks?: any[];
-  showOptions: boolean;
 }
 
 const styles = {
   modal: {
-    position: "absolute",
-    top: "30%",
-    outline: "none"
+    position: 'absolute',
+    top: '30%',
+    outline: 'none'
   },
   list: {
-    backgroundColor: "white",
-    boxShadow: "lightGray",
-    width: "500px",
-    height: "400px",
-    overflowY: "auto"
+    backgroundColor: 'white',
+    boxShadow: 'lightGray',
+    width: '500px',
+    height: '400px',
+    overflowY: 'auto'
   },
   search: {
-    width: "500px",
-    backgroundColor: "white",
-    boxShadow: "lightGray"
+    width: '500px',
+    backgroundColor: 'white',
+    boxShadow: 'lightGray'
   }
 } as any;
 
-class AddSongs extends React.Component<IProps, IState> {
+class AddSpotify extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      showOptions: false,
       showModal: false
     };
   }
 
   public render() {
-    const { showOptions, tracks } = this.state;
-    const { classes, enabled } = this.props;
+    const { showModal, tracks } = this.state;
+    const { enabled, classes } = this.props;
     return (
       <>
-        <Tooltip title="Add Youtube track">
+        <Tooltip title="Add Spotify track">
           <Button className="btn" disabled={!enabled} onClick={this.toggleShow}>
-            <Youtube />
+            <Spotify />
           </Button>
         </Tooltip>
         <Modal open={this.state.showModal} onClose={this.toggleShow}>
@@ -85,7 +80,7 @@ class AddSongs extends React.Component<IProps, IState> {
                   placeholder="Search..."
                   endAdornment={
                     <InputAdornment position="end">
-                      <Youtube fontSize="small" />
+                      <Spotify fontSize="small" />
                     </InputAdornment>
                   }
                 />
@@ -104,13 +99,13 @@ class AddSongs extends React.Component<IProps, IState> {
                 <List className={classes.list}>
                   {tracks.map(t => (
                     <ListItem
-                      key={`youtube-${t.id}`}
-                      onClick={this.handleAdd(t)}
+                      key={`spotify-${t.id}`}
+                      onClick={this.handleSpotifyAdd(t)}
                     >
                       <ListItemAvatar>
-                        <Avatar src={t.snippet.thumbnails.default.url} />
+                        <Avatar src={t.album.images[1].url} />
                       </ListItemAvatar>
-                      <ListItemText> {t.snippet.title}</ListItemText>
+                      <ListItemText> {t.name}</ListItemText>
                     </ListItem>
                   ))}
                 </List>
@@ -137,19 +132,26 @@ class AddSongs extends React.Component<IProps, IState> {
     e.preventDefault();
     const { searchValue } = this.state;
     if (searchValue) {
+      const { accessToken } = this.props;
       const res = (await fetch(
-        `https://www.googleapis.com/youtube/v3/search?key=${youtubeAPI}&q=${encodeURIComponent(
+        `https://api.spotify.com/v1/search?q=${encodeURIComponent(
           searchValue
-        )}&part=snippet&maxResults=25&type=video`
+        )}&type=track&limit=25`,
+        {
+          headers: new Headers({
+            Authorization: 'Bearer ' + accessToken
+          })
+        }
       )) as any;
       const json = await res.json();
-      this.setState({ tracks: json.items });
+      this.setState({ tracks: json.tracks.items });
     }
   };
-  private handleAdd = (snippet: any) => () => {
-    this.props.addYoutubeSong(snippet);
+
+  private handleSpotifyAdd = (track: any) => async () => {
+    this.props.addSpotifySong(track);
     this.setState({ showModal: false, searchValue: undefined });
   };
 }
 
-export default withStyles(styles)(AddSongs);
+export default withStyles(styles)(AddSpotify);
