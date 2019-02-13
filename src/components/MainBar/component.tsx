@@ -18,6 +18,7 @@ import {
 } from "@material-ui/icons";
 import * as React from "react";
 import Loadable from "react-loadable";
+import AddSongs from "../AddSongs";
 
 const HiddenLoad = () => <></>;
 const Queue = Loadable({
@@ -73,7 +74,7 @@ class MainBar extends React.Component<IProps, IState> {
     this.state = {
       sideRender: false,
       queueRender: false,
-      matches: window.innerWidth <= 992
+      matches: window.innerWidth <= 768
     };
     this.handleSideOpen = this.handleSideOpen.bind(this);
     this.handleQueueOpen = this.handleQueueOpen.bind(this);
@@ -118,7 +119,7 @@ class MainBar extends React.Component<IProps, IState> {
               alignItems="center"
               justify="space-between"
             >
-              <Grid item={true} xs={2} sm={2} md={4} lg={4}>
+              <Grid item={true} xs={4} sm={4} md={4} lg={4}>
                 <IconButton
                   color="inherit"
                   aria-label="Open drawer"
@@ -127,6 +128,7 @@ class MainBar extends React.Component<IProps, IState> {
                   children={<MenuIcon />}
                 />
                 <Authenticate />
+                {!matches && <AddSongs />}
               </Grid>
               {currentTrack !== undefined && (
                 <Fade in={currentTrack !== undefined}>

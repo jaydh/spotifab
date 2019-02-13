@@ -11,8 +11,6 @@ import {
 } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import * as React from "react";
-import AddSpotify from "../AddSpotify";
-import AddYoutube from "../AddYoutube";
 import UserDetails from "../UserDetails";
 import UserPlaylists from "../UserPlaylists";
 import Services from "../Services";
@@ -71,11 +69,6 @@ class SideMenu extends React.Component<IProps, IState> {
         </Grid>
         <div>
           <Collapse in={showOptions} children={<Services />} />
-        </div>
-        <Divider />
-        <div>
-          <AddSpotify />
-          <AddYoutube />
         </div>
         <Divider />
 

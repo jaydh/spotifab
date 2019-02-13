@@ -1,10 +1,8 @@
 import { List as MaterialList, Grid } from "@material-ui/core";
-import { LibraryAdd } from "@material-ui/icons";
 import * as React from "react";
 import { AutoSizer, List as VirtualList } from "react-virtualized";
 import Song from "../Song";
-import AddSpotify from "../AddSpotify";
-import AddYoutube from "../AddYoutube";
+import AddSongs from "../AddSongs";
 
 interface IProps {
   currentTrack?: any;
@@ -78,9 +76,7 @@ class SongList extends React.Component<IProps, IState> {
         alignContent="center"
         style={{ height: "100%" }}
       >
-        <LibraryAdd fontSize="small" />
-        <AddSpotify />
-        <AddYoutube />
+        <AddSongs />
       </Grid>
     );
   }

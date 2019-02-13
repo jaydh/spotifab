@@ -146,23 +146,27 @@ export const fetchPlaylistsMenu = () => {
 
 export const fetchUnifiedPlaylistMenu = () => {
   return (dispatch, getState) => {
-    const database = window.firebase.firestore();
-    const ref = database
-      .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
-      .collection("playlists");
-    return ref.get().then(query => {
-      const playlists = [];
-      query.forEach(doc =>
-        playlists.push({
-          name: doc.data().name,
-          id: doc.data().id,
-          owner: doc.data().owner,
-          unified: true
-        })
-      );
-      dispatch({ type: "FETCH_UNIFIED_PLAYLIST_MENU", playlists });
-    });
+    if (window.firebase.firestore) {
+      const database = window.firebase.firestore();
+      const ref = database
+        .collection("userData")
+        .doc(getState().userReducer.firebaseUser.uid)
+        .collection("playlists");
+      return ref.get().then(query => {
+        const playlists = [];
+        query.forEach(doc =>
+          playlists.push({
+            name: doc.data().name,
+            id: doc.data().id,
+            owner: doc.data().owner,
+            unified: true
+          })
+        );
+        dispatch({ type: "FETCH_UNIFIED_PLAYLIST_MENU", playlists });
+      });
+    } else {
+      dispatch({ type: "FETCH_UNIFIED_PLAYLIST_FAILED" });
+    }
   };
 };
 
