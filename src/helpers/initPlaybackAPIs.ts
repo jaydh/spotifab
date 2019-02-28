@@ -47,7 +47,8 @@ export const initYoutube = () => {
 
     // 4. The API will call this function when the video player is ready.
     const onPlayerReady = (event: any) => {
-      window.ytPlayer.setVolume(store.getState().player.volume);
+      const { player } = store.getState();
+      window.ytPlayer.setVolume(player.muted ? 0 : player.volume);
       store.dispatch({ type: "YOUTUBE_READY" });
     };
 
@@ -67,7 +68,7 @@ export const initSpotify = () => {
     firstScriptTag!.parentNode!.insertBefore(tag, firstScriptTag);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new Spotify.Player({
+      window.player = new Spotify.Player({
         name: "bard",
         getOAuthToken: (cb: any) => {
           const token = store.getState().token.token;
@@ -76,36 +77,36 @@ export const initSpotify = () => {
       });
 
       // Error handling
-      player.addListener("initialization_error", ({ message }: any) => {
+      window.player.addListener("initialization_error", ({ message }: any) => {
         console.error(message);
       });
-      player.addListener("authentication_error", ({ message }: any) => {
+      window.player.addListener("authentication_error", ({ message }: any) => {
         console.error(message);
       });
-      player.addListener("account_error", ({ message }: any) => {
+      window.player.addListener("account_error", ({ message }: any) => {
         console.error(message);
       });
-      player.addListener("playback_error", ({ message }: any) => {
+      window.player.addListener("playback_error", ({ message }: any) => {
         console.error(message);
       });
 
       // Playback status updates
-      player.addListener("player_state_changed", (state: any) => {});
+      window.player.addListener("player_state_changed", (state: any) => {});
 
       // Ready
-      player.addListener("ready", ({ device_id }: any) => {
-        window.player = player;
-        player.setVolume(store.getState().player.volume / 100);
+      window.player.addListener("ready", ({ device_id }: any) => {
+        const { player } = store.getState();
+        window.player.setVolume(player.muted ? 0 : player.volume / 100);
         store.dispatch({ type: "SPOTIFY_READY" });
       });
 
       // Not Ready
-      player.addListener("not_ready", ({ device_id }: any) => {
+      window.player.addListener("not_ready", ({ device_id }: any) => {
         console.log("Device ID has gone offline", device_id);
       });
 
       // Connect to the player!
-      player.connect();
+      window.player.connect();
     };
   }
 };
