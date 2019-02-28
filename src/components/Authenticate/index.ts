@@ -3,9 +3,7 @@ import Authenticate from "./component";
 
 const mapState = (state: any) => {
   return {
-    isAnon:
-      state.userReducer.firebaseUser === undefined ||
-      state.userReducer.firebaseUser.isAnonymous
+    isAnon: state.userReducer.user.isAnonymous
   };
 };
 export default connect(mapState)(Authenticate);

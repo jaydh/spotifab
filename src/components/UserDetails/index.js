@@ -1,31 +1,11 @@
-import UserDetails from './component';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { fetchUser } from '../../actions/userActions';
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      fetchUser
-    },
-    dispatch
-  );
+import UserDetails from "./component";
+import { connect } from "react-redux";
 
 const mapStateToProps = state => {
   return {
-    displayName: state.userReducer.user
-      ? state.userReducer.user.display_name
-      : '',
-    userImage:
-      state.userReducer.user &&
-      state.userReducer.user.images &&
-      state.userReducer.user.images[0]
-        ? state.userReducer.user.images[0].url
-        : ''
+    displayName: state.userReducer.user.displayName,
+    userImage: state.userReducer.user.photoURL
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserDetails);
+export default connect(mapStateToProps)(UserDetails);

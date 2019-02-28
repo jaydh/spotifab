@@ -13,20 +13,20 @@ export const addUnifiedPlaylist = name => {
       type: "ADD_UNIFIED_PLAYLIST",
       name,
       id,
-      owner: { id: getState().userReducer.firebaseUser.uid },
+      owner: { id: getState().userReducer.user.uid },
       tracks
     });
 
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("playlists")
       .doc(id);
 
     batch.set(ref, {
       name,
       id,
-      owner: { id: getState().userReducer.firebaseUser.uid }
+      owner: { id: getState().userReducer.user.uid }
     });
     tracks.forEach(t => {
       batch.set(ref.collection("tracks").doc(t.track.id), t);
@@ -73,14 +73,14 @@ export const convertPlaylistToUnified = playlistId => {
     const id = hash(name).toString();
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("playlists")
       .doc(id);
 
     batch.set(ref, {
       name,
       id,
-      owner: { id: getState().userReducer.firebaseUser.uid }
+      owner: { id: getState().userReducer.user.uid }
     });
     tracks.forEach(t => {
       console.log(t);
@@ -91,7 +91,7 @@ export const convertPlaylistToUnified = playlistId => {
         type: "ADD_UNIFIED_PLAYLIST",
         name,
         id,
-        owner: { id: getState().userReducer.firebaseUser.uid },
+        owner: { id: getState().userReducer.user.uid },
         tracks
       })
     );
@@ -150,7 +150,7 @@ export const fetchUnifiedPlaylistMenu = () => {
       const database = window.firebase.firestore();
       const ref = database
         .collection("userData")
-        .doc(getState().userReducer.firebaseUser.uid)
+        .doc(getState().userReducer.user.uid)
         .collection("playlists");
       return ref.get().then(query => {
         const playlists = [];
@@ -218,7 +218,7 @@ export const fetchUnifiedSongs = (userId, playlistId) => {
     dispatch(fetchPlaylistSongsPending());
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("playlists")
       .doc(playlistId)
       .collection("tracks");
@@ -236,7 +236,7 @@ export const deleteUnifiedPlaylist = id => {
     dispatch({ type: "DELETE_UNIFIED_PLAYLIST", id });
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("playlists")
       .doc(id);
     return ref.delete();

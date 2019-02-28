@@ -1,21 +1,21 @@
-import { initSpotify } from '../helpers/initPlaybackAPIs';
-import { addMinutes, isBefore, parse } from 'date-fns';
+import { initSpotify } from "../helpers/initPlaybackAPIs";
+import { addMinutes, isBefore, parse } from "date-fns";
 
 export const setAuthCode = auth_code => {
   return (dispatch, getState) => {
     const database = window.firebase.firestore();
     database
-      .collection('client')
-      .doc('apiKey')
+      .collection("client")
+      .doc("apiKey")
       .get();
     const ref = database
-      .collection('tokens')
-      .doc(getState().userReducer.firebaseUser.uid);
-    const isDev = window.location.host.startsWith('local');
-    const host = isDev ? 'http://localhost:3000/' : 'https://bard.live/';
+      .collection("tokens")
+      .doc(getState().userReducer.user.uid);
+    const isDev = window.location.host.startsWith("local");
+    const host = isDev ? "http://localhost:3000/" : "https://bard.live/";
     return ref
       .set({ auth_code, host })
-      .then(() => dispatch({ type: 'SET_AUTH_TOKEN_SUCCESS' }));
+      .then(() => dispatch({ type: "SET_AUTH_TOKEN_SUCCESS" }));
   };
 };
 
@@ -24,15 +24,15 @@ export const listenForToken = () => {
   return (dispatch, getState) => {
     initSpotify();
     database
-      .collection('tokens')
-      .doc(getState().userReducer.firebaseUser.uid)
+      .collection("tokens")
+      .doc(getState().userReducer.user.uid)
       .onSnapshot(async doc => {
         if (doc.exists) {
           const { access_token, time } = await doc.data();
           dispatch({
             token: access_token,
             time,
-            type: 'SET_TOKEN'
+            type: "SET_TOKEN"
           });
           if (
             access_token &&
@@ -54,11 +54,11 @@ export const requestTokenRefresh = () => {
 
   return async (dispatch, getState) => {
     await database
-      .collection('tokens')
-      .doc(getState().userReducer.firebaseUser.uid)
+      .collection("tokens")
+      .doc(getState().userReducer.user.uid)
       .set({ refetch: true }, { merge: true });
     dispatch({
-      type: 'REFETCH_TOKEN'
+      type: "REFETCH_TOKEN"
     });
   };
 };

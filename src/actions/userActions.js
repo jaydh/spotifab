@@ -1,37 +1,3 @@
-export const fetchUserSuccess = user => {
-  return {
-    type: 'FETCH_USER_SUCCESS',
-    user
-  };
-};
-
-export const fetchUserError = () => {
-  return {
-    type: 'FETCH_USER_ERROR'
-  };
-};
-
-export const fetchUser = () => {
-  return (dispatch, getState) => {
-    const request = new Request('https://api.spotify.com/v1/me', {
-      headers: new Headers({
-        Authorization: 'Bearer ' + getState().token.token
-      })
-    });
-
-    fetch(request)
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        dispatch(fetchUserSuccess(res));
-      })
-      .catch(err => {
-        dispatch(fetchUserError(err));
-      });
-  };
-};
-
 export const addSongToLibrarySuccess = songId => {
   return {
     songId,

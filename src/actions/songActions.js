@@ -21,7 +21,7 @@ export const addYoutubeSong = t => {
 
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("youtubeTracks")
       .doc(id);
     await ref.set({
@@ -45,7 +45,7 @@ export const fetchYoutubeSongs = () => {
   return async (dispatch, getState) => {
     if (window.firebase.firestore) {
       const database = window.firebase.firestore();
-      const user = getState().userReducer.firebaseUser;
+      const user = getState().userReducer.user;
       if (user) {
         const ref = database
           .collection("userData")
@@ -316,7 +316,7 @@ export const removeYoutubeSong = track => {
     const id = track.id;
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("youtubeTracks")
       .doc(id);
     await ref.delete();

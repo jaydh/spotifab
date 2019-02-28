@@ -19,7 +19,7 @@ const persistConfig = {
 const userConfig = {
   key: "userReducer",
   storage,
-  whitelist: ["spotifyEnabled", "youtubeEnabled", "firebaseUser"]
+  whitelist: ["spotifyEnabled", "youtubeEnabled", "user"]
 };
 
 const playerConfig = {
