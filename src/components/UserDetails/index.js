@@ -2,11 +2,14 @@ import UserDetails from "./component";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {
+  const { userReducer } = state;
+  const { user } = userReducer;
   return {
-    displayName: state.userReducer.user.displayName,
-    userImage: state.userReducer.user.providerData[0]
-      ? state.userReducer.user.providerData[0].photoURL
-      : state.userReducer.user.photoURL
+    displayName: user.displayName,
+    userImage:
+      user.providerData && user.providerData[0]
+        ? user.providerData[0].photoURL
+        : user.photoURL
   };
 };
 
