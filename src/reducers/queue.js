@@ -61,9 +61,11 @@ export default (
       };
     }
     case "ADD_SONG_TO_QUEUE":
+      const next = state.queue.slice(0);
+      next.push(action.song);
       return {
         ...state,
-        queue: state.queue.push(action.song)
+        queue: next
       };
     case "SHUFFLE_QUEUE":
       if (state.queue.length === 0) {
