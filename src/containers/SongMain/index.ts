@@ -10,14 +10,6 @@ import {
 import { fetchSongs, fetchYoutubeSongs } from "../../actions/songActions";
 import Component from "./component";
 
-const mapState = (state: any) => {
-  return {
-    firebaseLoaded: state.ui.firebaseLoaded,
-    signedIn: state.userReducer.signedIn,
-    enabledServices: state.userReducer.enabledServices
-  };
-};
-
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {
@@ -26,7 +18,9 @@ const mapDispatchToProps = (dispatch: any) => {
       fetchUnifiedSongs,
       fetchPlaylistSongs,
       fetchRecent,
-      fetchNew
+      fetchNew,
+      initSpotify: () => dispatch({ type: "INIT_SPOTIFY_REQUESTED" }),
+      initYoutube: () => dispatch({ type: "INIT_YOUTUBE_REQUESTED" })
     },
     dispatch
   );
@@ -34,7 +28,7 @@ const mapDispatchToProps = (dispatch: any) => {
 
 export default withRouter(
   connect(
-    mapState,
+    null,
     mapDispatchToProps
   )(Component)
 );

@@ -5,9 +5,11 @@ export default (
     upSelector: undefined,
     downSelector: undefined,
     selectedSongs: [],
-    firebaseLoaded: false,
     sideMenuOpen: false,
-    queueOpen: false
+    queueOpen: false,
+    showYoutube: true,
+    showSpotify: true,
+    firebaseLoaded: false
   },
   action: any
 ) => {
@@ -27,6 +29,11 @@ export default (
       return { ...state, filter: action.filter };
     case "SET_SORT":
       return { ...state, sort: action.sort };
+    case "TOGGLE_SHOW_YOUTUBE":
+      return { ...state, showYoutube: !state.showYoutube };
+    case "TOGGLE_SHOW_SPOTIFY":
+      return { ...state, showSpotify: !state.showSpotify };
+
     case "SET_SONG_SELECTION":
       return {
         ...state,

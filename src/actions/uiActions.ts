@@ -1,4 +1,3 @@
-import { initSpotify, initYoutube } from '../helpers/initPlaybackAPIs';
 export const setFilter = (filter: string) => {
   return {
     type: 'SET_FILTER',
@@ -10,6 +9,18 @@ export const setSort = (sort: string) => {
   return {
     type: 'SET_SORT',
     sort
+  };
+};
+
+export const toggleShowYoutube = () => {
+  return {
+    type: 'TOGGLE_SHOW_YOUTUBE'
+  };
+};
+
+export const toggleShowSpotify = () => {
+  return {
+    type: 'TOGGLE_SHOW_SPOTIFY'
   };
 };
 
@@ -29,12 +40,6 @@ export const setSongSelection = (data: {
 export const toggleService = (service: string) => {
   return (dispatch: any, getState: any) => {
     const { player } = getState();
-    if (service === 'spotify' && !player.spotifyReady) {
-      initSpotify();
-    }
-    if (service === 'youtube' && !player.youtubeReady) {
-      initYoutube();
-    }
     dispatch({ type: 'TOGGLE_SERVICE', service });
   };
 };

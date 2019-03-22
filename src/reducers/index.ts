@@ -7,45 +7,49 @@ import player from "./player";
 import token from "./token";
 import { persistReducer } from "redux-persist";
 import ui from "./ui";
-import synced from "./synced";
-import storage from "redux-persist/lib/storage"; // defaults to localStorage for web and AsyncStorage for react-native
+import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "root",
-  storage: storage,
+  storage,
   whitelist: ["queue", "songsReducer", "token", "ui"]
 };
 
 const userConfig = {
   key: "userReducer",
-  storage: storage
+  storage,
+  whitelist: ["spotifyEnabled", "youtubeEnabled", "user"]
 };
 
 const playerConfig = {
   key: "player",
-  storage: storage,
+  storage,
   blacklist: ["playing", "spotifyReady", "youtubeReady"]
 };
 
 const uiConfig = {
   key: "ui",
-  storage: storage,
-  blacklist: ["firebaseLoaded", "queueOpen", "sideMenuOpen"]
+  storage,
+  whitelist: ["sort", "filter"]
 };
+
+interface IState {
+  userReducer: typeof userReducer;
+}
+
 const appReducer = combineReducers({
-  userReducer: persistReducer(userConfig, userReducer),
+  userReducer: persistReducer(userConfig, userReducer as any),
   playlistReducer,
   songsReducer,
   player: persistReducer(playerConfig, player),
   queue,
   token,
-  ui: persistReducer(uiConfig, ui),
-  synced
+  ui: persistReducer(uiConfig, ui)
 });
-const rootReducer = (state, action) => {
+const rootReducer = (state: IState | undefined, action: any) => {
   if (action.type === "RESET") {
     state = undefined;
   }
-  return appReducer(state, action);
+  return appReducer(state as any, action);
 };
-export default persistReducer(persistConfig, rootReducer);
+export default persistReducer(persistConfig, rootReducer as any);

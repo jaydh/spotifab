@@ -11,24 +11,24 @@ export default (
   action
 ) => {
   switch (action.type) {
-    case 'PLAY_SONG_SUCCESS':
+    case "PLAY_SONG_SUCCESS":
       return { ...state, playing: true };
-    case 'TOGGLE_MUTE':
+    case "TOGGLE_MUTE":
       return { ...state, muted: !state.muted };
-    case 'TOGGLE_PLAY':
+    case "TOGGLE_PLAY":
       return { ...state, playing: !state.playing };
-    case 'UPDATE_VOLUME':
+    case "UPDATE_VOLUME":
       return {
         ...state,
         volume: action.volume
       };
-    case 'UPDATE_SPOTIFY_PLAYER_STATE':
+    case "UPDATE_SPOTIFY_PLAYER_STATE":
       return { ...state, spotifyPlayer: action.state };
-    case 'UPDATE_YOUTUBE_PLAYER_STATE':
+    case "UPDATE_YOUTUBE_PLAYER_STATE":
       return { ...state, ytPlayer: action.state };
-    case 'SPOTIFY_READY':
+    case "INIT_SPOTIFY_SUCCESS":
       return { ...state, spotifyReady: true };
-    case 'YOUTUBE_READY':
+    case "INIT_YOUTUBE_SUCCESS":
       return { ...state, youtubeReady: true };
     default:
       return state;

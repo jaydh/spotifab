@@ -30,7 +30,6 @@ const mapStateToProps = (state: any) => {
   return {
     selection: state.ui.upSelector && state.ui.downSelector,
     currentTrack: state.queue.queue[state.queue.position],
-    pending: !state.synced.songsSynced
   };
 };
 

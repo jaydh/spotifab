@@ -18,10 +18,17 @@ import {
 } from "@material-ui/icons";
 import * as React from "react";
 import Loadable from "react-loadable";
+import AddSongs from "../../components/AddSongs";
+import Authenticate from "../../components/Authenticate";
+import CurrentArt from "../../components/CurrentArt";
+import Filter from "../../components/Filter";
+import SongControls from "../../components/SongControls";
+import Sort from "../../components/Sort";
+import Volume from "../../components/VolumeControls";
 
 const HiddenLoad = () => <></>;
 const Queue = Loadable({
-  loader: () => import("../Queue"),
+  loader: () => import("../../components/Queue"),
   loading: HiddenLoad
 });
 const SideMenu = Loadable({
@@ -29,19 +36,11 @@ const SideMenu = Loadable({
   loading: HiddenLoad
 });
 const SongProgress = Loadable({
-  loader: () => import("../SongProgress"),
+  loader: () => import("../../components/SongProgress"),
   loading: HiddenLoad
 });
 
-import Authenticate from "../Authenticate";
-import CurrentArt from "../CurrentArt";
-import Filter from "../Filter";
-import SongControls from "../SongControls";
-import Sort from "../Sort";
-import Volume from "../VolumeControls";
-
 interface IProps {
-  pending: boolean;
   isLibrary: boolean;
   playlistId: string;
   isUnified: boolean;
@@ -73,14 +72,8 @@ class MainBar extends React.Component<IProps, IState> {
     this.state = {
       sideRender: false,
       queueRender: false,
-      matches: window.innerWidth <= 992
+      matches: window.innerWidth <= 768
     };
-    this.handleSideOpen = this.handleSideOpen.bind(this);
-    this.handleQueueOpen = this.handleQueueOpen.bind(this);
-    this.handleQueueMouseOver = this.handleQueueMouseOver.bind(this);
-    this.handleSideMouseOver = this.handleSideMouseOver.bind(this);
-    this.convert = this.convert.bind(this);
-    this.handleResize = this.handleResize.bind(this);
   }
 
   public componentDidMount() {
@@ -118,7 +111,7 @@ class MainBar extends React.Component<IProps, IState> {
               alignItems="center"
               justify="space-between"
             >
-              <Grid item={true} xs={2} sm={2} md={4} lg={4}>
+              <Grid item={true} xs={4} sm={4} md={4} lg={4}>
                 <IconButton
                   color="inherit"
                   aria-label="Open drawer"
@@ -127,6 +120,7 @@ class MainBar extends React.Component<IProps, IState> {
                   children={<MenuIcon />}
                 />
                 <Authenticate />
+                {!matches && <AddSongs />}
               </Grid>
               {currentTrack !== undefined && (
                 <Fade in={currentTrack !== undefined}>
@@ -213,26 +207,26 @@ class MainBar extends React.Component<IProps, IState> {
     this.props.convertPlaylistToUnified(name);
   };
 
-  private handleQueueMouseOver() {
+  private handleQueueMouseOver = () => {
     this.setState({ queueRender: true });
     Queue.preload();
-  }
+  };
 
-  private handleSideMouseOver() {
+  private handleSideMouseOver = () => {
     this.setState({ sideRender: true });
     SideMenu.preload();
-  }
+  };
 
-  private handleSideOpen() {
+  private handleSideOpen = () => {
     this.props.onSideOpen();
-  }
-  private handleQueueOpen() {
+  };
+  private handleQueueOpen = () => {
     this.props.onQueueOpen();
-  }
-  private handleResize() {
+  };
+  private handleResize = () => {
     const x = window.matchMedia("(max-width: 992px)");
     this.setState({ matches: x.matches });
-  }
+  };
 }
 
 const styles = (theme: any) => ({

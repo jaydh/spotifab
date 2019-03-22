@@ -1,12 +1,16 @@
 import { select, debounce, call, put, takeLatest } from "redux-saga/effects";
-import { store } from "../index";
 
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
 function* playSong(action: any) {
   try {
     const { player, queue, token } = yield select();
+    if (player.spotifyReady) {
+      window.player.pause();
+    }
+    if (player.youtubeReady) {
+      window.ytPlayer.stopVideo();
+    }
 
-    yield call(handlePlay, { player, queue, token });
+    yield call(handlePlay, { queue, token });
     yield put({ type: "PLAY_SONG_SUCCESS" });
   } catch (e) {
     yield put({ type: "PLAY_SONG_FAILED", message: e.message });
@@ -19,14 +23,8 @@ function* mySaga() {
 }
 
 const handlePlay = async (action: any) => {
-  const { player, queue, token } = action;
-
-  if (player.spotifyReady) {
-    window.player.pause();
-  }
-  if (player.youtubeReady) {
-    window.ytPlayer.stopVideo();
-  }
+  const { queue, token } = action;
+  console.log(window.player, window.ytPlayer);
   const song = queue.queue[queue.position];
   song.youtube
     ? window.ytPlayer.loadVideoById(song.track.id)

@@ -1,7 +1,8 @@
-import { List as MaterialList } from "@material-ui/core";
+import { List as MaterialList, Grid } from "@material-ui/core";
 import * as React from "react";
 import { AutoSizer, List as VirtualList } from "react-virtualized";
 import Song from "../Song";
+import AddSongs from "../AddSongs";
 
 interface IProps {
   currentTrack?: any;
@@ -12,7 +13,11 @@ interface IProps {
   upSelector?: number;
   downSelector?: number;
   setSongSelection: (
-    data: { up?: number; down?: number; selectedSongs?: any[] }
+    data: {
+      up?: number;
+      down?: number;
+      selectedSongs?: any[];
+    }
   ) => void;
   sort: string;
 }
@@ -29,15 +34,6 @@ class SongList extends React.Component<IProps, IState> {
       mouseDownIndex: undefined,
       mouseUpIndex: undefined
     };
-    this.rowRenderer = this.rowRenderer.bind(this);
-    this.updateSelection = this.updateSelection.bind(this);
-    this.makeNewQueue = this.makeNewQueue.bind(this);
-    this.makeNewQueueAndPlay = this.makeNewQueueAndPlay.bind(this);
-    this.updateGrid = this.updateGrid.bind(this);
-    this.addSelectedToQueue = this.addSelectedToQueue.bind(this);
-    this.clearSelection = this.clearSelection.bind(this);
-    this.handleClickDown = this.handleClickDown.bind(this);
-    this.handleClickUp = this.handleClickUp.bind(this);
   }
 
   public componentDidUpdate(prevProps: IProps) {
@@ -51,13 +47,14 @@ class SongList extends React.Component<IProps, IState> {
   }
 
   public render() {
-    return (
+    const { songs } = this.props;
+    return this.props.songs.length > 0 ? (
       <AutoSizer>
         {({ height, width }: any) => (
           <MaterialList style={{ height, width }}>
             <VirtualList
               ref={(ref: any) => (this.refs = ref)}
-              rowCount={this.props.songs.length}
+              rowCount={songs.length}
               rowRenderer={this.rowRenderer}
               rowHeight={this.state.itemHeight}
               overscanRowCounter={100}
@@ -67,9 +64,19 @@ class SongList extends React.Component<IProps, IState> {
           </MaterialList>
         )}
       </AutoSizer>
+    ) : (
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        alignContent="center"
+        style={{ height: "100%" }}
+      >
+        <AddSongs />
+      </Grid>
     );
   }
-  private rowRenderer(options: any) {
+  private rowRenderer = (options: any) => {
     const { index, key, style } = options;
     const { currentTrack, upSelector, downSelector, songs } = this.props;
     const song = songs[index];
@@ -94,7 +101,7 @@ class SongList extends React.Component<IProps, IState> {
         />
       </div>
     );
-  }
+  };
 
   private handleClickDown = (index: number) => () => {
     this.clearSelection();
@@ -122,30 +129,30 @@ class SongList extends React.Component<IProps, IState> {
     }
   };
 
-  private makeNewQueue(i: number, j: number) {
+  private makeNewQueue = (i: number, j: number) => {
     const end = i < j ? j : this.props.songs.length;
     const songs = this.props.songs.slice(i, end + 1);
     this.props.makeNewQueue(songs);
-  }
+  };
   private makeNewQueueAndPlay = (index: number) => () => {
     this.makeNewQueue(index, index + 100);
     this.props.play();
   };
 
-  private addSelectedToQueue() {
+  private addSelectedToQueue = () => {
     const selected = this.props.songs.slice(
       this.props.upSelector,
       this.props.downSelector
     );
     selected.map((t: any) => this.props.addSongToQueue(t));
-  }
+  };
 
-  private clearSelection() {
+  private clearSelection = () => {
     this.props.setSongSelection({ up: undefined, down: undefined });
-  }
+  };
 
-  private updateGrid() {
+  private updateGrid = () => {
     (this.refs as any).forceUpdateGrid();
-  }
+  };
 }
 export default SongList;

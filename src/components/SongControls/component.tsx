@@ -31,15 +31,7 @@ interface IState {
 class SongControls extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-
     this.state = { showLeft: false, showRight: false };
-
-    this.togglePlay = this.togglePlay.bind(this);
-    this.nextSong = this.nextSong.bind(this);
-    this.prevSong = this.prevSong.bind(this);
-    this.removeNext = this.removeNext.bind(this);
-    this.toggleLeft = this.toggleLeft.bind(this);
-    this.toggleRight = this.toggleRight.bind(this);
   }
 
   public render() {
@@ -75,20 +67,20 @@ class SongControls extends React.Component<IProps, IState> {
       </Grid>
     );
   }
-  private nextSong() {
+  private nextSong = () => {
     this.props.nextSong();
-  }
-  private prevSong() {
+  };
+  private prevSong = () => {
     this.props.prevSong();
-  }
+  };
 
-  private togglePlay() {
+  private togglePlay = () => {
     this.props.togglePlay();
-  }
+  };
 
-  private removeNext() {
+  private removeNext = () => {
     this.props.removeSongFromQueue(this.props.nextTrackPosition);
-  }
+  };
 
   private toggleLeft = (value: boolean) => () => {
     this.setState({ showLeft: this.props.prevTrack && value });

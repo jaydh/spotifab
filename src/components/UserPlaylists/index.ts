@@ -14,7 +14,6 @@ const mapStateToProps = (state: any) => {
     user: state.userReducer.user,
     playlistMenu: state.playlistReducer.playlistMenu,
     unifiedMenu: state.playlistReducer.unifiedMenu,
-    synced: state.synced.playlistsSynced,
     tokenTime: state.token.time,
     firebaseLoaded: state.ui.firebaseLoaded
   };

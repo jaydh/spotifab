@@ -55,9 +55,7 @@ export default class QueueItem extends React.Component<IProps, IState> {
           primary={song.track.name}
           primaryTypographyProps={{
             variant: "body1",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis"
+            overflow: "hidden"
           }}
         />
         {hovered && (

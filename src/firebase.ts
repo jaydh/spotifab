@@ -8,7 +8,7 @@ export default () => {
   firebase.auth().onAuthStateChanged((user: any) => {
     if (user) {
       store.dispatch({ type: "SIGN_IN", user });
-      store.dispatch(listenForToken());
+      store.dispatch(listenForToken() as any);
     } else {
       store.dispatch({ type: "RESET" });
       firebase.auth().signInAnonymously();

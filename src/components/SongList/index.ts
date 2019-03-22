@@ -23,15 +23,27 @@ const mapStateToProps = (state: any, ownProps: any) => {
       { name: "track.name", weight: 1 }
     ]
   };
-  const library = (ownProps.isLibrary
-    ? state.songsReducer.spotifyTracks.concat(state.songsReducer.youtubeTracks)
+  const { songsReducer } = state;
+  const { spotifyIDs, spotifyTracks, youtubeIDs, youtubeTracks } = songsReducer;
+
+  const spotifySongs: [] = state.ui.showSpotify
+    ? spotifyIDs.map((id: string) => spotifyTracks[id])
+    : [];
+  const youtubeSongs: [] = state.ui.showYoutube
+    ? youtubeIDs.map((id: string) => youtubeTracks[id])
+    : [];
+
+  let songs = (ownProps.isLibrary
+    ? [].concat(spotifySongs, youtubeSongs)
     : state.songsReducer.playlistSongs
   ).sort((a: any, b: any) => sortBy(state.ui.sort, a, b));
-  const fuse = new Fuse(library, options);
+  const fuse = new Fuse(songs, options);
   const filter = state.ui.filter;
+  songs = filter.length > 0 ? fuse.search(state.ui.filter) : songs;
+
   return {
     currentTrack: state.queue.queue[state.queue.position],
-    songs: filter.length > 0 ? fuse.search(state.ui.filter) : library,
+    songs,
     songId: state.songsReducer.songId,
     sort: state.ui.sort,
     upSelector: state.ui.upSelector,

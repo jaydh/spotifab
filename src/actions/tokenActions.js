@@ -1,26 +1,19 @@
-import { initSpotify } from "../helpers/initPlaybackAPIs";
 import { addMinutes, isBefore, parse } from "date-fns";
 
-export const setAuthCode = authCode => {
-  const database = window.firebase.firestore();
-
+export const setAuthCode = auth_code => {
   return (dispatch, getState) => {
+    const database = window.firebase.firestore();
     database
       .collection("client")
       .doc("apiKey")
-      .get()
-      .then(doc => console.log(doc.data()));
+      .get();
     const ref = database
       .collection("tokens")
-      .doc(getState().userReducer.firebaseUser.uid);
-    dispatch({
-      type: "REFETCH_TOKEN"
-    });
+      .doc(getState().userReducer.user.uid);
     const isDev = window.location.host.startsWith("local");
-    const callback = isDev ? "http://localhost:3000/" : "https://bard.live/";
-
+    const host = isDev ? "http://localhost:3000/" : "https://bard.live/";
     return ref
-      .set({ auth_code: authCode, host: callback })
+      .set({ auth_code, host })
       .then(() => dispatch({ type: "SET_AUTH_TOKEN_SUCCESS" }));
   };
 };
@@ -28,10 +21,9 @@ export const setAuthCode = authCode => {
 export const listenForToken = () => {
   const database = window.firebase.firestore();
   return (dispatch, getState) => {
-    initSpotify();
     database
       .collection("tokens")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .onSnapshot(async doc => {
         if (doc.exists) {
           const { access_token, time } = await doc.data();
@@ -45,9 +37,6 @@ export const listenForToken = () => {
             !isBefore(new Date(), addMinutes(parse(time), 30))
           ) {
             dispatch(requestTokenRefresh());
-            if (!getState().player.spotifyReady) {
-              initSpotify();
-            }
           }
         }
       });
@@ -61,7 +50,7 @@ export const requestTokenRefresh = () => {
   return async (dispatch, getState) => {
     await database
       .collection("tokens")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .set({ refetch: true }, { merge: true });
     dispatch({
       type: "REFETCH_TOKEN"

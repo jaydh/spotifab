@@ -5,8 +5,6 @@ import { parse, toSeconds } from "iso8601-duration";
 // tslint:disable:variable-name
 
 export const addYoutubeSong = t => {
-  console.log("fetc", window.firebase);
-
   return async (dispatch, getState) => {
     const database = window.firebase.firestore();
     const name = t.snippet.title;
@@ -21,7 +19,7 @@ export const addYoutubeSong = t => {
 
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("youtubeTracks")
       .doc(id);
     await ref.set({
@@ -43,50 +41,55 @@ export const addYoutubeSong = t => {
 
 export const fetchYoutubeSongs = () => {
   return async (dispatch, getState) => {
-    const database = window.firebase.firestore();
-    const user = getState().userReducer.firebaseUser;
-    if (user) {
-      const ref = database
-        .collection("userData")
-        .doc(user.uid)
-        .collection("youtubeTracks");
-      const youtubeTracks = await ref.get().then(querySnapshot => {
-        const data = [];
-        querySnapshot.forEach(async doc => {
-          const { id, name, added_at } = doc.data();
-          let { duration_ms } = doc.data();
-          if (!duration_ms) {
-            const res = await fetch(
-              `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
-            );
-            const json = await res.json();
-            duration_ms = json.items[0]
-              ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
-              : null;
+    if (window.firebase && window.firebase.firestore) {
+      const database = window.firebase.firestore();
+      const user = getState().userReducer.user;
+      if (user) {
+        const ref = database
+          .collection("userData")
+          .doc(user.uid)
+          .collection("youtubeTracks");
+        const songs = await ref.get().then(querySnapshot => {
+          const data = [];
+          querySnapshot.forEach(async doc => {
+            const { id, name, added_at } = doc.data();
+            let { duration_ms } = doc.data();
+            if (!duration_ms) {
+              const res = await fetch(
+                `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
+              );
+              const json = await res.json();
+              duration_ms = json.items[0]
+                ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
+                : null;
 
-            await ref.doc(id).set(
-              {
-                duration_ms
-              },
-              {
-                merge: true
-              }
-            );
-          }
-
-          data.push({
-            youtube: true,
-            added_at,
-            track: {
-              id,
-              name,
-              duration_ms
+              await ref.doc(id).set(
+                {
+                  duration_ms
+                },
+                {
+                  merge: true
+                }
+              );
             }
+
+            data.push({
+              youtube: true,
+              added_at,
+              track: {
+                id,
+                name,
+                duration_ms
+              }
+            });
           });
+          return data;
         });
-        return data;
-      });
-      return dispatch({ type: "FETCH_YOUTUBE_TRACKS_SUCCESS", youtubeTracks });
+        return dispatch({
+          type: "FETCH_YOUTUBE_TRACKS_SUCCESS",
+          songs
+        });
+      }
     }
   };
 };
@@ -311,7 +314,7 @@ export const removeYoutubeSong = track => {
     const id = track.id;
     const ref = database
       .collection("userData")
-      .doc(getState().userReducer.firebaseUser.uid)
+      .doc(getState().userReducer.user.uid)
       .collection("youtubeTracks")
       .doc(id);
     await ref.delete();

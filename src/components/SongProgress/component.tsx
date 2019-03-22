@@ -70,7 +70,6 @@ export default class SongProgress extends React.Component<IProps, IState> {
     );
   }
   private handleClick(e: any) {
-    console.log(this.state.seekTime);
     this.props.seek(this.state.seekTime);
   }
 
@@ -101,9 +100,9 @@ export default class SongProgress extends React.Component<IProps, IState> {
       if (currentTrack && ready) {
         const { duration_ms } = currentTrack.track;
         const position = currentTrack.youtube
-          ? (await (window as any).ytPlayer.getCurrentTime()) * 1000
-          : (await (window as any).player.getCurrentState())
-          ? (await (window as any).player.getCurrentState()).position
+          ? (await window.ytPlayer.getCurrentTime()) * 1000
+          : (await window.player.getCurrentState())
+          ? (await window.player.getCurrentState()).position
           : 0;
         if (position && duration_ms - position < 1000) {
           this.props.nextSong();
