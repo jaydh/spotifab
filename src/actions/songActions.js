@@ -41,55 +41,53 @@ export const addYoutubeSong = t => {
 
 export const fetchYoutubeSongs = () => {
   return async (dispatch, getState) => {
-    if (window.firebase && window.firebase.firestore) {
-      const database = window.firebase.firestore();
-      const user = getState().userReducer.user;
-      if (user) {
-        const ref = database
-          .collection("userData")
-          .doc(user.uid)
-          .collection("youtubeTracks");
-        const songs = await ref.get().then(querySnapshot => {
-          const data = [];
-          querySnapshot.forEach(async doc => {
-            const { id, name, added_at } = doc.data();
-            let { duration_ms } = doc.data();
-            if (!duration_ms) {
-              const res = await fetch(
-                `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
-              );
-              const json = await res.json();
-              duration_ms = json.items[0]
-                ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
-                : null;
+    const database = window.firebase.firestore();
+    const user = getState().userReducer.user;
+    if (user) {
+      const ref = database
+        .collection("userData")
+        .doc(user.uid)
+        .collection("youtubeTracks");
+      const songs = await ref.get().then(querySnapshot => {
+        const data = [];
+        querySnapshot.forEach(async doc => {
+          const { id, name, added_at } = doc.data();
+          let { duration_ms } = doc.data();
+          if (!duration_ms) {
+            const res = await fetch(
+              `https://www.googleapis.com/youtube/v3/videos?key=${youtubeAPI}&id=${id}&part=snippet,contentDetails`
+            );
+            const json = await res.json();
+            duration_ms = json.items[0]
+              ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
+              : null;
 
-              await ref.doc(id).set(
-                {
-                  duration_ms
-                },
-                {
-                  merge: true
-                }
-              );
-            }
-
-            data.push({
-              youtube: true,
-              added_at,
-              track: {
-                id,
-                name,
+            await ref.doc(id).set(
+              {
                 duration_ms
+              },
+              {
+                merge: true
               }
-            });
+            );
+          }
+
+          data.push({
+            youtube: true,
+            added_at,
+            track: {
+              id,
+              name,
+              duration_ms
+            }
           });
-          return data;
         });
-        return dispatch({
-          type: "FETCH_YOUTUBE_TRACKS_SUCCESS",
-          songs
-        });
-      }
+        return data;
+      });
+      return dispatch({
+        type: "FETCH_YOUTUBE_TRACKS_SUCCESS",
+        songs
+      });
     }
   };
 };

@@ -62,11 +62,7 @@ class AddSpotify extends React.Component<IProps, IState> {
       <>
         <Tooltip title="Add Spotify track">
           <span>
-            <Button
-              className="btn"
-              disabled={!enabled}
-              onClick={this.toggleShow}
-            >
+            <Button disabled={!enabled} onClick={this.toggleShow}>
               <Spotify />
             </Button>
           </span>

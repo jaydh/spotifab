@@ -1,7 +1,7 @@
 import * as React from "react";
+import SongMain from "../../containers/SongMain";
 import { Redirect, Route, Switch } from "react-router";
 import { BrowserRouter } from "react-router-dom";
-import SongMain from "../SongMain";
 
 interface IProps {
   enqueueSnackbar: (t: any, options?: any) => void;

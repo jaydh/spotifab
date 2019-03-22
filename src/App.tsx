@@ -14,7 +14,9 @@ interface IProps {
 class App extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    props.loadFirebase();
+  }
+  async componentDidMount() {
+    await this.props.loadFirebase();
   }
 
   public render() {

@@ -24,7 +24,6 @@ function* mySaga() {
 
 const handlePlay = async (action: any) => {
   const { queue, token } = action;
-  console.log(window.player, window.ytPlayer);
   const song = queue.queue[queue.position];
   song.youtube
     ? window.ytPlayer.loadVideoById(song.track.id)

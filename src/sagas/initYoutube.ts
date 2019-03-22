@@ -3,8 +3,8 @@ declare var YT: any;
 
 function* initYoutube(action: any) {
   try {
-    const { player, token } = yield select();
-    yield call(handleInit, { player, token });
+    const { player } = yield select();
+    yield call(handleInit, { player });
     yield put({ type: "INIT_YOUTUBE_SUCCESS" });
   } catch (e) {
     yield put({ type: "INIT_YOUTUBE_FAILED", message: e.message });
@@ -32,10 +32,10 @@ const handleInit = async (action: any) => {
 
   return youtubeReady
     ? Promise.resolve()
-    : loadSDK.then(() => setupYoutube(player, token));
+    : loadSDK.then(() => setupYoutube(player));
 };
 
-const setupYoutube = (player: any, token: string) => {
+const setupYoutube = (player: any) => {
   return new Promise((resolve, reject) => {
     const onPlayerReady = (event: any) => {
       window.ytPlayer.setVolume(player.muted ? 0 : player.volume);

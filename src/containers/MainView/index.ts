@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import MainView from "./component";
 import { withSnackbar } from "notistack";
+import { loadFirebase } from "../../actions/firebase";
 import { setAuthCode } from "../../actions/tokenActions";
 import { bindActionCreators } from "redux";
 

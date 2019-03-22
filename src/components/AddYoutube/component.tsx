@@ -65,15 +65,11 @@ class AddSongs extends React.Component<IProps, IState> {
     const { classes, enabled } = this.props;
     return (
       <>
-          <Tooltip title="Add Youtube track">
-            <Button
-              className="btn"
-              disabled={!enabled}
-              onClick={this.toggleShow}
-            >
-              <Youtube />
-            </Button>
-          </Tooltip>
+        <Tooltip title="Add Youtube track">
+          <Button disabled={!enabled} onClick={this.toggleShow}>
+            <Youtube />
+          </Button>
+        </Tooltip>
         <Modal open={this.state.showModal} onClose={this.toggleShow}>
           <Grid
             container

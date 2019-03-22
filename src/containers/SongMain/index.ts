@@ -10,6 +10,15 @@ import {
 import { fetchSongs, fetchYoutubeSongs } from "../../actions/songActions";
 import Component from "./component";
 
+const mapState = (state: any) => {
+  return {
+    firebaseLoaded: state.ui.firebaseLoaded,
+    signedIn: state.userReducer.signedIn,
+    enabledServices: state.userReducer.enabledServices,
+    songsFetched: state.synced.songsSynced
+  };
+};
+
 const mapDispatchToProps = (dispatch: any) => {
   return bindActionCreators(
     {

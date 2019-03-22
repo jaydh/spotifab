@@ -15,23 +15,25 @@ interface IProps {
   location: any;
   match: any;
   signedIn: boolean;
+  firebaseLoaded: boolean;
 }
 
 class SongMain extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    this.handleFetch = this.handleFetch.bind(this);
   }
 
   public componentDidMount() {
-    this.handleFetch();
     this.props.initYoutube();
     this.props.initSpotify();
   }
 
   public componentDidUpdate(oldProps: IProps) {
-    const { location } = this.props;
-    if (oldProps.location.pathname !== location.pathname) {
+    const { location, firebaseLoaded } = this.props;
+    if (
+      (firebaseLoaded && oldProps.firebaseLoaded !== firebaseLoaded) ||
+      oldProps.location.pathname !== location.pathname
+    ) {
       this.handleFetch();
     }
   }
@@ -45,7 +47,7 @@ class SongMain extends React.Component<IProps> {
     );
   }
 
-  private handleFetch() {
+  private handleFetch = () => {
     const {
       location,
       match,
@@ -68,7 +70,7 @@ class SongMain extends React.Component<IProps> {
     } else if (location.pathname === "/new") {
       fetchNew();
     }
-  }
+  };
 }
 
 export default SongMain;
