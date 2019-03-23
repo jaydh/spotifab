@@ -4,19 +4,18 @@ import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import "./App.css";
 import MainView from "./containers/MainView";
-import { loadFirebase } from "./actions/firebase";
 
 interface IProps {
   onReset: () => void;
-  loadFirebase: () => void;
+  initSpotify: () => void;
+  initYoutube: () => void;
 }
 
 class App extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-  }
-  async componentDidMount() {
-    await this.props.loadFirebase();
+    props.initYoutube();
+    props.initSpotify();
   }
 
   public render() {
@@ -35,7 +34,11 @@ class App extends React.Component<IProps> {
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
-    { onReset: () => dispatch({ type: "RESET" }), loadFirebase },
+    {
+      onReset: () => dispatch({ type: "RESET" }),
+      initSpotify: () => dispatch({ type: "INIT_SPOTIFY_REQUESTED" }),
+      initYoutube: () => dispatch({ type: "INIT_YOUTUBE_REQUESTED" })
+    },
     dispatch
   );
 
