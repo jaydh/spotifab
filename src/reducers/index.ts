@@ -5,14 +5,14 @@ import playlistReducer from "./playlistReducer";
 import songsReducer from "./songsReducer";
 import player from "./player";
 import token from "./token";
-import { persistReducer } from "redux-persist";
+import { persistReducer, persistCombineReducers } from "redux-persist";
 import ui from "./ui";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["queue", "songsReducer", "token", "ui"]
+  whitelist: ["queue", "songsReducer", "token"]
 };
 
 const userConfig = {
@@ -27,16 +27,6 @@ const playerConfig = {
   blacklist: ["playing", "spotifyReady", "youtubeReady"]
 };
 
-const uiConfig = {
-  key: "ui",
-  storage,
-  whitelist: ["sort", "filter"]
-};
-
-interface IState {
-  userReducer: typeof userReducer;
-}
-
 const appReducer = combineReducers({
   userReducer: persistReducer(userConfig, userReducer as any),
   playlistReducer,
@@ -44,9 +34,10 @@ const appReducer = combineReducers({
   player: persistReducer(playerConfig, player),
   queue,
   token,
-  ui: persistReducer(uiConfig, ui)
+  ui
 });
-const rootReducer = (state: IState | undefined, action: any) => {
+
+const rootReducer = (state: any, action: any) => {
   if (action.type === "RESET") {
     state = undefined;
   }

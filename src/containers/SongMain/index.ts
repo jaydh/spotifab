@@ -12,10 +12,7 @@ import Component from "./component";
 
 const mapState = (state: any) => {
   return {
-    firebaseLoaded: state.ui.firebaseLoaded,
-    signedIn: state.userReducer.signedIn,
-    enabledServices: state.userReducer.enabledServices,
-    songsFetched: state.synced.songsSynced
+    firebaseLoaded: state.ui.firebaseLoaded
   };
 };
 
@@ -37,7 +34,7 @@ const mapDispatchToProps = (dispatch: any) => {
 
 export default withRouter(
   connect(
-    null,
+    mapState,
     mapDispatchToProps
   )(Component)
 );

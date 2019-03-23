@@ -1,12 +1,12 @@
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   nextSong,
   prevSong,
   removeSongFromQueue,
   togglePlay
-} from '../../actions/queueActions';
-import SongControls from './component';
+} from "../../actions/queueActions";
+import SongControls from "./component";
 
 const mapDispatchToProps = (dispatch: any) =>
   bindActionCreators(
@@ -20,14 +20,15 @@ const mapDispatchToProps = (dispatch: any) =>
   );
 
 const mapStateToProps = (state: any) => {
-  const player = state.player;
+  const { userReducer, player } = state;
   let ready = true;
-  if (state.userReducer.spotifyEnabled && !player.spotifyReady) {
+  if (userReducer.spotifyEnabled && !player.spotifyReady) {
     ready = false;
   }
-  if (state.userReducer.youtubeEnabled && !player.youtubeReady) {
+  if (userReducer.youtubeEnabled && !player.youtubeReady) {
     ready = false;
   }
+
   return {
     nextTrackPosition: state.queue.position + 1,
     currentTrack:

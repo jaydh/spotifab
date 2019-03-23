@@ -1,6 +1,6 @@
 export default (
   state = {
-    volume: 0.5,
+    volume: 50,
     spotifyPlayer: null,
     ytPlayer: null,
     playing: false,

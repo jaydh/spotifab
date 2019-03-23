@@ -31,7 +31,7 @@ class SongMain extends React.Component<IProps> {
   public componentDidUpdate(oldProps: IProps) {
     const { location, firebaseLoaded } = this.props;
     if (
-      (firebaseLoaded && oldProps.firebaseLoaded !== firebaseLoaded) ||
+      (firebaseLoaded && !oldProps.firebaseLoaded) ||
       oldProps.location.pathname !== location.pathname
     ) {
       this.handleFetch();

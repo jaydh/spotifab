@@ -1,15 +1,9 @@
-interface IServices {
-  spotify: boolean;
-  youtube: boolean;
-  soundcloud: boolean;
-}
 export const userReducer = (
   state = {
     signedIn: false,
     spotifyEnabled: false,
     youtubeEnabled: true,
     soundcloud: false,
-    spotifySignedIn: false,
     user: {}
   },
   action: any
@@ -24,22 +18,13 @@ export const userReducer = (
       }
       break;
 
-    case "ADD_SONG_TO_LIBRARY_SUCCESS":
-      return {
-        ...state,
-        songAddedToLibrary: true,
-        songId: action.songId
-      };
-
-    case "ADD_SONG_TO_LIBRARY_ERROR":
-      return {
-        ...state,
-        songAddedToLibrary: false
-      };
     case "SIGN_IN":
       return { ...state, signedIn: true, user: action.user };
+      break;
+
     case "SIGN_OUT":
       return { ...state, signedIn: false, user: null };
+      break;
 
     default:
       return state;
