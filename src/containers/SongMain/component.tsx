@@ -10,12 +10,8 @@ interface IProps {
   fetchUnifiedSongs: (ownder: string, id: string) => void;
   fetchNew: () => void;
   fetchRecent: () => void;
-  initSpotify: () => void;
-  initYoutube: () => void;
   location: any;
   match: any;
-  signedIn: boolean;
-  firebaseLoaded: boolean;
 }
 
 class SongMain extends React.Component<IProps> {
@@ -23,17 +19,9 @@ class SongMain extends React.Component<IProps> {
     super(props);
   }
 
-  public componentDidMount() {
-    this.props.initYoutube();
-    this.props.initSpotify();
-  }
-
   public componentDidUpdate(oldProps: IProps) {
-    const { location, firebaseLoaded } = this.props;
-    if (
-      (firebaseLoaded && !oldProps.firebaseLoaded) ||
-      oldProps.location.pathname !== location.pathname
-    ) {
+    const { location } = this.props;
+    if (oldProps.location.pathname !== location.pathname) {
       this.handleFetch();
     }
   }

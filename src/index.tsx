@@ -1,18 +1,17 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { persistStore } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
-import thunk from 'redux-thunk';
-import App from './App';
-import reducers from './reducers';
-import register from './registerServiceWorker';
-import createSagaMiddleware from 'redux-saga';
-import playSong from './sagas/playSong';
-import initSpotify from './sagas/initSpotify';
-import initYoutube from './sagas/initYoutube';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { applyMiddleware, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import thunk from "redux-thunk";
+import App from "./App";
+import reducers from "./reducers";
+import { unregister } from "./registerServiceWorker";
+import createSagaMiddleware from "redux-saga";
+import root from "./sagas/root";
+import { loadFirebase } from "./actions/firebase";
 
 declare global {
   interface Window {
@@ -22,6 +21,7 @@ declare global {
     onSpotifyWebPlaybackSDKReady: any;
     Spotify: any;
     player: any;
+    firebase: any;
   }
 }
 
@@ -31,20 +31,19 @@ export const store = createStore(
   reducers,
   composeWithDevTools(applyMiddleware(thunk, sagaMiddleware))
 );
-sagaMiddleware.run(playSong);
-sagaMiddleware.run(initSpotify);
-sagaMiddleware.run(initYoutube);
+sagaMiddleware.run(root);
 
 export const persistor = persistStore(store);
-
-ReactDOM.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <App />
-    </PersistGate>
-  </Provider>,
-  document.getElementById('root')
-);
+loadFirebase().then(() => {
+  ReactDOM.render(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
+    </Provider>,
+    document.getElementById("root")
+  );
+});
 
 /*window.addEventListener("beforeinstallprompt", (e: any) => {
   // Stash the event so it can be triggered later.
@@ -59,4 +58,4 @@ ReactDOM.render(
     }
   });
   });*/
-register();
+unregister();

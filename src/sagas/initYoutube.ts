@@ -1,7 +1,8 @@
-import { select, debounce, call, put, takeLatest } from "redux-saga/effects";
+import { select, call, put, takeLatest } from "redux-saga/effects";
+import runAPI from "../bin/youtubeAPI";
 declare var YT: any;
 
-function* initYoutube(action: any) {
+function* initYoutube() {
   try {
     const { player } = yield select();
     yield call(handleInit, { player });
@@ -17,22 +18,9 @@ function* mySaga() {
 const handleInit = async (action: any) => {
   const { player, token } = action;
   const { youtubeReady } = player;
-
-  const loadSDK = new Promise((resolve, reject) => {
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    tag.async = true;
-    tag.defer = true;
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag &&
-      firstScriptTag.parentNode &&
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    tag.onload = () => resolve();
-  });
-
   return youtubeReady
     ? Promise.resolve()
-    : loadSDK.then(() => setupYoutube(player));
+    : Promise.resolve(runAPI()).then(() => setupYoutube(player));
 };
 
 const setupYoutube = (player: any) => {

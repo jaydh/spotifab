@@ -8,8 +8,7 @@ export default (
     sideMenuOpen: false,
     queueOpen: false,
     showYoutube: true,
-    showSpotify: true,
-    firebaseLoaded: false
+    showSpotify: true
   },
   action: any
 ) => {
@@ -23,8 +22,6 @@ export default (
     }
     case "CLOSE_QUEUE":
       return { ...state, queueOpen: false };
-    case "FIREBASE_LOADED":
-      return { ...state, firebaseLoaded: true };
     case "SET_FILTER":
       return { ...state, filter: action.filter };
     case "SET_SORT":

@@ -11,9 +11,7 @@ import { fetchSongs, fetchYoutubeSongs } from "../../actions/songActions";
 import Component from "./component";
 
 const mapState = (state: any) => {
-  return {
-    firebaseLoaded: state.ui.firebaseLoaded
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch: any) => {
@@ -25,8 +23,6 @@ const mapDispatchToProps = (dispatch: any) => {
       fetchPlaylistSongs,
       fetchRecent,
       fetchNew,
-      initSpotify: () => dispatch({ type: "INIT_SPOTIFY_REQUESTED" }),
-      initYoutube: () => dispatch({ type: "INIT_YOUTUBE_REQUESTED" })
     },
     dispatch
   );

@@ -1,7 +1,8 @@
-import { select, debounce, call, put, takeLatest } from "redux-saga/effects";
+import { select, call, put, takeLatest } from "redux-saga/effects";
+import runSpotifySDK from "../bin/spotifySDK";
 declare var Spotify: any;
 
-function* initSpotify(action: any) {
+function* initSpotify() {
   try {
     const { player, token } = yield select();
 
@@ -15,34 +16,24 @@ function* mySaga() {
   yield takeLatest("INIT_SPOTIFY_REQUESTED", initSpotify);
 }
 
-const handleInit = async (action: any) => {
+export const handleInit = async (action: any) => {
   const { player, token } = action;
   const { spotifyReady } = player;
 
-  const loadSDK = new Promise((resolve, reject) => {
-    const tag = document.createElement("script");
-    tag.src = "https://sdk.scdn.co/spotify-player.js";
-    tag.async = true;
-    tag.defer = true;
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag &&
-      firstScriptTag.parentNode &&
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    tag.onload = () => resolve();
-  });
-
   return spotifyReady
     ? Promise.resolve()
-    : loadSDK.then(() => setupSpotify(player, token));
+    : Promise.resolve(runSpotifySDK())
+        .then(() => setupSpotify(player, token))
 };
 
 const setupSpotify = (player: any, token: { token: string }) => {
   return new Promise((resolve, reject) => {
+    const onReady = () => {
+      window.player.setVolume(player.muted ? 0 : player.volume / 100);
+      resolve();
+    };
+
     window.onSpotifyWebPlaybackSDKReady = () => {
-      const onReady = () => {
-        window.player.setVolume(player.muted ? 0 : player.volume / 100);
-        resolve();
-      };
       window.player = new Spotify.Player({
         name: "bard",
         getOAuthToken: (cb: any) => {

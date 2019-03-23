@@ -1,6 +1,6 @@
 import { select, debounce, call, put, takeLatest } from "redux-saga/effects";
 
-function* playSong(action: any) {
+function* playSong() {
   try {
     const { player, queue, token } = yield select();
     if (player.spotifyReady) {
