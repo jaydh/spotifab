@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { isTokenTimeValid } from '../../helpers/validateToken';
 import { ConnectedPlaylist } from './index';
 import { Button, Collapse } from '@material-ui/core';
 import Plus from '@material-ui/icons/Add';
@@ -16,7 +15,6 @@ interface IProps {
   fetchPlaylistsMenu: () => void;
   fetchUnifiedPlaylistMenu: () => void;
   synced: boolean;
-  tokenTime: boolean;
   history: any;
   location: any;
   playlistMenu: any;
@@ -39,12 +37,9 @@ class UserPlaylists extends Component<IProps, IState> {
     };
   }
 
-  componentDidUpdate(prev: IProps) {
-    const { firebaseLoaded } = this.props;
-    if (firebaseLoaded && firebaseLoaded !== prev.firebaseLoaded) {
-      this.props.fetchPlaylistsMenu();
-      this.props.fetchUnifiedPlaylistMenu();
-    }
+  componentDidMount() {
+    this.props.fetchPlaylistsMenu();
+    this.props.fetchUnifiedPlaylistMenu();
   }
 
   render() {

@@ -27,6 +27,11 @@ const playerConfig = {
   blacklist: ["playing", "spotifyReady", "youtubeReady"]
 };
 
+const uiConfig = {
+  key: "ui",
+  storage
+};
+
 const appReducer = combineReducers({
   userReducer: persistReducer(userConfig, userReducer as any),
   playlistReducer,
@@ -34,7 +39,7 @@ const appReducer = combineReducers({
   player: persistReducer(playerConfig, player),
   queue,
   token,
-  ui
+  ui: persistReducer(uiConfig, ui)
 });
 
 const rootReducer = (state: any, action: any) => {
