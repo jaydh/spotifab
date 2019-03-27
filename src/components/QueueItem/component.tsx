@@ -27,8 +27,6 @@ export default class QueueItem extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { hovered: false };
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
   }
   public render() {
     const { song, index, position } = this.props;
@@ -36,8 +34,8 @@ export default class QueueItem extends React.Component<IProps, IState> {
 
     return (
       <ListItem
-        onMouseEnter={this.setHoverTrue}
-        onMouseLeave={this.setHoverFalse}
+        onMouseOver={this.setHoverTrue}
+        onMouseOut={this.setHoverFalse}
         onDoubleClick={this.handleUpdate}
         selected={index === position}
         style={{
@@ -45,7 +43,7 @@ export default class QueueItem extends React.Component<IProps, IState> {
         }}
       >
         {hovered && (
-          <Slide direction="right" in={hovered} timeout={250}>
+          <Slide direction="right" in={hovered}>
             <Button size="small" onClick={this.handleUpdate}>
               <PlayArrow />
             </Button>
@@ -66,14 +64,15 @@ export default class QueueItem extends React.Component<IProps, IState> {
       </ListItem>
     );
   }
-  private handleUpdate() {
+
+  private handleUpdate = () => {
     this.props.updatePosition(this.props.index);
     this.props.play();
-  }
+  };
 
-  private handleRemove() {
+  private handleRemove = () => {
     this.props.removeSongFromQueue(this.props.index);
-  }
+  };
 
   private setHoverTrue = () => this.setState({ hovered: true });
   private setHoverFalse = () => this.setState({ hovered: false });

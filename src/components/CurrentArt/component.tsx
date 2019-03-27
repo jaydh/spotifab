@@ -1,5 +1,5 @@
 import {
-  Collapse,
+  Button,
   Fade,
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -9,31 +9,51 @@ import {
   Typography,
   withStyles
 } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
+import { Album, Group, ExpandMore, Add, Remove } from "@material-ui/icons";
 import * as React from "react";
+import { Link } from "react-router-dom";
+import { Spotify, Youtube } from "mdi-material-ui";
 
 interface IProps {
-  currentTrack: any;
+  currentSong: any;
   classes: any;
   playing: boolean;
+  isSaved: boolean;
+  addSpotifySong: (id: string) => void;
+  addYoutubeSong: (id: string) => void;
 }
 
 interface IState {
   expanded: boolean;
 }
+
+const styles = {
+  image: { transition: "all 0.5s ease" },
+  title: { padding: "0 2em", transition: "all 0.5s ease" },
+  root: {},
+  youtube: {
+    display: "block",
+    height: "0px",
+    width: "0px",
+    transition: "all 0.25s ease"
+  },
+  button: { marginRight: "1em", transition: "all 0.5s ease" },
+  buttonIn: { marginRight: "0.5em" }
+};
+
 class CurrentArt extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
       expanded: false
     };
-    this.toggleExpand = this.toggleExpand.bind(this);
   }
 
   public componentDidUpdate(prev: IProps) {
-    if (prev.currentTrack.track.id !== this.props.currentTrack.track.id) {
+    // Hide ytPlayer if not youtube song
+    if (prev.currentSong.track.id !== this.props.currentSong.track.id) {
       const element = document.getElementById("ytPlayer");
-      if (element && !this.props.currentTrack.youtube) {
+      if (element && !this.props.currentSong.youtube) {
         const style = element.style;
         style.height = "0px";
         style.width = "0px";
@@ -42,16 +62,15 @@ class CurrentArt extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const { classes, currentTrack, playing } = this.props;
+    const { classes, currentSong, isSaved } = this.props;
     const { expanded } = this.state;
-    let image = "";
-    if (currentTrack) {
-      image = this.props.currentTrack.track.album
-        ? this.props.currentTrack.track.album.images[1].url
-        : `http://img.youtube.com/vi/${
-            this.props.currentTrack.track.id
-          }/hqdefault.jpg`;
-    }
+    const { track } = currentSong;
+
+    const image = track.album
+      ? track.album.images[1].url
+      : `http://img.youtube.com/vi/${track.id}/hqdefault.jpg`;
+
+    console.log(track);
     return (
       <ExpansionPanel
         className={classes.root}
@@ -60,12 +79,12 @@ class CurrentArt extends React.Component<IProps, IState> {
       >
         <ExpansionPanelSummary expandIcon={<ExpandMore />}>
           <Grid container={true} alignItems="center">
-            <Fade in={expanded && currentTrack.youtube}>
+            <Fade in={expanded && currentSong.youtube}>
               <Paper>
                 <div id="ytPlayer" className={classes.youtube} />
               </Paper>
             </Fade>
-            {(!playing || !currentTrack.youtube || !expanded) && (
+            {(!currentSong.youtube || !expanded) && (
               <img
                 src={image}
                 className={classes.image}
@@ -75,44 +94,116 @@ class CurrentArt extends React.Component<IProps, IState> {
                 }}
               />
             )}
-            <Typography className={classes.title} variant="subtitle2">
-              {currentTrack.track.name}{" "}
-            </Typography>
-            <Typography variant="body1">
-              {currentTrack.track.artists && currentTrack.track.artists[0].name}
+            <Typography
+              className={classes.title}
+              variant={expanded ? "h3" : "headline"}
+            >
+              {track.name}{" "}
             </Typography>
           </Grid>
         </ExpansionPanelSummary>
-        <ExpansionPanelDetails>{"  "}</ExpansionPanelDetails>
+        <ExpansionPanelDetails>
+          {track.artists &&
+            track.artists.map((t: any) => (
+              <Link to={`/artist/${t.id}`} key={`to artist${t.id}`}>
+                <Button
+                  className={classes.button}
+                  color="primary"
+                  size={expanded ? "large" : "small"}
+                >
+                  <Group className={classes.buttonIn} />
+                  {t.name}
+                </Button>
+              </Link>
+            ))}
+          {track.album && (
+            <Link to={`/album/${track.album.id}`}>
+              <Button
+                className={classes.button}
+                color="primary"
+                size={expanded ? "large" : "small"}
+              >
+                <Album className={classes.buttonIn} />
+                {track.album.name}
+              </Button>
+            </Link>
+          )}
+          {track.external_urls && (
+            <Button color="primary" size={expanded ? "large" : "small"}>
+              <a
+                href={track.external_urls.spotify}
+                target="_blank"
+                rel="noopener"
+              >
+                <Spotify />
+              </a>
+            </Button>
+          )}
+          {currentSong.youtube && (
+            <Button color="primary" size={expanded ? "large" : "small"}>
+              <a
+                href={`https://youtube.com/watch?v=${track.id}`}
+                target="_blank"
+                rel="noopener"
+              >
+                <Youtube />
+              </a>
+            </Button>
+          )}
+          {isSaved ? (
+            <Button
+              onClick={this.handleRemove}
+              color="primary"
+              size={expanded ? "large" : "small"}
+            >
+              <Remove />
+            </Button>
+          ) : (
+            <Button
+              onClick={this.handleAdd}
+              color="primary"
+              size={expanded ? "large" : "small"}
+            >
+              <Add />
+            </Button>
+          )}
+        </ExpansionPanelDetails>
       </ExpansionPanel>
     );
   }
 
-  private toggleExpand() {
+  private handleAdd = () => {
+    const { currentSong, addSpotifySong, addYoutubeSong } = this.props;
+    const { track } = currentSong;
+    if (currentSong.youtube) {
+      addYoutubeSong(track);
+    } else if (currentSong.spotify) {
+      addSpotifySong(track);
+    }
+  };
+
+  private handleRemove = () => {
+    const { currentSong } = this.props;
+    const { track } = currentSong;
+    if (currentSong.youtube) {
+    } else if (currentSong.spotify) {
+    }
+  };
+
+  private toggleExpand = () => {
     const { expanded } = this.state;
-    const { playing, currentTrack } = this.props;
-    const { youtube } = currentTrack;
+    const { currentSong } = this.props;
+    const { youtube } = currentSong;
     const element = document.getElementById("ytPlayer");
     if (element) {
       const style = element.style;
-      const hide = !youtube || expanded || !playing;
+      const hide = !youtube || expanded;
       style.height = hide ? "0px" : "200px";
       style.width = hide ? "0px" : "200px";
     }
 
     this.setState({ expanded: !this.state.expanded });
-  }
+  };
 }
 
-const styles = {
-  image: { transition: "all 0.5s ease" },
-  title: { padding: "0 2em" },
-  root: {},
-  youtube: {
-    display: "block",
-    height: "0px",
-    width: "0px",
-    transition: "all 0.25s ease"
-  }
-};
 export default withStyles(styles)(CurrentArt);

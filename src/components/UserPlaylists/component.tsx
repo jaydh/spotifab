@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { ConnectedPlaylist } from './index';
-import { Button, Collapse } from '@material-ui/core';
-import Plus from '@material-ui/icons/Add';
-import Delete from '@material-ui/icons/Delete';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Typography from '@material-ui/core/Typography';
-import More from '@material-ui/icons/MoreHoriz';
-import Minus from '@material-ui/icons/Remove';
-import Warning from '@material-ui/icons/Warning';
+import React, { Component } from "react";
+import { ConnectedPlaylist } from "./index";
+import { Button, Collapse } from "@material-ui/core";
+import Plus from "@material-ui/icons/Add";
+import Delete from "@material-ui/icons/Delete";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import More from "@material-ui/icons/MoreHoriz";
+import Minus from "@material-ui/icons/Remove";
+import Warning from "@material-ui/icons/Warning";
 
 interface IProps {
   fetchPlaylistsMenu: () => void;
@@ -20,7 +20,6 @@ interface IProps {
   playlistMenu: any;
   unifiedMenu: any;
   user: any;
-  firebaseLoaded: boolean;
 }
 
 interface IState {
@@ -44,11 +43,11 @@ class UserPlaylists extends Component<IProps, IState> {
 
   render() {
     const { showPlaylist } = this.state;
-    const isPlaylist = this.props.location.pathname.startsWith('/playlist');
+    const isPlaylist = this.props.location.pathname.startsWith("/playlist");
     return (
       <>
         <Button onClick={this.toggleShowPlaylist}>
-          <Typography variant="subheading">Playlists</Typography>{' '}
+          <Typography variant="subheading">Playlists</Typography>{" "}
           {this.state.showPlaylist ? <Minus /> : <Plus />}
         </Button>
         <Collapse in={showPlaylist}>
@@ -75,9 +74,7 @@ class UserPlaylists extends Component<IProps, IState> {
   handleSelect = (playlist: any) => (event: Event) => {
     this.setState({ selectedId: playlist.id });
     this.props.history.push(
-      `/playlist/${playlist.unified ? 'unified' : 'spotify'}/${
-        playlist.owner.id
-      }/${playlist.id}`
+      `/playlist/${playlist.unified ? "unified" : "spotify"}/${playlist.id}`
     );
   };
 
@@ -116,14 +113,14 @@ export class Playlist extends React.Component<IProps2, IState2> {
           {this.state.showMenu ? (
             <Button
               onClick={this.handleUnfollow(playlist)}
-              style={{ color: this.state.unfollowCount > 0 ? 'red' : '' }}
+              style={{ color: this.state.unfollowCount > 0 ? "red" : "" }}
             >
               {this.state.unfollowCount > 0 && this.state.unfollowCount < 3 ? (
                 <React.Fragment>
                   <Warning /> {4 - this.state.unfollowCount}
                 </React.Fragment>
               ) : (
-                ''
+                ""
               )}
               <Delete />
             </Button>

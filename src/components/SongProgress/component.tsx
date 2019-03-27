@@ -5,6 +5,7 @@ interface IState {
   position: number;
   seekTime: number;
   seekString: string;
+  intervalId?: number;
 }
 interface IProps {
   nextSong: () => void;
@@ -26,15 +27,29 @@ export default class SongProgress extends React.Component<IProps, IState> {
       seekTime: 0,
       seekString: "0:00"
     };
-    this.handleHover = this.handleHover.bind(this);
-    this.handleClick = this.handleClick.bind(this);
   }
-  public componentDidMount() {
-    this.calculateTime();
+
+  componentDidMount() {
+    if (this.props.playing) {
+      this.calculateTime();
+    }
+  }
+
+  public componentDidUpdate(prev: IProps) {
+    const { currentTrack, playing } = this.props;
+    // Reset proress watcher for each new song to block next song requests
+    // firing too soon
+    if (
+      currentTrack.track.id !== prev.currentTrack.track.id ||
+      playing !== prev.playing
+    ) {
+      clearInterval(this.state.intervalId);
+      this.calculateTime();
+    }
   }
 
   public componentWillUnmount() {
-    clearInterval((this as any).intervalId);
+    clearInterval(this.state.intervalId);
   }
 
   public render() {
@@ -69,11 +84,11 @@ export default class SongProgress extends React.Component<IProps, IState> {
       </Grid>
     );
   }
-  private handleClick(e: any) {
+  private handleClick = (e: any) => {
     this.props.seek(this.state.seekTime);
-  }
+  };
 
-  private handleHover(e: any) {
+  private handleHover = (e: any) => {
     const t = document.getElementById("line-container");
     const rect = t!.getBoundingClientRect();
     const { left, width } = rect;
@@ -86,7 +101,7 @@ export default class SongProgress extends React.Component<IProps, IState> {
         seekString: this.millisToMinutesAndSeconds(duration_ms * percentage)
       });
     }
-  }
+  };
 
   private millisToMinutesAndSeconds(millis: number) {
     const minutes = Math.round(millis / 60000);
@@ -94,9 +109,9 @@ export default class SongProgress extends React.Component<IProps, IState> {
     return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   }
 
-  private calculateTime() {
-    (this as any).intervalId = setInterval(async () => {
-      const { currentTrack, ready } = this.props;
+  private calculateTime = () => {
+    const intervalId = setInterval(async () => {
+      const { currentTrack, ready, nextSong } = this.props;
       if (currentTrack && ready) {
         const { duration_ms } = currentTrack.track;
         const position = currentTrack.youtube
@@ -104,13 +119,15 @@ export default class SongProgress extends React.Component<IProps, IState> {
           : (await window.player.getCurrentState())
           ? (await window.player.getCurrentState()).position
           : 0;
-        if (position && duration_ms - position < 1000) {
-          this.props.nextSong();
-        }
         this.setState({
           position
         });
+        if (duration_ms - position < 100) {
+          nextSong();
+        }
       }
     }, 50) as any;
-  }
+
+    this.setState({ intervalId });
+  };
 }

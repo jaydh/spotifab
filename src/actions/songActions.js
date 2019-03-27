@@ -15,26 +15,25 @@ export const addYoutubeSong = t => {
     const json = await res.json();
     const duration_ms = json.items[0]
       ? toSeconds(parse(json.items[0].contentDetails.duration)) * 1000
-      : null;
+      : undefined;
 
     const ref = database
       .collection("userData")
       .doc(getState().userReducer.user.uid)
       .collection("youtubeTracks")
       .doc(id);
-    await ref.set({
+
+    const track = {
       name,
       id,
       added_at: new Date().getTime(),
       duration_ms
-    });
+    };
+    await ref.set(track);
 
     dispatch({
       type: "ADD_YOUTUBE_TRACK",
-      id,
-      name,
-      added_at: new Date().getTime(),
-      duration_ms
+      track
     });
   };
 };
@@ -149,61 +148,6 @@ export const fetchSongs = () => {
     return Promise.resolve();
   };
 };
-
-export const searchSongsPending = () => {
-  return {
-    type: "SEARCH_SONGS_PENDING"
-  };
-};
-
-export const searchSongsSuccess = songs => {
-  return {
-    songs,
-    type: "SEARCH_SONGS_SUCCESS"
-  };
-};
-
-export const searchSongsError = () => {
-  return {
-    type: "SEARCH_SONGS_ERROR"
-  };
-};
-
-export const searchSongs = (searchTerm, accessToken) => {
-  return dispatch => {
-    const request = new Request(
-      `https://api.spotify.com/v1/search?q=${searchTerm}&type=track`,
-      {
-        headers: new Headers({
-          Accept: "application/json",
-          Authorization: "Bearer " + accessToken
-        })
-      }
-    );
-
-    dispatch(searchSongsPending());
-
-    fetch(request)
-      .then(res => {
-        if (res.statusText === "Unauthorized") {
-          window.location.href = "./";
-        }
-        return res.json();
-      })
-      .then(res => {
-        res.items = res.tracks.items.map(item => {
-          return {
-            track: item
-          };
-        });
-        dispatch(searchSongsSuccess(res.items));
-      })
-      .catch(err => {
-        dispatch(fetchSongsError(err));
-      });
-  };
-};
-
 export const fetchRecentlyPlayedPending = () => {
   return {
     type: "FETCH_RECENTLY_PLAYED_PENDING"

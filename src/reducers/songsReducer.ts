@@ -19,7 +19,8 @@ export const songsReducer = (
     spotifyIDs: [] as string[],
     youtubeTracks: {} as any,
     spotifyTracks: {} as any,
-    playlistSongs: []
+    playlistSongs: [],
+    playlistName: undefined
   },
   action: any
 ) =>
@@ -28,11 +29,11 @@ export const songsReducer = (
       case "ADD_SONG_TO_LIBRARY":
         const { id } = action.track;
         draft.spotifyIDs.push(id);
-        draft.spotifyTracks.set(id, {
+        draft.spotifyTracks[id] = {
           spotify: true,
           added_at: new Date().getTime(),
           track: action.track
-        });
+        };
         break;
 
       case "REMOVE_SONG_FROM_LIBRARY": {
@@ -69,21 +70,18 @@ export const songsReducer = (
       case "FETCH_PLAYLIST_SONGS_SUCCESS":
         return {
           ...state,
+          playlistName: action.name,
           playlistSongs: action.songs
         };
 
       case "ADD_YOUTUBE_TRACK": {
-        const track = {
+        const song = {
           youtube: true,
           added_at: action.added_at,
-          track: {
-            id: action.id,
-            name: action.name,
-            duration_ms: action.durationMs
-          }
+          track: { ...action.track }
         };
         draft.youtubeIDs.push(action.id);
-        draft.youtubeTracks.set(action.id, track);
+        draft.youtubeTracks[action.id] = song;
         break;
       }
 
@@ -96,6 +94,10 @@ export const songsReducer = (
         );
         break;
       }
+
+      case "CLEAR_PLAYLIST_NAME":
+        draft.playlistName = undefined;
+        break;
     }
   });
 

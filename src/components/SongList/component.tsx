@@ -89,7 +89,7 @@ class SongList extends React.Component<IProps, IState> {
     return (
       <div
         key={key}
-        style={{ ...style, userSelect: "none" }}
+        style={{ ...style }}
         onMouseDown={this.handleClickDown(index)}
         onMouseUp={this.handleClickUp(index)}
       >
@@ -116,7 +116,7 @@ class SongList extends React.Component<IProps, IState> {
     if (this.state.mouseDownIndex) {
       this.updateSelection(
         Math.min(this.state.mouseDownIndex, index),
-        Math.max(this.state.mouseDownIndex, index)
+        Math.max(this.state.mouseDownIndex, index) + 1
       );
     }
   };
@@ -124,7 +124,11 @@ class SongList extends React.Component<IProps, IState> {
   private updateSelection = (down: number, up: number) => {
     {
       const { songs } = this.props;
-      const selectedSongs = songs.slice(down, up);
+      const selectedSongs = songs.slice(down, up).map((song: any) => ({
+        spotify: song.spotify,
+        youtube: song.youtube,
+        id: song.track.id
+      }));
       this.props.setSongSelection({ down, up, selectedSongs });
     }
   };
@@ -137,14 +141,6 @@ class SongList extends React.Component<IProps, IState> {
   private makeNewQueueAndPlay = (index: number) => () => {
     this.makeNewQueue(index, index + 100);
     this.props.play();
-  };
-
-  private addSelectedToQueue = () => {
-    const selected = this.props.songs.slice(
-      this.props.upSelector,
-      this.props.downSelector
-    );
-    selected.map((t: any) => this.props.addSongToQueue(t));
   };
 
   private clearSelection = () => {

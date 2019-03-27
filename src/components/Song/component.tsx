@@ -35,6 +35,15 @@ interface IState {
   hovered: boolean;
 }
 
+const styles = {
+  icon: {
+    margin: 0
+  },
+  root: {
+    height: 40
+  }
+};
+
 class Song extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
@@ -42,21 +51,17 @@ class Song extends React.Component<IProps, IState> {
       showOptions: false,
       hovered: false
     };
-    this.toggleShow = this.toggleShow.bind(this);
-    this.handleDouble = this.handleDouble.bind(this);
-    this.getDetailString = this.getDetailString.bind(this);
-    this.getSortString = this.getSortString.bind(this);
   }
   public render() {
-    const { song, classes, makeNewQueueAndPlay, selected } = this.props;
+    const { song, classes, selected } = this.props;
     const { hovered } = this.state;
     const sortString = this.getSortString();
     const detailString = this.getDetailString();
     return (
       <ListItem
-        className={classes.root}
-        onMouseEnter={this.setHoverTrue}
-        onMouseLeave={this.setHoverFalse}
+        classes={{ root: classes.root, selected: "selected" }}
+        onMouseOver={this.setHoverTrue}
+        onMouseOut={this.setHoverFalse}
         onDoubleClick={this.handleDouble}
         selected={selected}
       >
@@ -73,6 +78,22 @@ class Song extends React.Component<IProps, IState> {
           </Slide>
         )}
 
+        <ListItemText
+          primary={song.track.name}
+          primaryTypographyProps={{
+            variant: "subtitle1",
+            style: {
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "200px"
+            }
+          }}
+          secondary={this.state.hovered ? detailString : sortString}
+          secondaryTypographyProps={{
+            variant: "body2"
+          }}
+        />
         <ListItemSecondaryAction
           children={
             <Hidden mdDown>
@@ -92,22 +113,6 @@ class Song extends React.Component<IProps, IState> {
             </Hidden>
           }
         />
-        <ListItemText
-          primary={song.track.name}
-          primaryTypographyProps={{
-            variant: "subtitle1",
-            style: {
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: "200px"
-            }
-          }}
-          secondary={this.state.hovered ? detailString : sortString}
-          secondaryTypographyProps={{
-            variant: "body2"
-          }}
-        />
       </ListItem>
     );
   }
@@ -126,14 +131,14 @@ class Song extends React.Component<IProps, IState> {
       this.props.removeSpotifySong(song.track);
     }
   };
-  private handleDouble() {
+  private handleDouble = () => {
     this.props.makeNewQueueAndPlay(this.props.index);
-  }
+  };
 
   private setHoverTrue = () => this.setState({ hovered: true });
   private setHoverFalse = () => this.setState({ hovered: false });
 
-  private getDetailString() {
+  private getDetailString = () => {
     const { song, sort } = this.props;
     const currentSort = sort.substring(0, this.props.sort.indexOf("-"));
 
@@ -161,9 +166,9 @@ class Song extends React.Component<IProps, IState> {
       default:
         return "";
     }
-  }
+  };
 
-  private getSortString() {
+  private getSortString = () => {
     const { song, sort } = this.props;
     const currentSort = sort.substring(0, this.props.sort.indexOf("-"));
 
@@ -177,16 +182,7 @@ class Song extends React.Component<IProps, IState> {
       default:
         return "";
     }
-  }
+  };
 }
-
-const styles = {
-  icon: {
-    margin: 0
-  },
-  root: {
-    height: 40
-  }
-};
 
 export default withStyles(styles)(Song);

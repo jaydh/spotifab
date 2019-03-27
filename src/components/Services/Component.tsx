@@ -87,7 +87,7 @@ export default class Services extends React.Component<IProps> {
   }
   private redirect() {
     const scopes =
-      "playlist-read-private playlist-read-collaborative playlist-modify-public user-read-recently-played playlist-modify-private user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-email user-top-read user-read-playback-state user-modify-playback-state user-read-currently-playing streaming";
+      "user-read-recently-played user-library-modify playlist-read-private user-read-email playlist-modify-public playlist-modify-private user-library-read playlist-read-collaborative user-read-playback-state user-read-private app-remote-control user-modify-playback-state user-follow-read user-top-read user-read-currently-playing user-follow-modify streaming";
     const isDev = window.location.host.startsWith("local");
     const callback = isDev ? "http://localhost:3000/" : "https://bard.live/";
     const url =

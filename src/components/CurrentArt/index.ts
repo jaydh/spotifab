@@ -1,13 +1,25 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import SongControls from './component';
-import { nextSong, prevSong, togglePlay } from '../../actions/queueActions';
+import { Dispatch, bindActionCreators } from 'redux';
+import { addSpotifySong, addYoutubeSong } from '../../actions/songActions';
 
 const mapStateToProps = (state: any) => {
+  const currentSong = state.queue.queue[state.queue.position];
   return {
-    currentTrack: state.queue.queue[state.queue.position],
-    playing: state.player.playing
+    currentSong,
+    playing: state.player.playing,
+    isSaved:
+      (currentSong.spotify &&
+        state.songsReducer.spotifyIDs.includes(currentSong.track.id)) ||
+      (currentSong.youtube &&
+        state.songsReducer.youtubeIDs.includes(currentSong.track.id))
   };
 };
 
-export default connect(mapStateToProps)(SongControls);
+const mapDispatch = (dispatch: Dispatch) =>
+  bindActionCreators({ addSpotifySong, addYoutubeSong }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatch
+)(SongControls);

@@ -1,4 +1,4 @@
-import { select, call, put, takeLatest } from "redux-saga/effects";
+import { select, call, put, takeLeading } from "redux-saga/effects";
 import runSpotifySDK from "../bin/spotifySDK";
 declare var Spotify: any;
 
@@ -13,7 +13,7 @@ function* initSpotify() {
   }
 }
 function* mySaga() {
-  yield takeLatest("INIT_SPOTIFY_REQUESTED", initSpotify);
+  yield takeLeading("INIT_SPOTIFY_REQUESTED", initSpotify);
 }
 
 export const handleInit = async (action: any) => {
@@ -22,8 +22,7 @@ export const handleInit = async (action: any) => {
 
   return spotifyReady
     ? Promise.resolve()
-    : Promise.resolve(runSpotifySDK())
-        .then(() => setupSpotify(player, token))
+    : Promise.resolve(runSpotifySDK()).then(() => setupSpotify(player, token));
 };
 
 const setupSpotify = (player: any, token: { token: string }) => {
@@ -45,9 +44,10 @@ const setupSpotify = (player: any, token: { token: string }) => {
       window.player.addListener("initialization_error", ({ message }: any) => {
         console.error(message);
       });
-      window.player.addListener("authentication_error", ({ message }: any) => {
-        console.error(message);
-      });
+      window.player.addListener(
+        "authentication_error",
+        ({ message }: any) => {}
+      );
       window.player.addListener("account_error", ({ message }: any) => {
         console.error(message);
       });

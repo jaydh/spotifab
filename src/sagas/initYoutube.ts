@@ -1,4 +1,4 @@
-import { select, call, put, takeLatest } from "redux-saga/effects";
+import { select, call, put, takeLeading } from "redux-saga/effects";
 import runAPI from "../bin/youtubeAPI";
 declare var YT: any;
 
@@ -12,7 +12,7 @@ function* initYoutube() {
   }
 }
 function* mySaga() {
-  yield takeLatest("INIT_YOUTUBE_REQUESTED", initYoutube);
+  yield takeLeading("INIT_YOUTUBE_REQUESTED", initYoutube);
 }
 
 const handleInit = async (action: any) => {
@@ -30,7 +30,8 @@ const setupYoutube = (player: any) => {
       resolve();
     };
 
-    const onPlayerStateChange = (event: any) => {};
+    const onPlayerStateChange = (event: any) => {
+    };
 
     window.onYouTubeIframeAPIReady = () => {
       window.ytPlayer = new YT.Player("ytPlayer", {

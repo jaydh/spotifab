@@ -8,35 +8,36 @@ import {
   IconButton,
   Toolbar,
   withStyles
-} from '@material-ui/core';
+} from "@material-ui/core";
 import {
   DeleteSweep as Clear,
   Menu as MenuIcon,
   PlaylistAdd as Add,
   PlaylistAddCheck as AddCheck,
   QueueMusic as QueueIcon
-} from '@material-ui/icons';
-import * as React from 'react';
-import Loadable from 'react-loadable';
-import AddSongs from '../../components/AddSongs';
-import Authenticate from '../../components/Authenticate';
-import CurrentArt from '../../components/CurrentArt';
-import Filter from '../../components/Filter';
-import SongControls from '../../components/SongControls';
-import Sort from '../../components/Sort';
-import Volume from '../../components/VolumeControls';
+} from "@material-ui/icons";
+import * as React from "react";
+import Loadable from "react-loadable";
+import AddSongs from "../../components/AddSongs";
+import Authenticate from "../../components/Authenticate";
+import CurrentArt from "../../components/CurrentArt";
+import Filter from "../../components/Filter";
+import SongControls from "../../components/SongControls";
+import Sort from "../../components/Sort";
+import Volume from "../../components/VolumeControls";
+import Nav from "../../components/Nav";
 
 const HiddenLoad = () => <></>;
 const Queue = Loadable({
-  loader: () => import('../../components/Queue'),
+  loader: () => import("../../components/Queue"),
   loading: HiddenLoad
 });
 const SideMenu = Loadable({
-  loader: () => import('../SideMenu'),
+  loader: () => import("../SideMenu"),
   loading: HiddenLoad
 });
 const SongProgress = Loadable({
-  loader: () => import('../../components/SongProgress'),
+  loader: () => import("../../components/SongProgress"),
   loading: HiddenLoad
 });
 
@@ -77,7 +78,7 @@ class MainBar extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
     if (this.state.matches) {
       this.props.updateVolume(750);
     }
@@ -85,7 +86,7 @@ class MainBar extends React.Component<IProps, IState> {
     this.handleSideMouseOver();
   }
   public componentWillUnmount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
   }
 
   public render() {
@@ -105,22 +106,33 @@ class MainBar extends React.Component<IProps, IState> {
       <>
         <AppBar position="relative" className={classes.appBar}>
           <Toolbar disableGutters={!open}>
-            <Grid
-              container={true}
-              spacing={40}
-              alignItems="center"
-              justify="space-between"
-            >
-              <Grid item={true} xs={4} sm={4} md={4} lg={4}>
-                <IconButton
-                  color="inherit"
-                  aria-label="Open drawer"
-                  onClick={this.handleSideOpen}
-                  className={classes.menuButton}
-                  children={<MenuIcon />}
-                />
-                <Authenticate />
-                {!matches && <AddSongs />}
+            <Grid container={true} spacing={40} justify="space-between">
+              <Grid
+                item={true}
+                xs={4}
+                sm={4}
+                md={4}
+                lg={4}
+                container
+                alignContent="center"
+                alignItems="center"
+              >
+                <Grid item>
+                  <IconButton
+                    color="inherit"
+                    aria-label="Open drawer"
+                    onClick={this.handleSideOpen}
+                    className={classes.menuButton}
+                    children={<MenuIcon />}
+                  />
+                </Grid>
+                <Grid item>
+                  <Nav />
+                </Grid>
+                <Grid item>{!matches && <AddSongs />}</Grid>
+                <Grid item>
+                  <Authenticate />
+                </Grid>
               </Grid>
               {currentTrack !== undefined && (
                 <Fade in={currentTrack !== undefined}>
@@ -143,7 +155,7 @@ class MainBar extends React.Component<IProps, IState> {
               <Grid
                 item={true}
                 container={true}
-                justify={matches ? 'center' : 'flex-end'}
+                justify={matches ? "center" : "flex-end"}
                 alignItems="center"
                 xs={8}
                 sm={8}
@@ -224,18 +236,18 @@ class MainBar extends React.Component<IProps, IState> {
     this.props.onQueueOpen();
   };
   private handleResize = () => {
-    const x = window.matchMedia('(max-width: 992px)');
+    const x = window.matchMedia("(max-width: 992px)");
     this.setState({ matches: x.matches });
   };
 }
 
 const styles = (theme: any) => ({
   root: {
-    display: 'flex'
+    display: "flex"
   },
   appBar: {
-    backgroundColor: '#82b1ff',
-    transition: theme.transitions.create(['margin', 'width'], {
+    backgroundColor: "#82b1ff",
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
@@ -243,7 +255,7 @@ const styles = (theme: any) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     })
@@ -253,7 +265,7 @@ const styles = (theme: any) => ({
     marginRight: 20
   },
   hide: {
-    display: 'none'
+    display: "none"
   },
   drawer: {
     width: drawerWidth,
@@ -263,23 +275,23 @@ const styles = (theme: any) => ({
     width: drawerWidth
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 8px',
+    display: "flex",
+    alignItems: "center",
+    padding: "0 8px",
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end'
+    justifyContent: "flex-end"
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
     marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),

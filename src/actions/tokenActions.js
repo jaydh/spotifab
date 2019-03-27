@@ -52,7 +52,7 @@ export const requestTokenRefresh = () => {
       .collection("tokens")
       .doc(getState().userReducer.user.uid)
       .set({ refetch: true }, { merge: true });
-    dispatch({
+    return dispatch({
       type: "REFETCH_TOKEN"
     });
   };

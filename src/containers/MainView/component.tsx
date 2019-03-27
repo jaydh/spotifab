@@ -7,56 +7,26 @@ interface IProps {
   enqueueSnackbar: (t: any, options?: any) => void;
   spotifyReady: boolean;
   youtubeReady: boolean;
-  songsSynced: boolean;
-  firebaseLoaded: boolean;
-  playlistsSynced: boolean;
   setAuthCode: (code: string) => void;
-}
-
-interface IState {
-  authCode?: string;
 }
 
 const toLibrary = () => <Redirect to="/library" />;
 
-class MainView extends React.Component<IProps, IState> {
+class MainView extends React.Component<IProps> {
   public constructor(props: IProps) {
     super(props);
     const authCode = this.getQueryVariable("code");
-    this.state = { authCode: authCode.length > 0 ? authCode : undefined };
+    authCode.length > 0 && props.setAuthCode(authCode);
   }
 
   public componentDidUpdate(oldProps: IProps) {
-    const {
-      enqueueSnackbar,
-      spotifyReady,
-      youtubeReady,
-      songsSynced,
-      playlistsSynced,
-      firebaseLoaded,
-      setAuthCode
-    } = this.props;
-    const { authCode } = this.state;
+    const { spotifyReady, youtubeReady } = this.props;
+
     if (oldProps.spotifyReady !== spotifyReady && spotifyReady) {
       this.snackBar("Spotify playback ready");
     }
     if (oldProps.youtubeReady !== youtubeReady && youtubeReady) {
       this.snackBar("Youtube playback ready");
-    }
-    if (oldProps.songsSynced !== songsSynced && songsSynced) {
-      this.snackBar("Songs Fetched");
-    }
-    if (oldProps.playlistsSynced !== playlistsSynced && playlistsSynced) {
-      this.snackBar("Playlists synced");
-    }
-    if (
-      oldProps.firebaseLoaded !== this.props.firebaseLoaded &&
-      this.props.firebaseLoaded
-    ) {
-      this.snackBar("Firebase Loaded");
-      if (authCode) {
-        this.props.setAuthCode(authCode);
-      }
     }
   }
 
@@ -67,7 +37,9 @@ class MainView extends React.Component<IProps, IState> {
           <Route path="/library" component={SongMain} />
           <Route path="/recent" component={SongMain} />
           <Route path="/new" component={SongMain} />
-          <Route path="/playlist/:type/:owner/:id" component={SongMain} />
+          <Route path="/playlist/:type/:id" component={SongMain} />
+          <Route path="/album/:id" component={SongMain} />
+          <Route path="/artist/:id" component={SongMain} />
           <Route exact={true} path="/" component={toLibrary} />
         </Switch>
       </BrowserRouter>
