@@ -3,7 +3,7 @@ import * as React from "react";
 import Button from "@material-ui/core/Button";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import { Slide } from "@material-ui/core";
+import { Fade } from "@material-ui/core";
 import { PlayArrow, Delete } from "@material-ui/icons";
 
 interface IProps {
@@ -43,11 +43,11 @@ export default class QueueItem extends React.Component<IProps, IState> {
         }}
       >
         {hovered && (
-          <Slide direction="right" in={hovered}>
+          <Fade in={hovered}>
             <Button size="small" onClick={this.handleUpdate}>
               <PlayArrow />
             </Button>
-          </Slide>
+          </Fade>
         )}
         <ListItemText
           primary={song.track.name}

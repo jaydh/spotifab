@@ -43,11 +43,11 @@ const setupSpotify = (player: any, token: { token: string }) => {
       // Error handling
       window.player.addListener("initialization_error", ({ message }: any) => {
         console.error(message);
+        reject();
       });
-      window.player.addListener(
-        "authentication_error",
-        ({ message }: any) => {}
-      );
+      window.player.addListener("authentication_error", ({ message }: any) => {
+        console.log("add");
+      });
       window.player.addListener("account_error", ({ message }: any) => {
         console.error(message);
       });

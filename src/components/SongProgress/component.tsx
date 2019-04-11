@@ -5,7 +5,6 @@ interface IState {
   position: number;
   seekTime: number;
   seekString: string;
-  intervalId?: number;
 }
 interface IProps {
   nextSong: () => void;
@@ -20,6 +19,7 @@ interface IProps {
 }
 
 export default class SongProgress extends React.Component<IProps, IState> {
+  private intervalId = undefined;
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -29,27 +29,19 @@ export default class SongProgress extends React.Component<IProps, IState> {
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {}
+
+  public componentDidUpdate(prev: IProps) {
+    const { playing, currentTrack } = this.props;
+    // Reset proress watcher for each new song to block next song requests
+    // firing too soon
     if (this.props.playing) {
       this.calculateTime();
     }
   }
 
-  public componentDidUpdate(prev: IProps) {
-    const { currentTrack, playing } = this.props;
-    // Reset proress watcher for each new song to block next song requests
-    // firing too soon
-    if (
-      currentTrack.track.id !== prev.currentTrack.track.id ||
-      playing !== prev.playing
-    ) {
-      clearInterval(this.state.intervalId);
-      this.calculateTime();
-    }
-  }
-
   public componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    clearInterval(this.intervalId);
   }
 
   public render() {
@@ -87,7 +79,6 @@ export default class SongProgress extends React.Component<IProps, IState> {
   private handleClick = (e: any) => {
     this.props.seek(this.state.seekTime);
   };
-
   private handleHover = (e: any) => {
     const t = document.getElementById("line-container");
     const rect = t!.getBoundingClientRect();
@@ -110,24 +101,50 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   private calculateTime = () => {
-    const intervalId = setInterval(async () => {
-      const { currentTrack, ready, nextSong } = this.props;
-      if (currentTrack && ready) {
-        const { duration_ms } = currentTrack.track;
-        const position = currentTrack.youtube
-          ? (await window.ytPlayer.getCurrentTime()) * 1000
-          : (await window.player.getCurrentState())
-          ? (await window.player.getCurrentState()).position
-          : 0;
-        this.setState({
-          position
-        });
-        if (duration_ms - position < 100) {
-          nextSong();
-        }
-      }
-    }, 50) as any;
+    if (!this.intervalId) {
+      this.intervalId = setInterval(() => {
+        this.updatePosition();
+        this.checkForNextSong();
+      }, 250) as any;
+    }
+  };
 
-    this.setState({ intervalId });
+  private updatePosition = async () => {
+    const position = await this.getPlayerPosition();
+    console.log(position);
+    this.setState({ position });
+  };
+
+  private checkForNextSong = () => {
+    const { currentTrack, nextSong } = this.props;
+    const { position } = this.state;
+    const { duration_ms } = currentTrack.track;
+
+    const youtubeState = window.ytPlayer.getPlayerState();
+    const youtubeDone = currentTrack.youtube && youtubeState === 0;
+    const spotifyDone = currentTrack.spotify && duration_ms - position < 500;
+
+    if (youtubeDone || spotifyDone) {
+      nextSong();
+      this.restartTimer();
+    }
+  };
+
+  private restartTimer = () => {
+    clearInterval(this.intervalId);
+    this.intervalId = undefined;
+    this.calculateTime();
+  };
+
+  private getPlayerPosition = async (): Promise<number> => {
+    const { currentTrack } = this.props;
+    if (currentTrack.youtube) {
+      const youtubeTime = window.ytPlayer.getCurrentTime();
+      return isNaN(youtubeTime) ? 0 : youtubeTime * 1000;
+    } else if (currentTrack.spotify) {
+      const spotifyState = await window.player.getCurrentState();
+      return spotifyState ? spotifyState.position : 0;
+    }
+    return -1;
   };
 }

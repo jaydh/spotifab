@@ -70,7 +70,6 @@ class CurrentArt extends React.Component<IProps, IState> {
       ? track.album.images[1].url
       : `http://img.youtube.com/vi/${track.id}/hqdefault.jpg`;
 
-    console.log(track);
     return (
       <ExpansionPanel
         className={classes.root}

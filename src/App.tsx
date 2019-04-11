@@ -9,13 +9,16 @@ interface IProps {
   onReset: () => void;
   initSpotify: () => void;
   initYoutube: () => void;
+  spotifyEnabled: boolean;
+  youtubeEnabled: boolean;
 }
 
 class App extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    props.initYoutube();
-    props.initSpotify();
+    const { initYoutube, initSpotify, spotifyEnabled, youtubeEnabled } = props;
+    youtubeEnabled && initYoutube();
+    spotifyEnabled && initSpotify();
   }
 
   public render() {
@@ -32,6 +35,11 @@ class App extends React.Component<IProps> {
   }
 }
 
+const mapState = (state: any) => ({
+  spotifyEnabled: state.userReducer.spotifyEnabled,
+  youtubeEnabled: state.userReducer.youtubeEnabled
+});
+
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
@@ -43,6 +51,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   );
 
 export default connect(
-  null,
+  mapState,
   mapDispatchToProps
 )(App);

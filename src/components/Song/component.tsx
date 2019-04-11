@@ -65,19 +65,16 @@ class Song extends React.Component<IProps, IState> {
         onDoubleClick={this.handleDouble}
         selected={selected}
       >
-        {hovered && (
-          <Slide direction="right" in={hovered} timeout={500}>
-            <ListItemIcon
-              children={
-                <Button onClick={this.handleDouble}>
-                  {song.youtube ? <Youtube /> : <Spotify />}
-                  <Play />
-                </Button>
-              }
-            />
-          </Slide>
-        )}
-
+        <Slide direction="right" in={hovered} timeout={500}>
+          <ListItemIcon
+            children={
+              <Button onClick={this.handleDouble}>
+                {song.youtube ? <Youtube /> : <Spotify />}
+                <Play />
+              </Button>
+            }
+          />
+        </Slide>
         <ListItemText
           primary={song.track.name}
           primaryTypographyProps={{

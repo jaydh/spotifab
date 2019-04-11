@@ -17,9 +17,18 @@ const mapDispatchToProps = (dispatch: any, getState: any) =>
   );
 
 const mapStateToProps = (state: any) => {
+  const { userReducer, player } = state;
+  let ready = true;
+  if (userReducer.spotifyEnabled && !player.spotifyReady) {
+    ready = false;
+  }
+  if (userReducer.youtubeEnabled && !player.youtubeReady) {
+    ready = false;
+  }
+
   return {
-    playing: state.player.playing,
-    ready: state.player.spotifyReady && state.player.youtubeReady,
+    playing: player.playing,
+    ready,
     currentTrack: state.queue.queue[state.queue.position]
   };
 };

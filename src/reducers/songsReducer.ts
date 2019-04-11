@@ -75,13 +75,13 @@ export const songsReducer = (
         };
 
       case "ADD_YOUTUBE_TRACK": {
-        const song = {
+        const { id, added_at } = action.track;
+        draft.youtubeIDs.push(id);
+        draft.youtubeTracks[id] = {
           youtube: true,
-          added_at: action.added_at,
+          added_at,
           track: { ...action.track }
         };
-        draft.youtubeIDs.push(action.id);
-        draft.youtubeTracks[action.id] = song;
         break;
       }
 
