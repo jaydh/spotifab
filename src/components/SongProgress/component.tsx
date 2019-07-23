@@ -32,11 +32,12 @@ export default class SongProgress extends React.Component<IProps, IState> {
   componentDidMount() {}
 
   public componentDidUpdate(prev: IProps) {
-    const { playing, currentTrack } = this.props;
+    const { playing } = this.props;
     // Reset proress watcher for each new song to block next song requests
     // firing too soon
-    if (this.props.playing) {
+    if (playing) {
       this.calculateTime();
+      this.checkForNextSong();
     }
   }
 
@@ -76,9 +77,11 @@ export default class SongProgress extends React.Component<IProps, IState> {
       </Grid>
     );
   }
+
   private handleClick = (e: any) => {
     this.props.seek(this.state.seekTime);
   };
+
   private handleHover = (e: any) => {
     const t = document.getElementById("line-container");
     const rect = t!.getBoundingClientRect();
@@ -101,17 +104,13 @@ export default class SongProgress extends React.Component<IProps, IState> {
   }
 
   private calculateTime = () => {
-    if (!this.intervalId) {
-      this.intervalId = setInterval(() => {
-        this.updatePosition();
-        this.checkForNextSong();
-      }, 250) as any;
-    }
+    this.intervalId = setInterval(() => {
+      this.updatePosition();
+    }, 250) as any;
   };
 
   private updatePosition = async () => {
     const position = await this.getPlayerPosition();
-    console.log(position);
     this.setState({ position });
   };
 
